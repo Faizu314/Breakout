@@ -14,8 +14,8 @@ set(ENGINE_HEADERS
 source_group("Header Files" FILES ${ENGINE_HEADERS})
 source_group("Source Files" FILES ${ENGINE_SOURCES})
 
-include_directories(Engine/include/common)
-
 if (APPLE)
-    add_executable(Engine ${ENGINE_SOURCES} ${ENGINE_HEADERS})
+    add_library(Engine ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 endif()
+
+target_include_directories(Engine PUBLIC Engine/include/common)
