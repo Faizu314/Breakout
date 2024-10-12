@@ -22,7 +22,7 @@
 *.lib
 
 # Exclude .lib files in the lib/Windows folder
-!lib/windows/*.lib
+!Phezu/lib/windows/*.lib
 
 # Executables
 *.exe

@@ -3,33 +3,81 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(BrickBreaker)
 
-set(ENGINE_SOURCES
-    Engine/src/main.cpp
+set(PHEZU_SOURCES
+    Phezu/src/Phezu.cpp
+)
+set(PHEZU_VENDOR_SOURCES
+    Phezu/vendor/tinyxml2/tinyxml2.cpp
+)
+set(PHEZU_HEADERS
+    Phezu/include/phezu/Phezu.hpp
 )
 
-set(ENGINE_HEADERS
-    Engine/include/common/Engine.hpp
-)
-
-source_group("Header Files" FILES ${ENGINE_HEADERS})
-source_group("Source Files" FILES ${ENGINE_SOURCES})
+source_group("Header Files" FILES ${PHEZU_HEADERS})
+source_group("Source Files" FILES ${PHEZU_SOURCES})
+source_group("Vendor\\Source Files" FILES ${PHEZU_VENDOR_SOURCES})
 
 set(GAME_SOURCES
     Game/src/main.cpp
 )
 
 set(GAME_HEADERS
-    Game/include/common/Game.hpp
+    Game/include/Game.hpp
 )
 
 source_group("Header Files" FILES ${GAME_HEADERS})
 source_group("Source Files" FILES ${GAME_SOURCES})
 
+add_library(Phezu STATIC ${PHEZU_SOURCES} ${PHEZU_VENDOR_SOURCES} ${PHEZU_HEADERS})
+set_target_properties(Phezu PROPERTIES OUTPUT_NAME Phezu PREFIX "")
+
 if (APPLE)
-    add_library(Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
     add_executable(Game ${GAME_SOURCES} ${GAME_HEADERS})
-    target_link_libraries(Game PRIVATE Engine)
+
+    set(LIB_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/mac")
+
+    set_target_properties(Game PROPERTIES
+        INSTALL_RPATH "@loader_path"
+        BUILD_WITH_INSTALL_RPATH TRUE
+    )
+
+    target_link_libraries(Phezu 
+        "-F${LIB_PATH}"
+        "-framework SDL2"
+        "-framework SDL2_image"
+        "-framework SDL2_ttf"
+    )
+
+    target_include_directories(Phezu PRIVATE Phezu/include/mac)
+elseif (WIN32)
+    add_executable(Game WIN32 ${GAME_SOURCES} ${GAME_HEADERS})
+
+    set(LIB_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/windows")
+
+    target_link_libraries(Phezu
+        "${LIB_PATH}/SDL2.lib"
+        "${LIB_PATH}/SDL2_image.lib"
+        "${LIB_PATH}/SDL2_ttf.lib"
+    )
+
+    target_include_directories(Phezu PRIVATE Phezu/include/windows)
 endif()
 
-target_include_directories(Engine PUBLIC Engine/include/common)
-target_include_directories(Game PUBLIC Game/include/common)
+target_include_directories(Phezu PUBLIC Phezu/include/phezu)
+target_include_directories(Phezu PRIVATE Phezu/include/common)
+target_include_directories(Game PUBLIC Game/include)
+target_link_libraries(Game PRIVATE Phezu)
+
+# copy and paste the libraries to the executable directory
+add_custom_command(TARGET Game POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${LIB_PATH}"
+    "$<TARGET_FILE_DIR:Game>"
+)
+
+# copy and paste the assets to the executable directory
+add_custom_command(TARGET Game POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_SOURCE_DIR}/Game/assets"
+    "$<TARGET_FILE_DIR:Game>"
+)
