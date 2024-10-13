@@ -5,12 +5,24 @@ project(BrickBreaker)
 
 set(PHEZU_SOURCES
     Phezu/src/Phezu.cpp
+    Phezu/src/Entity.cpp
+    Phezu/src/Scene.cpp
 )
 set(PHEZU_VENDOR_SOURCES
     Phezu/vendor/tinyxml2/tinyxml2.cpp
 )
 set(PHEZU_HEADERS
     Phezu/include/phezu/Phezu.hpp
+    Phezu/include/phezu/Renderer.hpp
+    Phezu/include/phezu/scene/Entity.hpp
+    Phezu/include/phezu/scene/Scene.hpp
+    Phezu/include/phezu/scene/SceneManager.hpp
+    Phezu/include/phezu/scene/components/DataComponent.hpp
+    Phezu/include/phezu/scene/components/BehaviourComponent.hpp
+    Phezu/include/phezu/scene/components/TransformData.hpp
+    Phezu/include/phezu/scene/components/RenderData.hpp
+    Phezu/include/phezu/scene/components/PhysicsData.hpp
+    Phezu/include/phezu/maths/Math.hpp
 )
 
 source_group("Header Files" FILES ${PHEZU_HEADERS})
@@ -64,7 +76,7 @@ elseif (WIN32)
 endif()
 
 target_include_directories(Phezu PUBLIC Phezu/include/phezu)
-target_include_directories(Phezu PRIVATE Phezu/include/common)
+target_include_directories(Phezu PUBLIC Phezu/include/common)
 target_include_directories(Game PUBLIC Game/include)
 target_link_libraries(Game PRIVATE Phezu)
 

@@ -1,6 +1,8 @@
-#include <iostream>
 #include "Phezu.hpp"
 
-void PrintMessage() {
-    std::cout << "Hello World\n";
+namespace Phezu {
+    
+    void Run() {
+        
+    }
 }
