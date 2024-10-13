@@ -2,7 +2,5 @@
 
 namespace Phezu {
     
-    Entity::Entity() {
-        
-    }
+
 }

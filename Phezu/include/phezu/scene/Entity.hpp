@@ -13,14 +13,16 @@ namespace Phezu {
     public:
         Entity();
         ~Entity();
-        TransformData& GetTransformData();
-        TransformData& GetParent();
-        Rect& GetShapeData();
-        RenderData& GetRenderData();
-        PhysicsData& GetPhysicsData();
+        void SetActive(bool isActive);
+        bool GetActive() const;
+        TransformData& GetTransformData() const;
+        std::weak_ptr<TransformData> GetParent() const;
+        Rect& GetShapeData() const;
+        RenderData& GetRenderData() const;
+        PhysicsData& GetPhysicsData() const;
         
         template<typename T>
-        T GetComponent();
+        T GetComponent() const;
         template<typename T>
         T AddComponent();
         template<typename T>
@@ -29,10 +31,13 @@ namespace Phezu {
         
     private:
         TransformData m_TransformData;
-        TransformData m_Parent;
         Rect m_ShapeData;
         RenderData m_RenderData;
         PhysicsData m_PhysicsData;
+    private:
+        std::weak_ptr<TransformData> m_Parent;
+        bool m_IsActive;
+    private:
         std::vector<std::shared_ptr<BehaviourComponent>> m_BehaviourComponents;
     };
 }

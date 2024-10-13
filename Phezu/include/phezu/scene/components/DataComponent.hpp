@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "scene/Entity.hpp"
 
 namespace Phezu {
@@ -9,9 +8,9 @@ namespace Phezu {
     
     class DataComponent {
     public:
-        DataComponent(std::shared_ptr<Entity> entity) : m_Entity(entity) {}
-        std::weak_ptr<Entity> GetEntity() { return m_Entity; }
+        DataComponent(const std::weak_ptr<Entity>& entity) : m_Entity(entity) {}
+        std::weak_ptr<Entity> GetEntity() const { return m_Entity; }
     protected:
-        std::shared_ptr<Entity> m_Entity;
+        std::weak_ptr<Entity> m_Entity;
     };
 }

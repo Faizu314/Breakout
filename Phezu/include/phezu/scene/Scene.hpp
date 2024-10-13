@@ -10,12 +10,12 @@ namespace Phezu {
     class Scene {
     public:
         std::weak_ptr<Entity> CreateEntity();
-        void DestroyEntity(std::weak_ptr<Entity> entity);
+        void DestroyEntity(const std::weak_ptr<Entity>& entity);
         void Load();
         void Unload();
     private:
         bool m_IsLoaded;
-        std::vector<std::shared_ptr<Entity>> m_PrefabEntities;
+        std::vector<std::unique_ptr<Entity>> m_PrefabEntities;
         std::vector<std::shared_ptr<Entity>> m_RuntimeEntities;
     };
 }

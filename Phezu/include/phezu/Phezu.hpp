@@ -19,7 +19,11 @@ namespace Phezu {
     class Engine {
     public:
         int Init();
+        std::weak_ptr<Scene> CreateScene();
         bool Run();
         void Destroy();
+    private:
+        SceneManager m_SceneManager;
+        bool m_HasInited;
     };
 }
