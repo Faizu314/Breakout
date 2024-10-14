@@ -9,16 +9,16 @@ namespace Phezu {
     public:
         Color Tint;
         std::weak_ptr<Texture> GetTexture();
-        RenderData(const std::weak_ptr<Entity>& entity) : DataComponent(entity) {
+        RenderData(std::weak_ptr<Entity> entity) : DataComponent(entity) {
             Tint = Colors::WHITE;
         }
-        RenderData(const std::weak_ptr<Entity>& entity, Color tint) : DataComponent(entity) {
+        RenderData(std::weak_ptr<Entity> entity, Color tint) : DataComponent(entity) {
             Tint = tint;
         }
-        RenderData(const std::weak_ptr<Entity>& entity, const std::weak_ptr<Texture>& texture) : DataComponent(entity), m_Texture(texture) {
+        RenderData(std::weak_ptr<Entity> entity, std::weak_ptr<Texture> texture) : DataComponent(entity), m_Texture(texture) {
             Tint = Colors::WHITE;
         }
-        RenderData(const std::weak_ptr<Entity>& entity, const std::weak_ptr<Texture>& texture, Color tint) : DataComponent(entity), m_Texture(texture) {
+        RenderData(std::weak_ptr<Entity> entity, std::weak_ptr<Texture> texture, Color tint) : DataComponent(entity), m_Texture(texture) {
             Tint = tint;
         }
     private:

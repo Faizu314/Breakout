@@ -8,7 +8,7 @@ namespace Phezu {
     
     class DataComponent {
     public:
-        DataComponent(const std::weak_ptr<Entity>& entity) : m_Entity(entity) {}
+        DataComponent(std::weak_ptr<Entity> entity) : m_Entity(entity) {}
         std::weak_ptr<Entity> GetEntity() const { return m_Entity; }
     protected:
         std::weak_ptr<Entity> m_Entity;
