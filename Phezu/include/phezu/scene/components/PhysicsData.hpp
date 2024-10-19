@@ -9,7 +9,7 @@ namespace Phezu {
     public:
         Vector2 Velocity;
         bool IsStatic() const;
-        PhysicsData(std::weak_ptr<Entity> entity, bool isStatic) : DataComponent(entity), m_IsStatic(isStatic) {}
+        PhysicsData(Entity* entity, bool isStatic) : DataComponent(entity), m_IsStatic(isStatic) {}
     private:
         const bool m_IsStatic;
     };

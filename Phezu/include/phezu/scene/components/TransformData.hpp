@@ -7,6 +7,7 @@ namespace Phezu {
     
     class TransformData : public DataComponent {
     public:
+        TransformData(Entity* entity) : DataComponent(entity) {}
         Vector2 Position;
         Vector2 Scale;
     };
