@@ -8,8 +8,8 @@ namespace Phezu {
     
     class Engine;
     class Entity;
-    class EntityPrefab;
-    class HierarchyEntity;
+    class PrefabEntity;
+    class TemplateEntity;
     
     class Scene : public std::enable_shared_from_this<Scene> {
     public:
@@ -20,13 +20,13 @@ namespace Phezu {
         void Load();
         void Unload();
     private:
-        void BuildEntityFromPrefab(std::shared_ptr<Entity> entity, std::unique_ptr<HierarchyEntity>& prefab);
-        void MoveRefsFromPrefabToEntity(std::shared_ptr<Entity>& entity, std::unique_ptr<HierarchyEntity>& prefab);
+        void BuildEntityFromPrefab(std::shared_ptr<Entity> entity, std::unique_ptr<TemplateEntity>& prefab);
+        void MoveRefsFromPrefabToEntity(std::shared_ptr<Entity>& entity, std::unique_ptr<TemplateEntity>& prefab);
     private:
         Engine* const m_Engine;
         const std::string m_Name;
         bool m_IsLoaded;
-        std::vector<std::unique_ptr<HierarchyEntity>> m_HierarchyEntities;
+        std::vector<std::unique_ptr<TemplateEntity>> m_HierarchyEntities;
         std::unordered_map<uint64_t, std::shared_ptr<Entity>> m_RuntimeEntities;
     };
 }

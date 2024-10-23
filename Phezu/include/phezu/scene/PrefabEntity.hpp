@@ -8,11 +8,11 @@ namespace Phezu {
     
     class BehaviourComponentPrefab;
     
-    class EntityPrefab {
+    class PrefabEntity {
     public:
-        EntityPrefab();
-        ~EntityPrefab();
-        uint64_t GetID() const;
+        PrefabEntity();
+        ~PrefabEntity();
+        uint64_t GetPrefabEntityID() const;
     public:
         Vector2 PositionOverride;
         Vector2 ScaleOverride;
@@ -23,26 +23,26 @@ namespace Phezu {
         std::weak_ptr<Texture> TextureOverride;
         Color TintOverride;
     public:
-        EntityPrefab& CreateChildEntity();
+        PrefabEntity& CreateChildEntity();
         template<typename T>
         std::weak_ptr<T> AddComponentPrefab();
         size_t GetComponentPrefabsCount() const;
         std::weak_ptr<BehaviourComponentPrefab> GetComponentPrefab(size_t index) const;
     private:
-        EntityPrefab(uint64_t root, std::unique_ptr<size_t[]> path, size_t pathSize);
+        PrefabEntity(uint64_t root, std::unique_ptr<size_t[]> path, size_t pathSize);
     private:
         static uint64_t s_EntityPrefabsCount;
-        const uint64_t m_PrefabID;
+        const uint64_t m_PrefabEntityID;
         const bool m_IsRoot;
         const uint64_t m_Root;
         const std::unique_ptr<size_t[]> m_Path;
         const size_t m_PathSize;
     private:
         std::vector<std::shared_ptr<BehaviourComponentPrefab>> m_BehaviourComponents;
-        std::vector<EntityPrefab*> m_Children;
+        std::vector<PrefabEntity*> m_Children;
     };
     
-    uint64_t EntityPrefab::s_EntityPrefabsCount = 0;
+    uint64_t PrefabEntity::s_EntityPrefabsCount = 0;
     
-    EntityPrefab DEFAULT_PREFAB;
+    PrefabEntity DEFAULT_PREFAB;
 }

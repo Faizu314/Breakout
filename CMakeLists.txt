@@ -7,8 +7,8 @@ set(PHEZU_SOURCES
     Phezu/src/Phezu.cpp
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
-    Phezu/src/EntityPrefab.cpp
-    Phezu/src/HierarchyEntity.cpp
+    Phezu/src/PrefabEntity.cpp
+    Phezu/src/TemplateEntity.cpp
     Phezu/src/BehaviourComponentPrefab.cpp
 )
 set(PHEZU_VENDOR_SOURCES
@@ -18,8 +18,9 @@ set(PHEZU_HEADERS
     Phezu/include/phezu/Phezu.hpp
     Phezu/include/phezu/Renderer.hpp
     Phezu/include/phezu/scene/Entity.hpp
-    Phezu/include/phezu/scene/EntityPrefab.hpp
-    Phezu/include/phezu/scene/HierarchyEntity.hpp
+    Phezu/include/phezu/scene/PrefabEntity.hpp
+    Phezu/include/phezu/scene/Prefab.hpp
+    Phezu/include/phezu/scene/TemplateEntity.hpp
     Phezu/include/phezu/scene/Scene.hpp
     Phezu/include/phezu/scene/SceneManager.hpp
     Phezu/include/phezu/scene/components/DataComponent.hpp

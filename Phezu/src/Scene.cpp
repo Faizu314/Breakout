@@ -3,9 +3,9 @@
 #include "scene/Entity.hpp"
 #include "scene/components/RenderData.hpp"
 #include "scene/components/BehaviourComponent.hpp"
-#include "scene/EntityPrefab.hpp"
+#include "scene/PrefabEntity.hpp"
 #include "scene/components/BehaviourComponentPrefab.hpp"
-#include "scene/HierarchyEntity.hpp"
+#include "scene/TemplateEntity.hpp"
 
 namespace Phezu {
     
@@ -18,8 +18,8 @@ namespace Phezu {
         return entity;
     }
     
-    void Scene::BuildEntityFromPrefab(std::shared_ptr<Entity> entity, std::unique_ptr<HierarchyEntity>& prefab) {
-        std::shared_ptr<const EntityPrefab> parentPrefab = m_Engine->GetEntityPrefab(prefab->GetPrefabID()).lock();
+    void Scene::BuildEntityFromPrefab(std::shared_ptr<Entity> entity, std::unique_ptr<TemplateEntity>& prefab) {
+        std::shared_ptr<const PrefabEntity> parentPrefab = m_Engine->GetEntityPrefab(prefab->GetPrefabID()).lock();
         
         entity->GetTransformData().Position = parentPrefab->PositionOverride;
         entity->GetTransformData().Scale = parentPrefab->ScaleOverride;
@@ -43,8 +43,8 @@ namespace Phezu {
         //TODO: do the same for all children recursively
     }
     
-    void Scene::MoveRefsFromPrefabToEntity(std::shared_ptr<Entity>& entity, std::unique_ptr<HierarchyEntity>& prefab) {
-        std::shared_ptr<const EntityPrefab> parentPrefab = m_Engine->GetEntityPrefab(prefab->GetPrefabID()).lock();
+    void Scene::MoveRefsFromPrefabToEntity(std::shared_ptr<Entity>& entity, std::unique_ptr<TemplateEntity>& prefab) {
+        std::shared_ptr<const PrefabEntity> parentPrefab = m_Engine->GetEntityPrefab(prefab->GetPrefabID()).lock();
         
         for (size_t i = 0; i < parentPrefab->GetComponentPrefabsCount(); i++) {
             uint64_t compPrefabEntityID = parentPrefab->GetComponentPrefab(i).lock()->GetEntityPrefabID();
@@ -69,7 +69,7 @@ namespace Phezu {
     }
     
     void Scene::CreateHierarchyEntity(uint64_t entityPrefabID) {
-        m_HierarchyEntities.emplace_back(HierarchyEntity::MakeUnique(shared_from_this(), entityPrefabID, m_HierarchyEntities.size()));
+        m_HierarchyEntities.emplace_back(TemplateEntity::MakeUnique(shared_from_this(), entityPrefabID, m_HierarchyEntities.size()));
         // TODO: return the prefab overridable of the hierarchy entity
     }
     
