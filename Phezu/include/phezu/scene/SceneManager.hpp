@@ -5,6 +5,8 @@
 
 namespace Phezu {
     
+    class Scene;
+    
     class SceneManager {
     public:
         std::weak_ptr<Scene> CreateScene();

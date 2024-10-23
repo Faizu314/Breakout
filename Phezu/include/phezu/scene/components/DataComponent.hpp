@@ -1,7 +1,5 @@
 #pragma once
 
-#include "scene/Entity.hpp"
-
 namespace Phezu {
     
     class Entity;

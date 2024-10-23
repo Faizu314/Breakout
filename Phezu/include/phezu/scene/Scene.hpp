@@ -4,24 +4,29 @@
 #include <unordered_map>
 #include <memory>
 
-#include "scene/Entity.hpp"
-
 namespace Phezu {
-
-    class Entity;
     
-    class Scene {
+    class Engine;
+    class Entity;
+    class EntityPrefab;
+    class HierarchyEntity;
+    
+    class Scene : public std::enable_shared_from_this<Scene> {
     public:
-        Scene(const std::string& name);
-        void SetPrefabEntities(std::vector<std::unique_ptr<Entity>>& entities);
+        Scene(Engine* engine, const std::string& name);
+        void CreateHierarchyEntity(uint64_t entityPrefabID = 0);
         std::weak_ptr<Entity> CreateEntity();
-        void DestroyEntity(std::weak_ptr<Entity> entity);
+        void DestroyEntity(uint64_t entityID);
         void Load();
         void Unload();
     private:
+        void BuildEntityFromPrefab(std::shared_ptr<Entity> entity, std::unique_ptr<HierarchyEntity>& prefab);
+        void MoveRefsFromPrefabToEntity(std::shared_ptr<Entity>& entity, std::unique_ptr<HierarchyEntity>& prefab);
+    private:
+        Engine* const m_Engine;
         const std::string m_Name;
         bool m_IsLoaded;
-        std::vector<std::unique_ptr<Entity>> m_PrefabEntities;
+        std::vector<std::unique_ptr<HierarchyEntity>> m_HierarchyEntities;
         std::unordered_map<uint64_t, std::shared_ptr<Entity>> m_RuntimeEntities;
     };
 }

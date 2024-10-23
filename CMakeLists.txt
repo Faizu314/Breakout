@@ -7,6 +7,9 @@ set(PHEZU_SOURCES
     Phezu/src/Phezu.cpp
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
+    Phezu/src/EntityPrefab.cpp
+    Phezu/src/HierarchyEntity.cpp
+    Phezu/src/BehaviourComponentPrefab.cpp
 )
 set(PHEZU_VENDOR_SOURCES
     Phezu/vendor/tinyxml2/tinyxml2.cpp
@@ -15,10 +18,13 @@ set(PHEZU_HEADERS
     Phezu/include/phezu/Phezu.hpp
     Phezu/include/phezu/Renderer.hpp
     Phezu/include/phezu/scene/Entity.hpp
+    Phezu/include/phezu/scene/EntityPrefab.hpp
+    Phezu/include/phezu/scene/HierarchyEntity.hpp
     Phezu/include/phezu/scene/Scene.hpp
     Phezu/include/phezu/scene/SceneManager.hpp
     Phezu/include/phezu/scene/components/DataComponent.hpp
     Phezu/include/phezu/scene/components/BehaviourComponent.hpp
+    Phezu/include/phezu/scene/components/BehaviourComponentPrefab.hpp
     Phezu/include/phezu/scene/components/TransformData.hpp
     Phezu/include/phezu/scene/components/RenderData.hpp
     Phezu/include/phezu/scene/components/PhysicsData.hpp

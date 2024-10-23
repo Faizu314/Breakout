@@ -2,28 +2,28 @@
 
 #include <vector>
 
-#include "scene/Scene.hpp"
+#include "Renderer.hpp"
 #include "scene/components/TransformData.hpp"
-#include "scene/components/RenderData.hpp"
-#include "scene/components/PhysicsData.hpp"
-#include "scene/components/BehaviourComponent.hpp"
 
 namespace Phezu {
     
+    class RenderData;
+    class PhysicsData;
+    class BehaviourComponent;
     class Scene;
     
     class Entity {
     public:
         Entity(const std::weak_ptr<Scene> scene);
         ~Entity();
-        uint64_t GetID();
+        uint64_t GetEntityID() const;
         void SetActive(bool isActive);
         bool GetActive() const;
         TransformData& GetTransformData();
-        Rect& GetShapeData();
-        RenderData& GetRenderData();
-        PhysicsData& GetPhysicsData();
-        TransformData& GetParent();
+        Rect* const AddShapeData();
+        RenderData* const AddRenderData(Color tint = Colors::WHITE);
+        PhysicsData* const AddPhysicsData(bool isStatic);
+        TransformData* const GetParent();
         size_t GetChildCount();
         std::weak_ptr<Entity> GetChild(size_t childIndex);
         
@@ -42,8 +42,8 @@ namespace Phezu {
         std::vector<std::weak_ptr<Entity>> m_Children;
     private:
         TransformData m_TransformData;
-        Rect m_ShapeData;
-        RenderData m_RenderData;
+        Rect* m_ShapeData;
+        RenderData* m_RenderData;
         PhysicsData* m_PhysicsData;
     private:
         std::vector<std::shared_ptr<BehaviourComponent>> m_BehaviourComponents;

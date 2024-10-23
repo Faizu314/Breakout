@@ -1,12 +1,17 @@
 #include "scene/Entity.hpp"
+#include "scene/Scene.hpp"
+#include "scene/components/RenderData.hpp"
+#include "scene/components/PhysicsData.hpp"
+#include "scene/components/BehaviourComponent.hpp"
 
 namespace Phezu {
     
-    Entity::Entity(const std::weak_ptr<Scene> scene) : m_Scene(scene), m_TransformData(this), m_RenderData(this) {
+    Entity::Entity(const std::weak_ptr<Scene> scene) : m_Scene(scene), m_TransformData(this) {
         m_EntityID = s_EntitiesCount;
         s_EntitiesCount++;
         
-        memset(&m_ShapeData, 0, sizeof(m_ShapeData));
+        m_ShapeData = nullptr;
+        m_RenderData = nullptr;
         m_PhysicsData = nullptr;
         m_Parent = nullptr;
         m_IsActive = true;
@@ -15,17 +20,22 @@ namespace Phezu {
     Entity::~Entity() {
         if (m_PhysicsData != nullptr)
             delete m_PhysicsData;
+        if (m_ShapeData != nullptr)
+            delete m_ShapeData;
+        if (m_RenderData != nullptr)
+            delete m_RenderData;
         
         auto scene = m_Scene.lock();
         if (!scene)
             return;
         
         for (int i = 0; i < m_Children.size(); i++) {
-            scene->DestroyEntity(m_Children[i]);
+            if (auto child = m_Children[i].lock())
+                scene->DestroyEntity(child->GetEntityID());
         }
     }
     
-    uint64_t Entity::GetID() {
+    uint64_t Entity::GetEntityID() const {
         return m_EntityID;
     }
     
@@ -39,17 +49,21 @@ namespace Phezu {
     TransformData& Entity::GetTransformData() {
         return m_TransformData;
     }
-    Rect& Entity::GetShapeData() {
+    Rect* const Entity::AddShapeData() {
+        m_ShapeData = new Rect();
+        memset(m_ShapeData, 0, sizeof(Rect));
         return m_ShapeData;
     }
-    RenderData& Entity::GetRenderData() {
+    RenderData* const Entity::AddRenderData(Color tint) {
+        m_RenderData = new RenderData(this, tint);
         return m_RenderData;
     }
-    PhysicsData& Entity::GetPhysicsData() {
-        return *m_PhysicsData;
+    PhysicsData* const Entity::AddPhysicsData(bool isStatic) {
+        m_PhysicsData = new PhysicsData(this, isStatic);
+        return m_PhysicsData;
     }
-    TransformData& Entity::GetParent() {
-        return *m_Parent;
+    TransformData* const Entity::GetParent() {
+        return m_Parent;
     }
     size_t Entity::GetChildCount() {
         return m_Children.size();
@@ -81,7 +95,9 @@ namespace Phezu {
     std::weak_ptr<T> Entity::AddComponent() {
         static_assert(!std::is_base_of<BehaviourComponent, T>::value, "Component T is not of type BehaviourComponent");
         
-        return m_BehaviourComponents.emplace_back(std::make_shared<T>(this));
+        uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponent that are of the same type as T
+        
+        return m_BehaviourComponents.emplace_back(std::make_shared<T>(this), componentID);
     }
     
     template<typename T>
