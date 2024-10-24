@@ -75,6 +75,26 @@ namespace Phezu {
         return m_Children[childIndex];
     }
     
+    void Entity::AddChild(std::weak_ptr<Entity> child) {
+        m_Children.push_back(child);
+    }
+    
+    void Entity::SetParent(std::weak_ptr<Entity> parent) {
+        SetParent_Internal(m_Scene.lock()->GetEntity(m_EntityID), parent);
+    }
+    
+    void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> parent) {
+        auto _thisLocked = _this.lock();
+        if (auto p = parent.lock()) {
+            _thisLocked->m_Parent = &p->GetTransformData();
+            p->AddChild(_this);
+        }
+    }
+    
+    void Entity::RemoveParent() {
+        
+    }
+    
     
     template<typename T>
     std::weak_ptr<T> Entity::GetComponent() {

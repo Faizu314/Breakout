@@ -33,6 +33,17 @@ namespace Phezu {
         return *child;
     }
     
+    size_t PrefabEntity::GetChildCount() const {
+        return m_Children.size();
+    }
+    
+    const PrefabEntity* PrefabEntity::GetChild(size_t childIndex) const {
+        if (childIndex >= m_Children.size())
+            return nullptr;
+        
+        return m_Children[childIndex];
+    }
+    
     template<typename T>
     std::weak_ptr<T> PrefabEntity::AddComponentPrefab() {
         if (!std::is_base_of<BehaviourComponentPrefab, T>::value) {
@@ -42,7 +53,11 @@ namespace Phezu {
         
         uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponentPrefab that are of the same type as T
         
-        m_BehaviourComponents.emplace_back(std::make_shared<T>(m_PrefabEntityID, componentID));
+        std::unique_ptr<size_t[]> path = std::make_unique<size_t[]>(m_PathSize);
+        for (int i = 0; i < m_PathSize; i++)
+            path[i] = m_Path[i];
+        
+        m_BehaviourComponents.emplace_back(m_PrefabEntityID, std::move(path), componentID);
         return m_BehaviourComponents[m_BehaviourComponents.size() - 1];
     }
 }

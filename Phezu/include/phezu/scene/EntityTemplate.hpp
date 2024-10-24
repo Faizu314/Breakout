@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "maths/Math.hpp"
 
 namespace Phezu {
     
@@ -10,15 +11,17 @@ namespace Phezu {
     class BehaviourComponent;
     class BehaviourComponentPrefab;
     
-    class TemplateEntity {
+    class EntityTemplate {
     private:
         struct ConstructionToken {};
-        static std::shared_ptr<TemplateEntity> MakeShared(std::weak_ptr<Scene> scene, uint64_t prefabID = 0, uint64_t instanceID = 0);
-        static std::unique_ptr<TemplateEntity> MakeUnique(std::weak_ptr<Scene> scene, uint64_t prefabID = 0, uint64_t instanceID = 0);
+        static std::shared_ptr<EntityTemplate> MakeShared(std::weak_ptr<Scene> scene, uint64_t prefabID = 0, uint64_t instanceID = 0);
+        static std::unique_ptr<EntityTemplate> MakeUnique(std::weak_ptr<Scene> scene, uint64_t prefabID = 0, uint64_t instanceID = 0);
     public:
         //if hierarchy entity is not from a prefab than use a default prefab template
         //EntityPrefabOverride OverridePrefab();
-        TemplateEntity(ConstructionToken token, std::weak_ptr<Scene> scene, uint64_t prefabID = 0, uint64_t instanceID = 0);
+        bool OverridePosition;
+        Vector2 PositionOverride;
+        EntityTemplate(ConstructionToken token, std::weak_ptr<Scene> scene, uint64_t prefabID = 0, uint64_t instanceID = 0);
     public:
         uint64_t GetPrefabID() const;
         uint64_t GetInstanceID() const;

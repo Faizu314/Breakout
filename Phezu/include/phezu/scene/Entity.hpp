@@ -14,6 +14,7 @@ namespace Phezu {
     
     class Entity {
     public:
+        Entity() = delete;
         Entity(const std::weak_ptr<Scene> scene);
         ~Entity();
         uint64_t GetEntityID() const;
@@ -24,6 +25,8 @@ namespace Phezu {
         RenderData* const AddRenderData(Color tint = Colors::WHITE);
         PhysicsData* const AddPhysicsData(bool isStatic);
         TransformData* const GetParent();
+        void SetParent(std::weak_ptr<Entity> parent);
+        void RemoveParent();
         size_t GetChildCount();
         std::weak_ptr<Entity> GetChild(size_t childIndex);
         
@@ -36,6 +39,7 @@ namespace Phezu {
         
     private:
         void OnChildDestroyed();
+        void AddChild(std::weak_ptr<Entity> child);
     private:
         const std::weak_ptr<Scene> m_Scene;
         TransformData* m_Parent;
@@ -51,6 +55,8 @@ namespace Phezu {
         static uint64_t s_EntitiesCount;
         uint64_t m_EntityID;
         bool m_IsActive;
+        
+        friend void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> child);
     };
     
     uint64_t Entity::s_EntitiesCount = 0;

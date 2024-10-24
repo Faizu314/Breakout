@@ -3,53 +3,24 @@
 #include "scene/Entity.hpp"
 #include "scene/components/RenderData.hpp"
 #include "scene/components/BehaviourComponent.hpp"
+#include "scene/Prefab.hpp"
 #include "scene/PrefabEntity.hpp"
 #include "scene/components/BehaviourComponentPrefab.hpp"
-#include "scene/TemplateEntity.hpp"
+#include "scene/EntityTemplate.hpp"
 
 namespace Phezu {
     
-    Scene::Scene(Engine* engine, const std::string& name) : m_Engine(engine), m_Name(name) { }
+    Scene::Scene(Engine* engine, const std::string& name) : m_Engine(engine), m_Name(name), m_IsLoaded(false), m_IsSceneToRuntimeMappingValid(false) { }
+    
+    std::weak_ptr<const Prefab> Scene::GetPrefab(uint64_t prefabID) {
+        return m_Engine->GetPrefab(prefabID);
+    }
     
     std::weak_ptr<Entity> Scene::CreateEntity() {
         std::shared_ptr<Entity> entity = std::make_shared<Entity>(shared_from_this());
         m_RuntimeEntities.insert(std::make_pair(entity->GetEntityID(), entity));
         
         return entity;
-    }
-    
-    void Scene::BuildEntityFromPrefab(std::shared_ptr<Entity> entity, std::unique_ptr<TemplateEntity>& prefab) {
-        std::shared_ptr<const PrefabEntity> parentPrefab = m_Engine->GetEntityPrefab(prefab->GetPrefabID()).lock();
-        
-        entity->GetTransformData().Position = parentPrefab->PositionOverride;
-        entity->GetTransformData().Scale = parentPrefab->ScaleOverride;
-        
-        if (parentPrefab->IsRenderable || parentPrefab->IsCollidable) {
-            Rect* shapeData = entity->AddShapeData();
-            *shapeData = parentPrefab->ShapeOverride;
-        }
-        if (parentPrefab->IsRenderable) {
-            RenderData* renderData = entity->AddRenderData(parentPrefab->TintOverride);
-            renderData->Sprite = parentPrefab->TextureOverride;
-        }
-        if (parentPrefab->IsCollidable) {
-            PhysicsData* physicsData = entity->AddPhysicsData(parentPrefab->IsStatic);
-        }
-        
-        for (size_t i = 0; i < parentPrefab->GetComponentPrefabsCount(); i++) {
-            parentPrefab->GetComponentPrefab(i).lock()->CreateComponent(entity.get());
-        }
-        
-        //TODO: do the same for all children recursively
-    }
-    
-    void Scene::MoveRefsFromPrefabToEntity(std::shared_ptr<Entity>& entity, std::unique_ptr<TemplateEntity>& prefab) {
-        std::shared_ptr<const PrefabEntity> parentPrefab = m_Engine->GetEntityPrefab(prefab->GetPrefabID()).lock();
-        
-        for (size_t i = 0; i < parentPrefab->GetComponentPrefabsCount(); i++) {
-            uint64_t compPrefabEntityID = parentPrefab->GetComponentPrefab(i).lock()->GetEntityPrefabID();
-            auto compPrefabEntity = m_Engine->GetEntityPrefab(compPrefabEntityID);
-        }
     }
     
     void Scene::DestroyEntity(uint64_t entityID) {
@@ -68,27 +39,90 @@ namespace Phezu {
         m_RuntimeEntities.erase(it);
     }
     
-    void Scene::CreateHierarchyEntity(uint64_t entityPrefabID) {
-        m_HierarchyEntities.emplace_back(TemplateEntity::MakeUnique(shared_from_this(), entityPrefabID, m_HierarchyEntities.size()));
-        // TODO: return the prefab overridable of the hierarchy entity
+    void Scene::CreateSceneEntity(uint64_t prefabEntityID, Vector2 positionOverride) {
+        m_SceneEntities.push_back(EntityTemplate::MakeUnique(shared_from_this(), prefabEntityID, m_SceneEntities.size()));
+        m_SceneEntities[m_SceneEntities.size() - 1]->OverridePosition = true;
+        m_SceneEntities[m_SceneEntities.size() - 1]->PositionOverride = positionOverride;
+    }
+    
+    std::weak_ptr<Entity> Scene::GetRuntimeEntityFromSceneEntity(uint64_t instanceID) {
+        if (!m_IsSceneToRuntimeMappingValid)
+            return std::weak_ptr<Entity>();
+        
+        return GetEntity(m_SceneToRuntimeEntity[instanceID]);
+    }
+    
+    void Scene::BuildEntityFromTemplate(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate) {
+        std::shared_ptr<const Prefab> prefab = m_Engine->GetPrefab(entityTemplate->GetPrefabID()).lock();
+        
+        BuildEntityFromPrefabEntity(entity, &prefab->RootEntity);
+        
+        //TODO: Apply all template overrides here
+        if (entityTemplate->OverridePosition)
+            entity->GetTransformData().Position = entityTemplate->PositionOverride;
+    }
+    
+    void Scene::BuildEntityFromPrefabEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity) {
+        entity->GetTransformData().Position = prefabEntity->PositionOverride;
+        entity->GetTransformData().Scale = prefabEntity->ScaleOverride;
+        
+        if (prefabEntity->IsRenderable || prefabEntity->IsCollidable) {
+            Rect* shapeData = entity->AddShapeData();
+            *shapeData = prefabEntity->ShapeOverride;
+        }
+        if (prefabEntity->IsRenderable) {
+            RenderData* renderData = entity->AddRenderData(prefabEntity->TintOverride);
+            renderData->Sprite = prefabEntity->TextureOverride;
+        }
+        if (prefabEntity->IsCollidable) {
+            PhysicsData* physicsData = entity->AddPhysicsData(prefabEntity->IsStatic);
+        }
+        
+        for (size_t i = 0; i < prefabEntity->GetComponentPrefabsCount(); i++) {
+            prefabEntity->GetComponentPrefab(i).lock()->CreateComponent(entity);
+        }
+        
+        for (size_t i = 0; i < prefabEntity->GetChildCount(); i++) {
+            std::shared_ptr<Entity> child = CreateEntity().lock();
+            child->SetParent(entity);
+            
+            BuildEntityFromPrefabEntity(child, prefabEntity->GetChild(i));
+        }
+    }
+    
+    void Scene::MoveRefsFromTemplateToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate) {
+        std::shared_ptr<const Prefab> prefab = m_Engine->GetPrefab(entityTemplate->GetPrefabID()).lock();
+        
+        MoveRefsFromPrefabToEntity(entity, &prefab->RootEntity, entityTemplate->GetInstanceID());
+        
+    }
+    
+    void Scene::MoveRefsFromPrefabToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID) {
+        for (size_t i = 0; i < prefabEntity->GetComponentPrefabsCount(); i++) {
+            prefabEntity->GetComponentPrefab(i).lock()->LinkRuntimeEntityAndComponentRefs(shared_from_this(), instanceID);
+        }
+        
+        for (size_t i = 0; i < prefabEntity->GetChildCount(); i++) {
+            MoveRefsFromPrefabToEntity(entity->GetChild(i).lock(), prefabEntity->GetChild(i), instanceID);
+        }
     }
     
     void Scene::Load() {
-        std::unordered_map<uint64_t, uint64_t> prefabToRuntimeEntity;
-        
-        for (int i = 0; i < m_HierarchyEntities.size(); i++) {
+        for (size_t i = 0; i < m_SceneEntities.size(); i++) {
             auto entity = CreateEntity().lock();
             
-            m_HierarchyEntities[i]->m_RuntimeEntity = entity;
-            prefabToRuntimeEntity.insert(std::make_pair(m_HierarchyEntities[i]->GetInstanceID(), entity->GetEntityID()));
+            m_SceneEntities[i]->m_RuntimeEntity = entity;
+            m_SceneToRuntimeEntity.insert(std::make_pair(m_SceneEntities[i]->GetInstanceID(), entity->GetEntityID()));
             
-            BuildEntityFromPrefab(entity, m_HierarchyEntities[i]);
+            BuildEntityFromTemplate(entity, m_SceneEntities[i]);
         }
         
-        for (int i = 0; i < m_HierarchyEntities.size(); i++) {
-            uint64_t entityID = prefabToRuntimeEntity[m_HierarchyEntities[i]->GetInstanceID()];
+        m_IsSceneToRuntimeMappingValid = true;
+        
+        for (size_t i = 0; i < m_SceneEntities.size(); i++) {
+            uint64_t entityID = m_SceneToRuntimeEntity[m_SceneEntities[i]->GetInstanceID()];
             
-            MoveRefsFromPrefabToEntity(m_RuntimeEntities[entityID], m_HierarchyEntities[i]);
+            MoveRefsFromTemplateToEntity(m_RuntimeEntities[entityID], m_SceneEntities[i]);
         }
         
         m_IsLoaded = true;
@@ -96,6 +130,8 @@ namespace Phezu {
     
     void Scene::Unload() {
         m_RuntimeEntities.clear();
+        m_SceneToRuntimeEntity.clear();
         m_IsLoaded = false;
+        m_IsSceneToRuntimeMappingValid = false;
     }
 }
