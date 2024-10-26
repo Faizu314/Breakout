@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <typeindex>
 
 #include "Renderer.hpp"
 #include "scene/components/TransformData.hpp"

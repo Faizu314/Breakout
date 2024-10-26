@@ -46,7 +46,7 @@ namespace Phezu {
     
     template<typename T>
     std::weak_ptr<T> PrefabEntity::AddComponentPrefab() {
-        if (!std::is_base_of<BehaviourComponentPrefab, T>::value) {
+        if (!std::is_base_of<BehaviourComponentPrefabBase, T>::value) {
             //TODO: copy and paste the logging class
             return;
         }
@@ -57,7 +57,7 @@ namespace Phezu {
         for (int i = 0; i < m_PathSize; i++)
             path[i] = m_Path[i];
         
-        m_BehaviourComponents.emplace_back(m_PrefabEntityID, std::move(path), componentID);
+        m_BehaviourComponents.emplace_back(m_PrefabEntityID, std::move(path), m_PathSize, componentID);
         return m_BehaviourComponents[m_BehaviourComponents.size() - 1];
     }
 }

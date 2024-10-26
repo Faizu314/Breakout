@@ -7,7 +7,7 @@
 namespace Phezu {
     
     class Entity;
-    class BehaviourComponentPrefab;
+    class BehaviourComponentPrefabBase;
     
     class PrefabEntity {
     public:
@@ -28,7 +28,7 @@ namespace Phezu {
         template<typename T>
         std::weak_ptr<T> AddComponentPrefab();
         size_t GetComponentPrefabsCount() const;
-        std::weak_ptr<BehaviourComponentPrefab> GetComponentPrefab(size_t index) const;
+        std::weak_ptr<BehaviourComponentPrefabBase> GetComponentPrefab(size_t index) const;
         size_t GetChildCount() const;
         const PrefabEntity* GetChild(size_t childIndex) const;
         std::weak_ptr<Entity> GetRuntimeEntity(uint64_t instanceID);
@@ -42,7 +42,7 @@ namespace Phezu {
         const std::unique_ptr<size_t[]> m_Path;
         const size_t m_PathSize;
     private:
-        std::vector<std::shared_ptr<BehaviourComponentPrefab>> m_BehaviourComponents;
+        std::vector<std::shared_ptr<BehaviourComponentPrefabBase>> m_BehaviourComponents;
         std::vector<PrefabEntity*> m_Children;
     };
     

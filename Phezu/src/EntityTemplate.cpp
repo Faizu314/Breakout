@@ -25,10 +25,4 @@ namespace Phezu {
         //get path from the root to it.
         //get runtime entity of hierarchy entity, traverse to the child entity using the path.
     }
-    
-    std::weak_ptr<BehaviourComponent> GetRuntimeBehaviourComponent(BehaviourComponentPrefab& componentPrefab) {
-        //check if root prefab of componentPrefab is the same as the parent prefab of hierarchy entity.
-        //get path from the root prefab to its entity in prefab.
-        //get runtime entity of hierarchy entity, traverse to the child entity using the path and get the component of the same type and id as componentPrefab.
-    }
 }

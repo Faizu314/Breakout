@@ -9,7 +9,6 @@ namespace Phezu {
     class Entity;
     class PrefabEntity;
     class BehaviourComponent;
-    class BehaviourComponentPrefab;
     
     class EntityTemplate {
     private:
@@ -26,7 +25,6 @@ namespace Phezu {
         uint64_t GetPrefabID() const;
         uint64_t GetInstanceID() const;
         std::weak_ptr<Entity> GetRuntimeEntity(PrefabEntity& entityPrefab);
-        std::weak_ptr<BehaviourComponent> GetRuntimeBehaviourComponent(BehaviourComponentPrefab& componentPrefab);
     private:
         const std::weak_ptr<Scene> m_Scene;
         const uint64_t m_PrefabID;

@@ -90,20 +90,20 @@ namespace Phezu {
         }
     }
     
-    void Scene::MoveRefsFromTemplateToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate) {
+    void Scene::ApplyTemplateOverridesToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate) {
         std::shared_ptr<const Prefab> prefab = m_Engine->GetPrefab(entityTemplate->GetPrefabID()).lock();
         
-        MoveRefsFromPrefabToEntity(entity, &prefab->RootEntity, entityTemplate->GetInstanceID());
+        ApplyPrefabOverridesToEntity(entity, &prefab->RootEntity, entityTemplate->GetInstanceID());
         
     }
     
-    void Scene::MoveRefsFromPrefabToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID) {
+    void Scene::ApplyPrefabOverridesToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID) {
         for (size_t i = 0; i < prefabEntity->GetComponentPrefabsCount(); i++) {
-            prefabEntity->GetComponentPrefab(i).lock()->LinkRuntimeEntityAndComponentRefs(shared_from_this(), instanceID);
+            prefabEntity->GetComponentPrefab(i).lock()->InitRuntimeComponent(shared_from_this(), instanceID);
         }
         
         for (size_t i = 0; i < prefabEntity->GetChildCount(); i++) {
-            MoveRefsFromPrefabToEntity(entity->GetChild(i).lock(), prefabEntity->GetChild(i), instanceID);
+            ApplyPrefabOverridesToEntity(entity->GetChild(i).lock(), prefabEntity->GetChild(i), instanceID);
         }
     }
     
@@ -122,7 +122,7 @@ namespace Phezu {
         for (size_t i = 0; i < m_SceneEntities.size(); i++) {
             uint64_t entityID = m_SceneToRuntimeEntity[m_SceneEntities[i]->GetInstanceID()];
             
-            MoveRefsFromTemplateToEntity(m_RuntimeEntities[entityID], m_SceneEntities[i]);
+            ApplyTemplateOverridesToEntity(m_RuntimeEntities[entityID], m_SceneEntities[i]);
         }
         
         m_IsLoaded = true;

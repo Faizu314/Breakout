@@ -27,8 +27,8 @@ namespace Phezu {
     private:
         void BuildEntityFromTemplate(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);
         void BuildEntityFromPrefabEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity);
-        void MoveRefsFromTemplateToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);
-        void MoveRefsFromPrefabToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID);
+        void ApplyTemplateOverridesToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);
+        void ApplyPrefabOverridesToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID);
     private:
         Engine* const m_Engine;
         const std::string m_Name;
