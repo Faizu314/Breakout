@@ -23,6 +23,15 @@ namespace Phezu {
         return entity;
     }
     
+    std::weak_ptr<Entity> Scene::GetEntity(uint64_t entityID) const {
+        try {
+            return m_RuntimeEntities.at(entityID);
+        }
+        catch (const std::out_of_range&) {
+            return std::weak_ptr<Entity>();
+        }
+    }
+    
     void Scene::DestroyEntity(uint64_t entityID) {
         auto it = m_RuntimeEntities.find(entityID);
         

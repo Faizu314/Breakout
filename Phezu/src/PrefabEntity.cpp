@@ -60,4 +60,16 @@ namespace Phezu {
         m_BehaviourComponents.emplace_back(m_PrefabEntityID, std::move(path), m_PathSize, componentID);
         return m_BehaviourComponents[m_BehaviourComponents.size() - 1];
     }
+    
+    std::weak_ptr<BehaviourComponentPrefabBase> PrefabEntity::GetComponentPrefab(size_t index) const {
+        if (index >= m_BehaviourComponents.size()) {
+            //TODO: copy and paste the logging class
+            return std::weak_ptr<BehaviourComponentPrefabBase>();
+        }
+        return m_BehaviourComponents[index];
+    }
+    
+    size_t PrefabEntity::GetComponentPrefabsCount() const {
+        return m_BehaviourComponents.size();
+    }
 }
