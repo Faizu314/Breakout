@@ -3,6 +3,9 @@
 
 namespace Phezu {
     
+    uint64_t PrefabEntity::s_PrefabEntityCount = 0;
+    PrefabEntity DEFAULT_PREFAB;
+    
     PrefabEntity::PrefabEntity()
     : m_PrefabEntityID(s_PrefabEntityCount), m_IsRoot(true), m_Root(0), m_PathSize(0) {
         s_PrefabEntityCount++;

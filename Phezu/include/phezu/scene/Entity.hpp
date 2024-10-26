@@ -59,6 +59,4 @@ namespace Phezu {
         
         friend void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> child);
     };
-    
-    uint64_t Entity::s_EntitiesCount = 0;
 }

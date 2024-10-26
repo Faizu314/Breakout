@@ -45,8 +45,4 @@ namespace Phezu {
         std::vector<std::shared_ptr<BehaviourComponentPrefabBase>> m_BehaviourComponents;
         std::vector<PrefabEntity*> m_Children;
     };
-    
-    uint64_t PrefabEntity::s_PrefabEntityCount = 0;
-    
-    PrefabEntity DEFAULT_PREFAB;
 }
