@@ -33,22 +33,42 @@ namespace Phezu {
     public:
         template<typename T>
         std::weak_ptr<T> GetComponent() {
-            if (!std::is_base_of<T, BehaviourComponent>::value) {
+            if (!std::is_base_of<BehaviourComponent, T>::value) {
                 //TODO: copy and paste the logging class
                 return;
             }
             
             for (int i = 0; i < m_BehaviourComponents.size(); i++) {
                 auto* componentPtr = m_BehaviourComponents[i].get();
-                if (typeid(*componentPtr) == typeid(T)) {
+                if (dynamic_cast<T*>(m_BehaviourComponents[i].get())) {
                     return m_BehaviourComponents[i];
                 }
             }
         }
         
         template<typename T>
+        std::vector<std::weak_ptr<T>> GetComponents() {
+            if (!std::is_base_of<T, BehaviourComponent>::value) {
+                //TODO: copy and paste the logging class
+                return;
+            }
+            
+            std::vector<std::weak_ptr<T>> comps;
+            comps.reserve(m_BehaviourComponents.size());
+            
+            for (int i = 0; i < m_BehaviourComponents.size(); i++) {
+                auto* componentPtr = m_BehaviourComponents[i].get();
+                if (dynamic_cast<T*>(m_BehaviourComponents[i].get())) {
+                    comps.push_back(m_BehaviourComponents[i]);
+                }
+            }
+            
+            return comps;
+        }
+        
+        template<typename T>
         std::weak_ptr<T> AddComponent() {
-            static_assert(!std::is_base_of<T, BehaviourComponent>::value, "Component T is not of type BehaviourComponent");
+            static_assert(std::is_base_of<BehaviourComponent, T>::value, "Component T is not of type BehaviourComponent");
             
             uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponent that are of the same type as T
             
@@ -61,14 +81,13 @@ namespace Phezu {
         
         template<typename T>
         void RemoveComponent() {
-            if (!std::is_base_of<T, BehaviourComponent>::value) {
+            if (!std::is_base_of<BehaviourComponent, T>::value) {
                 //TODO: copy and paste the logging class
                 return;
             }
             
             for (int i = 0; i < m_BehaviourComponents.size(); i++) {
-                auto* componentPtr = m_BehaviourComponents[i].get();
-                if (typeid(*componentPtr) == typeid(T)) {
+                if (dynamic_cast<T*>(m_BehaviourComponents[i].get())) {
                     m_BehaviourComponents.erase(m_BehaviourComponents.begin() + i);
                     return;
                 }

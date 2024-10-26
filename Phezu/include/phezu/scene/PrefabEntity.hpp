@@ -26,7 +26,7 @@ namespace Phezu {
     public:
         template<typename T>
         std::weak_ptr<T> AddComponentPrefab() {
-            if (!std::is_base_of<T, BehaviourComponentPrefabBase>::value) {
+            if (!std::is_base_of<BehaviourComponentPrefabBase, T>::value) {
                 //TODO: copy and paste the logging class
                 return;
             }

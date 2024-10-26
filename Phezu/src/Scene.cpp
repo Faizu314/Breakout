@@ -135,6 +135,12 @@ namespace Phezu {
         }
         
         m_IsLoaded = true;
+        
+        for (auto entity : m_RuntimeEntities) {
+            for (auto comp : entity.second->GetComponents<BehaviourComponent>()) {
+                comp.lock()->Start();
+            }
+        }
     }
     
     void Scene::Unload() {

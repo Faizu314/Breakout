@@ -30,11 +30,11 @@ namespace Phezu {
     template <typename T>
     class BehaviourComponentPrefab : public BehaviourComponentPrefabBase {
     public:
-        BehaviourComponentPrefab(uint64_t prefabID, std::unique_ptr<size_t[]> pathToPrefabEntity, size_t pathSize, uint8_t componentID)
-        : BehaviourComponentPrefabBase(prefabID, std::move(pathToPrefabEntity), pathSize, componentID) { }
+        using BehaviourComponentPrefabBase::BehaviourComponentPrefabBase;
     public:
         std::weak_ptr<BehaviourComponent> CreateComponent(std::weak_ptr<Entity> entity) const override {
-            entity.lock()->AddComponent<T>();
+            auto entityL = entity.lock();
+            return entityL->AddComponent<T>();
         }
         bool IsOfType(std::type_index type) const override {
             return std::type_index(typeid(T)) == type;
