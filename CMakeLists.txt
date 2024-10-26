@@ -68,7 +68,7 @@ if (APPLE)
         "-framework SDL2_ttf"
     )
 
-    target_include_directories(Phezu PRIVATE Phezu/include/mac)
+    target_include_directories(Phezu PUBLIC Phezu/include/mac)
 elseif (WIN32)
     add_executable(Game WIN32 ${GAME_SOURCES} ${GAME_HEADERS})
 
@@ -80,7 +80,7 @@ elseif (WIN32)
         "${LIB_PATH}/SDL2_ttf.lib"
     )
 
-    target_include_directories(Phezu PRIVATE Phezu/include/windows)
+    target_include_directories(Phezu PUBLIC Phezu/include/windows)
 endif()
 
 target_include_directories(Phezu PUBLIC Phezu/include/phezu)
