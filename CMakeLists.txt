@@ -7,6 +7,7 @@ set(PHEZU_SOURCES
     Phezu/src/Phezu.cpp
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
+    Phezu/src/SceneManager.cpp
     Phezu/src/PrefabEntity.cpp
     Phezu/src/EntityTemplate.cpp
     Phezu/src/BehaviourComponentPrefab.cpp

@@ -10,14 +10,15 @@ namespace Phezu {
     
     class Engine {
     public:
+        Engine();
         int Init();
-        std::weak_ptr<Scene> CreateScene();
+        std::weak_ptr<Scene> CreateScene(const std::string& name);
         bool Run();
         void Destroy();
-        std::shared_ptr<Prefab> CreatePrefab();
+        std::weak_ptr<Prefab> CreatePrefab();
         std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);
     private:
-        std::unordered_map<uint64_t, std::shared_ptr<Prefab>> m_PrefabEntities;
+        std::unordered_map<uint64_t, std::shared_ptr<Prefab>> m_Prefabs;
         SceneManager m_SceneManager;
         bool m_HasInited;
     };

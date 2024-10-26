@@ -35,7 +35,7 @@ namespace Phezu {
     private:
         PrefabEntity(uint64_t root, std::unique_ptr<size_t[]> path, size_t pathSize);
     private:
-        static uint64_t s_EntityPrefabsCount;
+        static uint64_t s_PrefabEntityCount;
         const uint64_t m_PrefabEntityID;
         const bool m_IsRoot;
         const uint64_t m_Root;
@@ -46,7 +46,7 @@ namespace Phezu {
         std::vector<PrefabEntity*> m_Children;
     };
     
-    uint64_t PrefabEntity::s_EntityPrefabsCount = 0;
+    uint64_t PrefabEntity::s_PrefabEntityCount = 0;
     
     PrefabEntity DEFAULT_PREFAB;
 }

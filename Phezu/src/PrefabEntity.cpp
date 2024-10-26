@@ -4,8 +4,8 @@
 namespace Phezu {
     
     PrefabEntity::PrefabEntity()
-    : m_PrefabEntityID(s_EntityPrefabsCount), m_IsRoot(true), m_Root(0), m_PathSize(0) {
-        s_EntityPrefabsCount++;
+    : m_PrefabEntityID(s_PrefabEntityCount), m_IsRoot(true), m_Root(0), m_PathSize(0) {
+        s_PrefabEntityCount++;
     }
     
     PrefabEntity::PrefabEntity(uint64_t root, std::unique_ptr<size_t[]> path, size_t pathSize)

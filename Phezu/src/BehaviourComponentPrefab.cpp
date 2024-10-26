@@ -32,10 +32,11 @@ namespace Phezu {
     
     template <typename T>
     std::weak_ptr<T> BehaviourComponentPrefab<T>::GetRuntimeComponent(std::weak_ptr<Scene> scene, uint64_t instanceID) {
-        auto targetEntity = GetRuntimeEntity(scene, instanceID);
+        std::weak_ptr<Entity> targetEntity = GetRuntimeEntity(scene, instanceID);
+        std::shared_ptr<Entity> targetEntityL = targetEntity.lock();
         
         //TODO: Get the right component if there are multiple components of the same type attached
-        return targetEntity->GetComponent<T>();
+        return targetEntityL->GetComponent<T>();
     }
     
     template <typename T>

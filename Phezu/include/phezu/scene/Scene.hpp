@@ -15,6 +15,7 @@ namespace Phezu {
     
     class Scene : public std::enable_shared_from_this<Scene> {
     public:
+        Scene() = delete;
         Scene(Engine* engine, const std::string& name);
         std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);
         void CreateSceneEntity(uint64_t prefabEntityID = 0, Vector2 positionOverride = Vector2());
