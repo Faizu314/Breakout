@@ -33,7 +33,7 @@ namespace Phezu {
     public:
         template<typename T>
         std::weak_ptr<T> GetComponent() {
-            if (!std::is_base_of<BehaviourComponent, T>::value) {
+            if (!std::is_base_of<T, BehaviourComponent>::value) {
                 //TODO: copy and paste the logging class
                 return;
             }
@@ -61,7 +61,7 @@ namespace Phezu {
         
         template<typename T>
         void RemoveComponent() {
-            if (!std::is_base_of<BehaviourComponent, T>::value) {
+            if (!std::is_base_of<T, BehaviourComponent>::value) {
                 //TODO: copy and paste the logging class
                 return;
             }
