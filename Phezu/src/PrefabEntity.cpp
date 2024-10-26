@@ -47,23 +47,6 @@ namespace Phezu {
         return m_Children[childIndex];
     }
     
-    template<typename T>
-    std::weak_ptr<T> PrefabEntity::AddComponentPrefab() {
-        if (!std::is_base_of<BehaviourComponentPrefabBase, T>::value) {
-            //TODO: copy and paste the logging class
-            return;
-        }
-        
-        uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponentPrefab that are of the same type as T
-        
-        std::unique_ptr<size_t[]> path = std::make_unique<size_t[]>(m_PathSize);
-        for (int i = 0; i < m_PathSize; i++)
-            path[i] = m_Path[i];
-        
-        m_BehaviourComponents.emplace_back(m_PrefabEntityID, std::move(path), m_PathSize, componentID);
-        return m_BehaviourComponents[m_BehaviourComponents.size() - 1];
-    }
-    
     std::weak_ptr<BehaviourComponentPrefabBase> PrefabEntity::GetComponentPrefab(size_t index) const {
         if (index >= m_BehaviourComponents.size()) {
             //TODO: copy and paste the logging class

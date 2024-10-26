@@ -5,12 +5,12 @@
 
 #include "Renderer.hpp"
 #include "scene/components/TransformData.hpp"
+#include "scene/components/BehaviourComponent.hpp"
 
 namespace Phezu {
     
     class RenderData;
     class PhysicsData;
-    class BehaviourComponent;
     class Scene;
     
     class Entity {
@@ -30,14 +30,50 @@ namespace Phezu {
         void RemoveParent();
         size_t GetChildCount();
         std::weak_ptr<Entity> GetChild(size_t childIndex);
+    public:
+        template<typename T>
+        std::weak_ptr<T> GetComponent() {
+            if (!std::is_base_of<BehaviourComponent, T>::value) {
+                //TODO: copy and paste the logging class
+                return;
+            }
+            
+            for (int i = 0; i < m_BehaviourComponents.size(); i++) {
+                auto* componentPtr = m_BehaviourComponents[i].get();
+                if (typeid(*componentPtr) == typeid(T)) {
+                    return m_BehaviourComponents[i];
+                }
+            }
+        }
         
         template<typename T>
-        std::weak_ptr<T> GetComponent();
-        template<typename T>
-        std::weak_ptr<T> AddComponent();
-        template<typename T>
-        void RemoveComponent();
+        std::weak_ptr<T> AddComponent() {
+            static_assert(!std::is_base_of<T, BehaviourComponent>::value, "Component T is not of type BehaviourComponent");
+            
+            uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponent that are of the same type as T
+            
+            std::shared_ptr<T> component = std::make_shared<T>(this, componentID);
+            
+            m_BehaviourComponents.push_back(std::static_pointer_cast<BehaviourComponent>(component));
+            
+            return component;
+        }
         
+        template<typename T>
+        void RemoveComponent() {
+            if (!std::is_base_of<BehaviourComponent, T>::value) {
+                //TODO: copy and paste the logging class
+                return;
+            }
+            
+            for (int i = 0; i < m_BehaviourComponents.size(); i++) {
+                auto* componentPtr = m_BehaviourComponents[i].get();
+                if (typeid(*componentPtr) == typeid(T)) {
+                    m_BehaviourComponents.erase(m_BehaviourComponents.begin() + i);
+                    return;
+                }
+            }
+        }
     private:
         void OnChildDestroyed();
         void AddChild(std::weak_ptr<Entity> child);

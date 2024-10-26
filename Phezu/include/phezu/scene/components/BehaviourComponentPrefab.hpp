@@ -4,10 +4,11 @@
 #include <memory>
 #include <typeindex>
 
+#include "scene/Scene.hpp"
+#include "scene/Entity.hpp"
+
 namespace Phezu {
     
-    class Scene;
-    class Entity;
     class BehaviourComponent;
     
     class BehaviourComponentPrefabBase {
@@ -29,10 +30,34 @@ namespace Phezu {
     template <typename T>
     class BehaviourComponentPrefab : public BehaviourComponentPrefabBase {
     public:
-        std::weak_ptr<BehaviourComponent> CreateComponent(std::weak_ptr<Entity> entity) const override;
-        bool IsOfType(std::type_index type) const override;
+        BehaviourComponentPrefab(uint64_t prefabID, std::unique_ptr<size_t[]> pathToPrefabEntity, size_t pathSize, uint8_t componentID)
+        : BehaviourComponentPrefabBase(prefabID, std::move(pathToPrefabEntity), pathSize, componentID) { }
+    public:
+        std::weak_ptr<BehaviourComponent> CreateComponent(std::weak_ptr<Entity> entity) const override {
+            entity.lock()->AddComponent<T>();
+        }
+        bool IsOfType(std::type_index type) const override {
+            return std::type_index(typeid(T)) == type;
+        }
     protected:
-        std::weak_ptr<T> GetRuntimeComponent(std::weak_ptr<Scene> scene, uint64_t instanceID);
-        std::weak_ptr<Entity> GetRuntimeEntity(std::weak_ptr<Scene> scene, uint64_t instanceID);
+        std::weak_ptr<Entity> GetRuntimeEntity(std::weak_ptr<Scene> scene, uint64_t instanceID) {
+            auto sceneL = scene.lock();
+            std::weak_ptr<const Prefab> prefab = sceneL->GetPrefab(m_PrefabID);
+            std::shared_ptr<Entity> rootEntity = sceneL->GetRuntimeEntityFromSceneEntity(instanceID).lock();
+            
+            std::shared_ptr<Entity> targetEntity = rootEntity;
+            for (size_t i = 0; i < m_PathSize; i++) {
+                targetEntity = targetEntity->GetChild(m_PathToPrefabEntity[i]).lock();
+            }
+            
+            return targetEntity;
+        }
+        std::weak_ptr<T> GetRuntimeComponent(std::weak_ptr<Scene> scene, uint64_t instanceID) {
+            std::weak_ptr<Entity> targetEntity = GetRuntimeEntity(scene, instanceID);
+            std::shared_ptr<Entity> targetEntityL = targetEntity.lock();
+            
+            //TODO: Get the right component if there are multiple components of the same type attached
+            return targetEntityL->GetComponent<T>();
+        }
     };
 }

@@ -97,48 +97,6 @@ namespace Phezu {
         
     }
     
-    
-    template<typename T>
-    std::weak_ptr<T> Entity::GetComponent() {
-        if (!std::is_base_of<BehaviourComponent, T>::value) {
-            //TODO: copy and paste the logging class
-            return;
-        }
-        
-        for (int i = 0; i < m_BehaviourComponents.size(); i++) {
-            auto* componentPtr = m_BehaviourComponents[i].get();
-            if (typeid(*componentPtr) == typeid(T)) {
-                return m_BehaviourComponents[i];
-            }
-        }
-    }
-    
-    template<typename T>
-    std::weak_ptr<T> Entity::AddComponent() {
-        static_assert(!std::is_base_of<BehaviourComponent, T>::value, "Component T is not of type BehaviourComponent");
-        
-        uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponent that are of the same type as T
-        
-        return m_BehaviourComponents.emplace_back(std::make_shared<T>(this), componentID);
-    }
-    
-    template<typename T>
-    void Entity::RemoveComponent() {
-        if (!std::is_base_of<BehaviourComponent, T>::value) {
-            //TODO: copy and paste the logging class
-            return;
-        }
-        
-        for (int i = 0; i < m_BehaviourComponents.size(); i++) {
-            auto* componentPtr = m_BehaviourComponents[i].get();
-            if (typeid(*componentPtr) == typeid(T)) {
-                m_BehaviourComponents.erase(m_BehaviourComponents.begin() + i);
-                return;
-            }
-        }
-    }
-    
-    
     void Entity::OnChildDestroyed() {
         for (int i = 0; i < m_Children.size(); i++) {
             if (m_Children[i].expired()) {

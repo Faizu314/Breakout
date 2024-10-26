@@ -24,9 +24,27 @@ namespace Phezu {
         std::weak_ptr<Texture> TextureOverride;
         Color TintOverride;
     public:
-        PrefabEntity& CreateChildEntity();
         template<typename T>
-        std::weak_ptr<T> AddComponentPrefab();
+        std::weak_ptr<T> AddComponentPrefab() {
+            if (!std::is_base_of<BehaviourComponentPrefabBase, T>::value) {
+                //TODO: copy and paste the logging class
+                return;
+            }
+            
+            uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponentPrefab that are of the same type as T
+            
+            std::unique_ptr<size_t[]> path = std::make_unique<size_t[]>(m_PathSize);
+            for (int i = 0; i < m_PathSize; i++)
+                path[i] = m_Path[i];
+            
+            std::shared_ptr<T> component = std::make_shared<T>(m_PrefabEntityID, std::move(path), m_PathSize, componentID);
+            
+            m_BehaviourComponents.push_back(std::static_pointer_cast<BehaviourComponentPrefabBase>(component));
+            
+            return component;
+        }
+    public:
+        PrefabEntity& CreateChildEntity();
         size_t GetComponentPrefabsCount() const;
         std::weak_ptr<BehaviourComponentPrefabBase> GetComponentPrefab(size_t index) const;
         size_t GetChildCount() const;
