@@ -41,7 +41,7 @@ namespace Phezu {
             for (int i = 0; i < m_BehaviourComponents.size(); i++) {
                 auto* componentPtr = m_BehaviourComponents[i].get();
                 if (dynamic_cast<T*>(m_BehaviourComponents[i].get())) {
-                    return m_BehaviourComponents[i];
+                    return std::static_pointer_cast<T>(m_BehaviourComponents[i]);
                 }
             }
         }

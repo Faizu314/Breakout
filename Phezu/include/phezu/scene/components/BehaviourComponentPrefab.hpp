@@ -40,7 +40,7 @@ namespace Phezu {
             return std::type_index(typeid(T)) == type;
         }
     protected:
-        std::weak_ptr<Entity> GetRuntimeEntity(std::weak_ptr<Scene> scene, uint64_t instanceID) {
+        std::weak_ptr<Entity> GetRuntimeEntity(std::weak_ptr<Scene> scene, uint64_t instanceID) const {
             auto sceneL = scene.lock();
             std::weak_ptr<const Prefab> prefab = sceneL->GetPrefab(m_PrefabID);
             std::shared_ptr<Entity> rootEntity = sceneL->GetRuntimeEntityFromSceneEntity(instanceID).lock();
@@ -52,7 +52,7 @@ namespace Phezu {
             
             return targetEntity;
         }
-        std::weak_ptr<T> GetRuntimeComponent(std::weak_ptr<Scene> scene, uint64_t instanceID) {
+        std::weak_ptr<T> GetRuntimeComponent(std::weak_ptr<Scene> scene, uint64_t instanceID) const {
             std::weak_ptr<Entity> targetEntity = GetRuntimeEntity(scene, instanceID);
             std::shared_ptr<Entity> targetEntityL = targetEntity.lock();
             
