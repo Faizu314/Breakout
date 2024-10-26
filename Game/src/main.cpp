@@ -1,8 +1,5 @@
 #include "Game.hpp"
 #include "Phezu.hpp"
-#include "scene/Prefab.hpp"
-#include "scene/PrefabEntity.hpp"
-#include "scene/Scene.hpp"
 
 #if __APPLE__
 
