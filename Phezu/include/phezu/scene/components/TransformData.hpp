@@ -9,9 +9,9 @@ namespace Phezu {
     public:
         TransformData(Entity* entity);
     public:
-        Vector2 GetPosition() { return m_LocalPosition; }
+        Vector2 GetLocalPosition() { return m_LocalPosition; }
         Vector2 GetScale() { return m_Scale; }
-        void SetPosition(const Vector2& position);
+        void SetLocalPosition(const Vector2& position);
         void SetScale(const Vector2& scale);
         const glm::mat3& GetLocalToParent() { return m_LocalToParent; }
         const glm::mat3& GetLocalToWorld() { return m_LocalToWorld; }
