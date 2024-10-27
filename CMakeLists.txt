@@ -6,6 +6,7 @@ project(BrickBreaker)
 set(PHEZU_SOURCES
     Phezu/src/Phezu.cpp
     Phezu/src/Renderer.cpp
+    Phezu/src/Window.cpp
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
     Phezu/src/SceneManager.cpp
@@ -19,6 +20,7 @@ set(PHEZU_VENDOR_SOURCES
 set(PHEZU_HEADERS
     Phezu/include/phezu/Phezu.hpp
     Phezu/include/phezu/Renderer.hpp
+    Phezu/include/phezu/Window.hpp
     Phezu/include/phezu/scene/Entity.hpp
     Phezu/include/phezu/scene/PrefabEntity.hpp
     Phezu/include/phezu/scene/Prefab.hpp

@@ -24,8 +24,12 @@ namespace Phezu {
         glm::vec2 m_Vector;
     };
 
-    typedef struct {
-        float x, y;
-        float w, h;
-    } Rect;
+    class Rect {
+    public:
+        Rect() : Pivot(Vector2::Zero()), Size(Vector2::One()) {}
+        Rect(Vector2 pivot, Vector2 size) : Pivot(pivot), Size(size) {}
+    public:
+        Vector2 Pivot;
+        Vector2 Size;
+    };
 }

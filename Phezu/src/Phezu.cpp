@@ -1,13 +1,40 @@
 #include "Phezu.hpp"
-#include "scene/SceneManager.hpp"
-#include "scene/Prefab.hpp"
+
+#include "SDL2/SDL.h"
+#include "SDL2_image/SDL_image.h"
+#include "SDL2_ttf/SDL_ttf.h"
 
 namespace Phezu {
     
     Engine::Engine() : m_HasInited(false), m_SceneManager(this) { }
     
     int Engine::Init() {
+        if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+            //TODO: Logging::Log("Couldn't initialize SDL: %s\n", SDL_GetError());
+            exit(1);
+        }
+
+        if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) < 0){
+            //TODO: Logging::Log("Couldn't initialize SDL: %s\n", SDL_GetError());
+            exit(1);
+        }
+
+        if (TTF_Init() < 0) {
+            //TODO: Logging::Log("Failed to init TTF: %s\n", SDL_GetError());
+            exit(1);
+        }
+        
         m_HasInited = true;
+    }
+    
+    void Engine::CreateWindow(const std::string name, int width, int height) {
+        if (m_Window != nullptr) {
+            //TODO: Logging
+            return;
+        }
+            
+        m_Window = new Window(name, width, height);
+        m_Renderer = new Renderer(*m_Window);
     }
     
     std::weak_ptr<Scene> Engine::CreateScene(const std::string& name) {
@@ -22,6 +49,8 @@ namespace Phezu {
     
     void Engine::Destroy() {
         //m_SceneManager.Cleanup()
+        delete m_Renderer;
+        delete m_Window;
     }
     
     std::weak_ptr<Prefab> Engine::CreatePrefab() {

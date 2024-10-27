@@ -45,7 +45,6 @@ namespace Phezu {
                 }
             }
         }
-        
         template<typename T>
         std::vector<std::weak_ptr<T>> GetComponents() {
             if (!std::is_base_of<T, BehaviourComponent>::value) {
@@ -65,7 +64,6 @@ namespace Phezu {
             
             return comps;
         }
-        
         template<typename T>
         std::weak_ptr<T> AddComponent() {
             static_assert(std::is_base_of<BehaviourComponent, T>::value, "Component T is not of type BehaviourComponent");
@@ -78,7 +76,6 @@ namespace Phezu {
             
             return component;
         }
-        
         template<typename T>
         void RemoveComponent() {
             if (!std::is_base_of<BehaviourComponent, T>::value) {
