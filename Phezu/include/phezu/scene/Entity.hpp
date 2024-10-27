@@ -31,6 +31,7 @@ namespace Phezu {
         void RemoveParent();
         size_t GetChildCount();
         std::weak_ptr<Entity> GetChild(size_t childIndex);
+        bool IsDirty() { return m_TransformData.GetIsDirty(); }
     public:
         template<typename T>
         std::weak_ptr<T> GetComponent() {
@@ -94,6 +95,8 @@ namespace Phezu {
     private:
         void OnChildDestroyed();
         void AddChild(std::weak_ptr<Entity> child);
+        void RecalculateTransformations();
+        void RecalculateSubtreeTransformations();
     private:
         const std::weak_ptr<Scene> m_Scene;
         TransformData* m_Parent;
@@ -111,5 +114,6 @@ namespace Phezu {
         bool m_IsActive;
         
         friend void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> child);
+        friend class TransformData;
     };
 }

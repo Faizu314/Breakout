@@ -10,6 +10,7 @@ set(PHEZU_SOURCES
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
     Phezu/src/ShapeData.cpp
+    Phezu/src/TransformData.cpp
     Phezu/src/SceneManager.cpp
     Phezu/src/PrefabEntity.cpp
     Phezu/src/EntityTemplate.cpp

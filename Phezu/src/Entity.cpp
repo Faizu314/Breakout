@@ -81,6 +81,18 @@ namespace Phezu {
         m_Children.push_back(child);
     }
     
+    void Entity::RecalculateTransformations() {
+        m_TransformData.RecalculateTransformations();
+    }
+    
+    void Entity::RecalculateSubtreeTransformations() {
+        for (auto child_ : m_Children) {
+            auto child = child_.lock();
+            child->RecalculateTransformations();
+            child->RecalculateSubtreeTransformations();
+        }
+    }
+    
     void Entity::SetParent(std::weak_ptr<Entity> parent) {
         SetParent_Internal(m_Scene.lock()->GetEntity(m_EntityID), parent);
     }
@@ -90,6 +102,8 @@ namespace Phezu {
         if (auto p = parent.lock()) {
             _thisLocked->m_Parent = &p->GetTransformData();
             p->AddChild(_this);
+            _thisLocked->RecalculateTransformations();
+            _thisLocked->RecalculateSubtreeTransformations();
         }
     }
     

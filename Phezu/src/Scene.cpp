@@ -69,12 +69,12 @@ namespace Phezu {
         
         //TODO: Apply all template overrides here
         if (entityTemplate->OverridePosition)
-            entity->GetTransformData().Position = entityTemplate->PositionOverride;
+            entity->GetTransformData().SetPosition(entityTemplate->PositionOverride);
     }
     
     void Scene::BuildEntityFromPrefabEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity) {
-        entity->GetTransformData().Position = prefabEntity->PositionOverride;
-        entity->GetTransformData().Scale = prefabEntity->ScaleOverride;
+        entity->GetTransformData().SetPosition(prefabEntity->PositionOverride);
+        entity->GetTransformData().SetScale(prefabEntity->ScaleOverride);
         
         if (prefabEntity->IsRenderable || prefabEntity->IsCollidable) {
             ShapeData* shapeData = entity->AddShapeData();
