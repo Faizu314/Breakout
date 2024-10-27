@@ -1,7 +1,6 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "SDL2/SDL.h"
 
 namespace Phezu {
     

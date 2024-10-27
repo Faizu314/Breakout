@@ -23,7 +23,7 @@ namespace Phezu {
         bool GetActive() const;
         TransformData& GetTransformData();
         Rect* const AddShapeData();
-        RenderData* const AddRenderData(Color tint = Colors::WHITE);
+        RenderData* const AddRenderData(Color tint = Color::White);
         PhysicsData* const AddPhysicsData(bool isStatic);
         TransformData* const GetParent();
         void SetParent(std::weak_ptr<Entity> parent);

@@ -1,15 +1,26 @@
 #pragma once
 
-#include "SDL2/SDL.h"
+#include <cstdint>
 
 namespace Phezu {
     
-    typedef SDL_Color Color;
-    typedef SDL_Texture Texture;
+    class SDL_Texture;
     
-    namespace Colors {
-        inline const Color WHITE = SDL_Color{ 255, 255, 255, 255};
-    }
+    class Color {
+    public:
+        Color(uint8_t red = 255, uint8_t green = 255, uint8_t blue = 255, uint8_t alpha = 255)
+            : r(red), g(green), b(blue), a(alpha) {}
+        uint8_t r, g, b, a;
+    public:
+        static const Color White;
+    private:
+        void ConvertToSDLColor(struct SDL_Color& sdlColor) const;
+        static Color FromSDLColor(const struct SDL_Color& sdlColor);
+        
+        friend class Renderer;
+    };
+    
+    typedef SDL_Texture Texture;
     
     //void SDL_Texture* LoadTexture(const Renderer& renderer);
     

@@ -5,6 +5,7 @@ project(BrickBreaker)
 
 set(PHEZU_SOURCES
     Phezu/src/Phezu.cpp
+    Phezu/src/Renderer.cpp
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
     Phezu/src/SceneManager.cpp
@@ -61,26 +62,26 @@ if (APPLE)
         BUILD_WITH_INSTALL_RPATH TRUE
     )
 
-    target_link_libraries(Phezu 
+    target_link_libraries(Phezu PRIVATE
         "-F${LIB_PATH}"
         "-framework SDL2"
         "-framework SDL2_image"
         "-framework SDL2_ttf"
     )
 
-    target_include_directories(Phezu PUBLIC Phezu/include/mac)
+    target_include_directories(Phezu PRIVATE Phezu/include/mac)
 elseif (WIN32)
     add_executable(Game WIN32 ${GAME_SOURCES} ${GAME_HEADERS})
 
     set(LIB_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/windows")
 
-    target_link_libraries(Phezu
+    target_link_libraries(Phezu PRIVATE
         "${LIB_PATH}/SDL2.lib"
         "${LIB_PATH}/SDL2_image.lib"
         "${LIB_PATH}/SDL2_ttf.lib"
     )
 
-    target_include_directories(Phezu PUBLIC Phezu/include/windows)
+    target_include_directories(Phezu PRIVATE Phezu/include/windows)
 endif()
 
 target_include_directories(Phezu PUBLIC Phezu/include/phezu)
