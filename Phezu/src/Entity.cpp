@@ -1,5 +1,6 @@
 #include "scene/Entity.hpp"
 #include "scene/Scene.hpp"
+#include "scene/components/ShapeData.hpp"
 #include "scene/components/RenderData.hpp"
 #include "scene/components/PhysicsData.hpp"
 #include "scene/components/BehaviourComponent.hpp"
@@ -51,9 +52,8 @@ namespace Phezu {
     TransformData& Entity::GetTransformData() {
         return m_TransformData;
     }
-    Rect* const Entity::AddShapeData() {
-        m_ShapeData = new Rect();
-        memset(m_ShapeData, 0, sizeof(Rect));
+    ShapeData* const Entity::AddShapeData() {
+        m_ShapeData = new ShapeData(this);
         return m_ShapeData;
     }
     RenderData* const Entity::AddRenderData(Color tint) {

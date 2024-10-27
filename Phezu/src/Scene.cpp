@@ -1,6 +1,7 @@
 #include "scene/Scene.hpp"
 #include "Phezu.hpp"
 #include "scene/Entity.hpp"
+#include "scene/components/ShapeData.hpp"
 #include "scene/components/RenderData.hpp"
 #include "scene/components/BehaviourComponent.hpp"
 #include "scene/Prefab.hpp"
@@ -76,8 +77,9 @@ namespace Phezu {
         entity->GetTransformData().Scale = prefabEntity->ScaleOverride;
         
         if (prefabEntity->IsRenderable || prefabEntity->IsCollidable) {
-            Rect* shapeData = entity->AddShapeData();
-            *shapeData = prefabEntity->ShapeOverride;
+            ShapeData* shapeData = entity->AddShapeData();
+            shapeData->SetPivot(prefabEntity->ShapePivotOverride);
+            shapeData->SetSize(prefabEntity->ShapeSizeOverride);
         }
         if (prefabEntity->IsRenderable) {
             RenderData* renderData = entity->AddRenderData(prefabEntity->TintOverride);

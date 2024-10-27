@@ -9,6 +9,7 @@ set(PHEZU_SOURCES
     Phezu/src/Window.cpp
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
+    Phezu/src/ShapeData.cpp
     Phezu/src/SceneManager.cpp
     Phezu/src/PrefabEntity.cpp
     Phezu/src/EntityTemplate.cpp
@@ -29,6 +30,7 @@ set(PHEZU_HEADERS
     Phezu/include/phezu/scene/SceneManager.hpp
     Phezu/include/phezu/scene/components/DataComponent.hpp
     Phezu/include/phezu/scene/components/TransformData.hpp
+    Phezu/include/phezu/scene/components/ShapeData.hpp
     Phezu/include/phezu/scene/components/RenderData.hpp
     Phezu/include/phezu/scene/components/PhysicsData.hpp
     Phezu/include/phezu/scene/components/BehaviourComponent.hpp

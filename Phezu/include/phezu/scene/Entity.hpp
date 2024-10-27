@@ -9,6 +9,7 @@
 
 namespace Phezu {
     
+    class ShapeData;
     class RenderData;
     class PhysicsData;
     class Scene;
@@ -22,7 +23,7 @@ namespace Phezu {
         void SetActive(bool isActive);
         bool GetActive() const;
         TransformData& GetTransformData();
-        Rect* const AddShapeData();
+        ShapeData* const AddShapeData();
         RenderData* const AddRenderData(Color tint = Color::White);
         PhysicsData* const AddPhysicsData(bool isStatic);
         TransformData* const GetParent();
@@ -99,7 +100,7 @@ namespace Phezu {
         std::vector<std::weak_ptr<Entity>> m_Children;
     private:
         TransformData m_TransformData;
-        Rect* m_ShapeData;
+        ShapeData* m_ShapeData;
         RenderData* m_RenderData;
         PhysicsData* m_PhysicsData;
     private:

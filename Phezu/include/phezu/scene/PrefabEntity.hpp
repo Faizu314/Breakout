@@ -7,6 +7,7 @@
 namespace Phezu {
     
     class Entity;
+    class ShapeData;
     class BehaviourComponentPrefabBase;
     
     class PrefabEntity {
@@ -20,7 +21,8 @@ namespace Phezu {
         bool IsRenderable;
         bool IsCollidable;
         bool IsStatic;
-        Rect ShapeOverride;
+        Vector2 ShapePivotOverride;
+        Vector2 ShapeSizeOverride;
         std::weak_ptr<Texture> TextureOverride;
         Color TintOverride;
     public:
