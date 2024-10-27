@@ -23,6 +23,10 @@ namespace Phezu {
         void SetActive(bool isActive);
         bool GetActive() const;
         TransformData& GetTransformData();
+        const TransformData& GetTransformData() const { return m_TransformData; }
+        ShapeData* GetShapeData() const { return m_ShapeData; }
+        RenderData* GetRenderData() const { return m_RenderData; }
+        PhysicsData* GetPhysicsData() const { return m_PhysicsData; }
         ShapeData* const AddShapeData();
         RenderData* const AddRenderData(Color tint = Color::White);
         PhysicsData* const AddPhysicsData(bool isStatic);
@@ -114,6 +118,5 @@ namespace Phezu {
         bool m_IsActive;
         
         friend void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> child);
-        friend class TransformData;
     };
 }

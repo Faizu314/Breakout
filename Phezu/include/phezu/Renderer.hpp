@@ -14,6 +14,7 @@ namespace Phezu {
     
     class Window;
     class Entity;
+    class Vector2;
     
     class Texture {
     private:
@@ -21,15 +22,17 @@ namespace Phezu {
         Texture(SDL_Texture* texture);
     private:
         SDL_Texture* m_Texture;
+    public:
+        operator SDL_Texture*() { return m_Texture; }
         
         friend class Renderer;
     };
     
     class QuadUVs {
     public:
-        QuadUVs(float x0 = 0, float x1 = 1, float y0 = 0, float y1 = 1);
+        QuadUVs(float x = 0, float y = 0, float w = 1, float h = 1);
     public:
-        float x0, x1, y0, y1;
+        float x, y, w, h;
     };
     
     class Color {
@@ -56,9 +59,10 @@ namespace Phezu {
         void RenderFrame();
     private:
         void Blit();
+        Vector2 WorldToSdlPosition(const Vector2& worldPos) const;
     private:
         SDL_Renderer* m_RendererPtr;
-        glm::mat3 m_PhezuToSdlScreenSpace;
+        glm::mat3 m_WorldToSdl;
         
         friend class Engine;
     };

@@ -10,6 +10,7 @@ namespace Phezu {
         TransformData(Entity* entity);
     public:
         Vector2 GetLocalPosition() { return m_LocalPosition; }
+        Vector2 GetWorldPosition() const;
         Vector2 GetScale() { return m_Scale; }
         void SetLocalPosition(const Vector2& position);
         void SetScale(const Vector2& scale);

@@ -1,5 +1,6 @@
 #include "scene/Entity.hpp"
 #include "scene/components/TransformData.hpp"
+#include "glm/glm.hpp"
 
 namespace Phezu {
 
@@ -8,6 +9,12 @@ namespace Phezu {
     void TransformData::SetLocalPosition(const Vector2& position) {
         m_LocalPosition = position;
         m_IsDirty = true;
+    }
+    
+    Vector2 TransformData::GetWorldPosition() const {
+        glm::vec3 localPos(m_LocalPosition.X(), m_LocalPosition.Y(), 1);
+        glm::vec3 worldPos = m_LocalToWorld * localPos;
+        return Vector2(localPos.x, localPos.y);
     }
     
     void TransformData::SetScale(const Vector2 &scale) {
