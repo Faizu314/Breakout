@@ -25,6 +25,8 @@ namespace Phezu {
         }
         
         m_HasInited = true;
+        
+        //atexit(Destroy);
     }
     
     void Engine::CreateWindow(const std::string name, int width, int height) {
@@ -41,10 +43,34 @@ namespace Phezu {
         return m_SceneManager.CreateScene(name);
     }
     
-    bool Engine::Run() {
+    void Engine::Run() {
+        if (m_Window == nullptr || m_Renderer == nullptr) {
+            //TODO: logging file
+            return;
+        }
+        
         bool isRunning = true;
         
         m_SceneManager.OnStartGame();
+        auto scene = m_SceneManager.GetActiveScene().lock();
+        
+        Uint64 prevTime = SDL_GetPerformanceCounter();
+        Uint64 freqMs = SDL_GetPerformanceFrequency();
+        float deltaTime;
+
+        std::vector<std::weak_ptr<const Entity>> renderableEntities(128);
+        size_t count = 0;
+        
+        while (isRunning)
+        {
+            Uint64 currTime = SDL_GetPerformanceCounter();
+            deltaTime = (currTime - prevTime) / (float)freqMs;
+            prevTime = SDL_GetPerformanceCounter();
+
+            scene->LogicUpdate(deltaTime);
+            scene->GetRenderableEntities(renderableEntities, count);
+            m_Renderer->RenderUpdate(renderableEntities, count);
+        }
     }
     
     void Engine::Destroy() {

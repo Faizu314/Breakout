@@ -17,7 +17,7 @@ namespace Phezu {
     public:
         void OnStartGame(); //load the scene at index 0
         void LoadScene(std::weak_ptr<Scene> scene) const;
-        //void UpdateScene(float deltaTime);
+        void UpdateScene(float deltaTime);
     private:
         Engine* m_Engine;
         std::vector<std::shared_ptr<Scene>> m_AllScenes;

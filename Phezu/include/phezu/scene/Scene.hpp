@@ -24,6 +24,8 @@ namespace Phezu {
         std::weak_ptr<Entity> GetEntity(uint64_t entityID) const;
         void DestroyEntity(uint64_t entityID);
         void Load();
+        void LogicUpdate(float deltaTime);
+        void GetRenderableEntities(std::vector<std::weak_ptr<const Entity>>& entities, size_t& count) const;
         void Unload();
     private:
         void BuildEntityFromTemplate(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);

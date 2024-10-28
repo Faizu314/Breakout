@@ -63,6 +63,18 @@ namespace Phezu {
         SDL_RenderClear(m_RendererPtr);
     }
     
+    void Renderer::RenderUpdate(std::vector<std::weak_ptr<const Entity>>& entities, size_t count) {
+        int index = 0;
+        for (auto entity : entities) {
+            if (index == count)
+                break;
+            DrawEntity(entity);
+            index++;
+        }
+        
+        RenderFrame();
+    }
+    
     void Renderer::DrawEntity(std::weak_ptr<const Entity> entity) {
         auto entityL = entity.lock();
         

@@ -30,7 +30,7 @@ namespace Phezu {
         int Init();
         void CreateWindow(const std::string name, int width, int height);
         std::weak_ptr<Scene> CreateScene(const std::string& name);
-        bool Run();
+        void Run();
         void Destroy();
         std::weak_ptr<Prefab> CreatePrefab();
         std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);

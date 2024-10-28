@@ -9,7 +9,7 @@ namespace Phezu {
         BehaviourComponent(Entity* entity, uint8_t componentID) : DataComponent(entity) {}
         
         virtual void Start() = 0;
-        virtual void Update() = 0;
+        virtual void Update(float deltaTime) = 0;
         virtual void OnDestroy() = 0;
     };
 }

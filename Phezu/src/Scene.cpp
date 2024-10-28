@@ -145,6 +145,36 @@ namespace Phezu {
         }
     }
     
+    void Scene::LogicUpdate(float deltaTime) {
+        for (auto entity : m_RuntimeEntities) {
+            for (auto comp : entity.second->GetComponents<BehaviourComponent>()) {
+                comp.lock()->Update(deltaTime);
+            }
+        }
+        
+        //TODO: can be optimised if traverse entities in hierarchy manner
+        for (auto entity : m_RuntimeEntities) {
+            if (entity.second->IsDirty()) {
+                entity.second->RecalculateTransformations();
+                entity.second->RecalculateSubtreeTransformations();
+            }
+        }
+    }
+    
+    void Scene::GetRenderableEntities(std::vector<std::weak_ptr<const Entity>>& entities, size_t& count) const {
+        count = 0;
+        for (auto it = m_RuntimeEntities.begin(); it != m_RuntimeEntities.end(); it++) {
+            auto entity = (*it).second;
+            if (entity->GetRenderData() != nullptr && entity->GetShapeData() != nullptr) {
+                if (count < entities.size())
+                    entities[count] = entity;
+                else
+                    entities.push_back(entity);
+                count++;
+            }
+        }
+    }
+    
     void Scene::Unload() {
         m_RuntimeEntities.clear();
         m_SceneToRuntimeEntity.clear();

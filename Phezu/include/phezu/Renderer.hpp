@@ -55,6 +55,7 @@ namespace Phezu {
         ~Renderer();
     public:
         void ClearFrame(const Color& bg);
+        void RenderUpdate(std::vector<std::weak_ptr<const Entity>>& entities, size_t count);
         void DrawEntity(std::weak_ptr<const Entity> entity);
         void RenderFrame();
     private:
@@ -63,8 +64,6 @@ namespace Phezu {
     private:
         SDL_Renderer* m_RendererPtr;
         glm::mat3 m_WorldToSdl;
-        
-        friend class Engine;
     };
     
     std::shared_ptr<Texture> LoadTexture(const Renderer& renderer);

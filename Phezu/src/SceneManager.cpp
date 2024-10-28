@@ -13,10 +13,19 @@ namespace Phezu {
     }
 
     void SceneManager::OnStartGame() {
+        m_ActiveSceneIndex = 0;
         LoadScene(m_AllScenes[0]);
     }
     
     void SceneManager::LoadScene(std::weak_ptr<Scene> scene) const {
         scene.lock()->Load();
+    }
+    
+    void SceneManager::UpdateScene(float deltaTime) {
+        m_AllScenes[m_ActiveSceneIndex]->LogicUpdate(deltaTime);
+    }
+    
+    std::weak_ptr<Scene> SceneManager::GetActiveScene() const {
+        return m_AllScenes[m_ActiveSceneIndex];
     }
 }
