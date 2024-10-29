@@ -49,8 +49,8 @@ namespace Phezu {
     bool Entity::GetActive() const {
         return m_IsActive;
     }
-    TransformData& Entity::GetTransformData() {
-        return m_TransformData;
+    TransformData* Entity::GetTransformData() {
+        return &m_TransformData;
     }
     ShapeData* const Entity::AddShapeData() {
         m_ShapeData = new ShapeData(this);
@@ -100,7 +100,7 @@ namespace Phezu {
     void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> parent) {
         auto _thisLocked = _this.lock();
         if (auto p = parent.lock()) {
-            _thisLocked->m_Parent = &p->GetTransformData();
+            _thisLocked->m_Parent = p->GetTransformData();
             p->AddChild(_this);
             _thisLocked->RecalculateTransformations();
             _thisLocked->RecalculateSubtreeTransformations();

@@ -69,12 +69,12 @@ namespace Phezu {
         
         //TODO: Apply all template overrides here
         if (entityTemplate->OverridePosition)
-            entity->GetTransformData().SetLocalPosition(entityTemplate->PositionOverride);
+            entity->GetTransformData()->SetLocalPosition(entityTemplate->PositionOverride);
     }
     
     void Scene::BuildEntityFromPrefabEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity) {
-        entity->GetTransformData().SetLocalPosition(prefabEntity->PositionOverride);
-        entity->GetTransformData().SetScale(prefabEntity->ScaleOverride);
+        entity->GetTransformData()->SetLocalPosition(prefabEntity->PositionOverride);
+        entity->GetTransformData()->SetScale(prefabEntity->ScaleOverride);
         
         if (prefabEntity->IsRenderable || prefabEntity->IsCollidable) {
             ShapeData* shapeData = entity->AddShapeData();
@@ -84,6 +84,7 @@ namespace Phezu {
         if (prefabEntity->IsRenderable) {
             RenderData* renderData = entity->AddRenderData(prefabEntity->TintOverride);
             renderData->Sprite = prefabEntity->TextureOverride;
+            renderData->RectUVs = prefabEntity->UVsOverride;
         }
         if (prefabEntity->IsCollidable) {
             PhysicsData* physicsData = entity->AddPhysicsData(prefabEntity->IsStatic);

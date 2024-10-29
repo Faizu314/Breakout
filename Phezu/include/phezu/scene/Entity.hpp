@@ -22,7 +22,7 @@ namespace Phezu {
         uint64_t GetEntityID() const;
         void SetActive(bool isActive);
         bool GetActive() const;
-        TransformData& GetTransformData();
+        TransformData* GetTransformData();
         const TransformData& GetTransformData() const { return m_TransformData; }
         ShapeData* GetShapeData() const { return m_ShapeData; }
         RenderData* GetRenderData() const { return m_RenderData; }

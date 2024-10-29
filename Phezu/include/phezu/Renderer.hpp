@@ -41,6 +41,7 @@ namespace Phezu {
         uint8_t r, g, b, a;
     public:
         static const Color White;
+        static const Color Black;
     private:
         void ConvertToSDLColor(SDL_Color& sdlColor) const;
         static Color FromSDLColor(const SDL_Color& sdlColor);
@@ -55,7 +56,7 @@ namespace Phezu {
         ~Renderer();
     public:
         void ClearFrame(const Color& bg);
-        void RenderUpdate(std::vector<std::weak_ptr<const Entity>>& entities, size_t count);
+        void RenderUpdate(std::vector<std::weak_ptr<const Entity>>& entities, size_t count, const Color& bg = Color::Black);
         void DrawEntity(std::weak_ptr<const Entity> entity);
         void RenderFrame();
     private:
@@ -64,6 +65,7 @@ namespace Phezu {
     private:
         SDL_Renderer* m_RendererPtr;
         glm::mat3 m_WorldToSdl;
+        SDL_Texture* m_DefaultTex;
     };
     
     std::shared_ptr<Texture> LoadTexture(const Renderer& renderer);

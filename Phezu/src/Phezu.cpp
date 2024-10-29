@@ -27,6 +27,7 @@ namespace Phezu {
         m_HasInited = true;
         
         //atexit(Destroy);
+        return 0;
     }
     
     void Engine::CreateWindow(const std::string name, int width, int height) {
@@ -61,8 +62,16 @@ namespace Phezu {
         std::vector<std::weak_ptr<const Entity>> renderableEntities(128);
         size_t count = 0;
         
+        SDL_Event event;
+        
         while (isRunning)
         {
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_QUIT) {
+                    isRunning = false;
+                }
+            }
+            
             Uint64 currTime = SDL_GetPerformanceCounter();
             deltaTime = (currTime - prevTime) / (float)freqMs;
             prevTime = SDL_GetPerformanceCounter();

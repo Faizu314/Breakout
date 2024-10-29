@@ -49,8 +49,8 @@ namespace Phezu {
     }
     
     void ShapeData::SetShapeToObject() {
-        float Sx = m_Entity->GetTransformData().GetScale().X();
-        float Sy = m_Entity->GetTransformData().GetScale().Y();
+        float Sx = m_Entity->GetTransformData()->GetScale().X();
+        float Sy = m_Entity->GetTransformData()->GetScale().Y();
         float Px = m_Pivot.X();
         float Py = m_Pivot.Y();
         m_ShapeToObject[0][0] = Sx;

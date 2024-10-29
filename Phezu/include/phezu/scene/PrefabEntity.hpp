@@ -25,6 +25,7 @@ namespace Phezu {
         Vector2 ShapeSizeOverride;
         std::weak_ptr<Texture> TextureOverride;
         Color TintOverride;
+        QuadUVs UVsOverride;
     public:
         template<typename T>
         std::weak_ptr<T> AddComponentPrefab() {

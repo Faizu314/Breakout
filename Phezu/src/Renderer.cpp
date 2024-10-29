@@ -7,11 +7,13 @@
 #include "maths/Math.hpp"
 
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
 #include "glm/glm.hpp"
 
 namespace Phezu {
 
     const Color Color::White = Color(255, 255, 255, 255);
+    const Color Color::Black = Color(0, 0, 0, 255);
     
     Texture::Texture(SDL_Texture* texture) : m_Texture(texture) {}
     QuadUVs::QuadUVs(float x, float y, float w, float h) : x(x), y(y), w(w), h(h) {}
@@ -29,11 +31,7 @@ namespace Phezu {
     }
     
     Renderer::Renderer(const Window& window) 
-    : m_WorldToSdl(glm::mat3(
-            1,  0, window.GetWidth() / 2.0,
-            0, -1, window.GetHeight() / 2.0,
-            0,  0, 1
-        ))
+    : m_WorldToSdl(glm::mat3(1, 0, 0, 0, -1, 0, window.GetWidth() / 2.0,  window.GetHeight() / 2.0, 1))
     {
         int renderersFlag = SDL_RENDERER_ACCELERATED;
 
@@ -44,6 +42,12 @@ namespace Phezu {
             //TODO: Logging::Log("Failed to create renderer: %s\n", SDL_GetError());
             exit(1);
         }
+        
+        m_DefaultTex = SDL_CreateTexture(m_RendererPtr, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 1, 1);
+        SDL_SetRenderTarget(m_RendererPtr, m_DefaultTex);
+        SDL_SetRenderDrawColor(m_RendererPtr, 255, 255, 255, 255);
+        SDL_RenderClear(m_RendererPtr);
+        SDL_SetRenderTarget(m_RendererPtr, nullptr);
     }
     
     Renderer::~Renderer() {
@@ -63,7 +67,9 @@ namespace Phezu {
         SDL_RenderClear(m_RendererPtr);
     }
     
-    void Renderer::RenderUpdate(std::vector<std::weak_ptr<const Entity>>& entities, size_t count) {
+    void Renderer::RenderUpdate(std::vector<std::weak_ptr<const Entity>>& entities, size_t count, const Color& bg) {
+        ClearFrame(bg);
+        
         int index = 0;
         for (auto entity : entities) {
             if (index == count)
@@ -101,7 +107,7 @@ namespace Phezu {
         dest.w = downRightSdlPos.X() - upLeftSdlPos.X();
         dest.h = downRightSdlPos.Y() - upLeftSdlPos.Y();
 
-        SDL_Texture* texture = nullptr; //TODO: set to pink error texture;
+        SDL_Texture* texture = m_DefaultTex;
         SDL_Color tint;
         entityL->GetRenderData()->Tint.ConvertToSDLColor(tint);
         

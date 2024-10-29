@@ -13,7 +13,10 @@ namespace Phezu {
     }
 
     void SceneManager::OnStartGame() {
-        m_ActiveSceneIndex = 0;
+        if (m_AllScenes.size() == 0) {
+            //TODO: logging
+            return;
+        }
         LoadScene(m_AllScenes[0]);
     }
     
