@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "Window.hpp"
+#include "Input.hpp"
 #include "Renderer.hpp"
 #include "maths/Math.hpp"
 #include "scene/Prefab.hpp"
@@ -37,8 +38,9 @@ namespace Phezu {
     private:
         Window* m_Window;
         Renderer* m_Renderer;
-        std::unordered_map<uint64_t, std::shared_ptr<Prefab>> m_Prefabs;
+        Input m_Input;
         SceneManager m_SceneManager;
+        std::unordered_map<uint64_t, std::shared_ptr<Prefab>> m_Prefabs;
         bool m_HasInited;
     };
 }

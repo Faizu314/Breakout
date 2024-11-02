@@ -6,7 +6,9 @@
 
 namespace Phezu {
     
-    Engine::Engine() : m_HasInited(false), m_SceneManager(this) { }
+    static const size_t ENTITIES_BUFFER_SIZE = 128;
+    
+    Engine::Engine() : m_HasInited(false), m_SceneManager(this), m_Input(this) { }
     
     int Engine::Init() {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -31,7 +33,7 @@ namespace Phezu {
     }
     
     void Engine::CreateWindow(const std::string name, int width, int height) {
-        if (m_Window != nullptr) {
+        if (m_Window != nullptr || !m_HasInited) {
             //TODO: Logging
             return;
         }
@@ -41,17 +43,20 @@ namespace Phezu {
     }
     
     std::weak_ptr<Scene> Engine::CreateScene(const std::string& name) {
+        if (!m_HasInited) {
+            //TODO: Logging
+            return std::weak_ptr<Scene>();
+        }
+        
         return m_SceneManager.CreateScene(name);
     }
     
     void Engine::Run() {
-        if (m_Window == nullptr || m_Renderer == nullptr) {
+        if (!m_HasInited || m_Window == nullptr || m_Renderer == nullptr) {
             //TODO: logging file
             return;
         }
-        
-        bool isRunning = true;
-        
+
         m_SceneManager.OnStartGame();
         auto scene = m_SceneManager.GetActiveScene().lock();
         
@@ -59,42 +64,50 @@ namespace Phezu {
         Uint64 freqMs = SDL_GetPerformanceFrequency();
         float deltaTime;
 
-        std::vector<std::weak_ptr<Entity>> renderableEntities(128);
+        std::vector<std::weak_ptr<Entity>> entitiesBuffer(ENTITIES_BUFFER_SIZE);
         size_t count = 0;
         
         SDL_Event event;
         
-        while (isRunning)
+        while (true)
         {
-            while (SDL_PollEvent(&event)) {
-                if (event.type == SDL_QUIT) {
-                    isRunning = false;
-                }
-            }
+            if (!m_Input.PollInput())
+                break;
             
             Uint64 currTime = SDL_GetPerformanceCounter();
             deltaTime = (currTime - prevTime) / (float)freqMs;
             prevTime = SDL_GetPerformanceCounter();
 
             scene->LogicUpdate(deltaTime);
-            scene->GetRenderableEntities(renderableEntities, count);
-            m_Renderer->RenderUpdate(renderableEntities, count);
+            scene->GetRenderableEntities(entitiesBuffer, count);
+            m_Renderer->RenderUpdate(entitiesBuffer, count);
         }
+        
+        Destroy();
     }
     
     void Engine::Destroy() {
-        //m_SceneManager.Cleanup()
         delete m_Renderer;
         delete m_Window;
     }
     
     std::weak_ptr<Prefab> Engine::CreatePrefab() {
+        if (!m_HasInited) {
+            //TODO: Logging
+            return std::weak_ptr<Prefab>();
+        }
+        
         std::shared_ptr<Prefab> prefab = std::make_shared<Prefab>();
         m_Prefabs.insert(std::make_pair(prefab->RootEntity.GetPrefabEntityID(), prefab));
         return prefab;
     }
     
     std::weak_ptr<const Prefab> Engine::GetPrefab(uint64_t prefabID) {
+        if (!m_HasInited) {
+            //TODO: Logging
+            return std::weak_ptr<const Prefab>();
+        }
+        
         if (m_Prefabs.find(prefabID) == m_Prefabs.end())
             return std::weak_ptr<const Prefab>();
         return m_Prefabs[prefabID];
