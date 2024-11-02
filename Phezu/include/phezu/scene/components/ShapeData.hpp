@@ -19,7 +19,7 @@ namespace Phezu {
             DownRight = 4,
         };
     public:
-        ShapeData(Entity* entity, const Vector2& pivot = Vector2::Zero(), const Vector2& size = Vector2::One());
+        ShapeData(Entity* entity, const Vector2& pivot = Vector2::Zero, const Vector2& size = Vector2::One);
     public:
         void SetPivot(const Vector2& pivot);
         void SetSize(const Vector2& size);

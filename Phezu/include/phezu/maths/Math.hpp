@@ -18,12 +18,12 @@ namespace Phezu {
     public:
         float Dot(const Vector2& other) { return glm::dot(other.m_Vector, m_Vector); }
     public:
-        static Vector2 One() { return Vector2(1, 1); }
-        static Vector2 Zero() { return Vector2(); }
-        static Vector2 Right() { return Vector2(1, 0); }
-        static Vector2 Left() { return Vector2(-1, 0); }
-        static Vector2 Up() { return Vector2(0, 1); }
-        static Vector2 Down() { return Vector2(0, -1); }
+        static const Vector2 One;
+        static const Vector2 Zero;
+        static const Vector2 Right;
+        static const Vector2 Left;
+        static const Vector2 Up;
+        static const Vector2 Down;
     public:
         Vector2 operator+(const Vector2& other) const { return Vector2(m_Vector.x + other.m_Vector.x, m_Vector.y + other.m_Vector.y); }
         Vector2 operator-(const Vector2& other) const { return Vector2(m_Vector.x - other.m_Vector.x, m_Vector.y - other.m_Vector.y); }

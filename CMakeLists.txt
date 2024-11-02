@@ -5,6 +5,7 @@ project(BrickBreaker)
 
 set(PHEZU_SOURCES
     Phezu/src/Phezu.cpp
+    Phezu/src/Math.cpp
     Phezu/src/Renderer.cpp
     Phezu/src/Window.cpp
     Phezu/src/Entity.cpp
