@@ -16,7 +16,20 @@ namespace Phezu {
         void SetY(float y) { m_Vector.y = y; }
         void Set(float x, float y) { SetX(x); SetY(y); }
     public:
-        float Dot(const Vector2& other) { return glm::dot(other.m_Vector, m_Vector); }
+        void Normalize();
+        Vector2 Normalized() const { Vector2 a(*this); a.Normalize(); return a; }
+        float Length() const { return Distance(*this, Zero); }
+        float SqrLength() const { return SqrDistance(*this, Zero); }
+    public:
+        float Dot(const Vector2& other) const { return Dot(*this, other); }
+        float Cross(const Vector2& other) const { return Cross(*this, other); }
+        float Distance(const Vector2& other) const { return Distance(*this, other); }
+        float SqrDistance(const Vector2& other) const { return SqrDistance(*this, other); }
+    public:
+        static float Dot(const Vector2& a, const Vector2& b) { return glm::dot(a.m_Vector, b.m_Vector); }
+        static float Cross(const Vector2& a, const Vector2& b) { return (a.X() * b.Y()) - (a.Y() * b.X()); }
+        static float Distance(const Vector2& a, const Vector2& b) { return glm::distance(a.m_Vector, b.m_Vector); }
+        static float SqrDistance(const Vector2& a, const Vector2& b);
     public:
         static const Vector2 One;
         static const Vector2 Zero;
@@ -28,8 +41,8 @@ namespace Phezu {
         Vector2 operator+(const Vector2& other) const { return Vector2(m_Vector.x + other.m_Vector.x, m_Vector.y + other.m_Vector.y); }
         Vector2 operator-(const Vector2& other) const { return Vector2(m_Vector.x - other.m_Vector.x, m_Vector.y - other.m_Vector.y); }
         Vector2& operator=(const Vector2& other) { Set(other.X(), other.Y()); return *this; }
-        Vector2 operator*(float value) { Set(m_Vector.x * value, m_Vector.y * value); }
-        Vector2 operator/(float value) { Set(m_Vector.x / value, m_Vector.y / value); }
+        Vector2 operator*(float value) const { return Vector2(m_Vector * value); }
+        Vector2 operator/(float value) const { return Vector2(m_Vector / value); }
         operator glm::vec2&() { return m_Vector; }
         operator const glm::vec2&() const { return m_Vector; }
     private:
