@@ -24,14 +24,10 @@ namespace Phezu {
         void SetPivot(const Vector2& pivot);
         void SetSize(const Vector2& size);
         void Set(const Vector2& pivot, const Vector2& size);
-        const glm::mat3& GetShapeToObject() const { return m_ShapeToObject; }
+    public:
         Vector2 GetVertexPosition(VertexType vertexType) const;
-        Vector2 GetVertexObjectPosition(VertexType vertexType) const;
-    private:
-        void SetShapeToObject();
     private:
         Vector2 m_Pivot;
         Vector2 m_Size;
-        glm::mat3 m_ShapeToObject;
     };
 }

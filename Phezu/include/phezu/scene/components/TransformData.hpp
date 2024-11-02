@@ -11,20 +11,16 @@ namespace Phezu {
     public:
         Vector2 GetLocalPosition() { return m_LocalPosition; }
         Vector2 GetWorldPosition() const;
-        Vector2 GetScale() { return m_Scale; }
+        Vector2 GetLocalScale() { return m_LocalScale; }
         void SetLocalPosition(const Vector2& position);
-        void SetScale(const Vector2& scale);
-        const glm::mat3& GetLocalToParent() { return m_LocalToParent; }
-        const glm::mat3& GetLocalToWorld() { return m_LocalToWorld; }
-        void RecalculateTransformations();
+        void SetLocalScale(const Vector2& scale);
+        Vector2 LocalToWorldPoint(const Vector2& point) const;
+    public:
+        void RecalculateLocalToWorld();
         bool GetIsDirty() { return m_IsDirty; }
     private:
-        void RecalculateLocalToParent();
-        void RecalculateLocalToWorld();
-    private:
         Vector2 m_LocalPosition;
-        Vector2 m_Scale;
-        glm::mat3 m_LocalToParent;
+        Vector2 m_LocalScale;
         glm::mat3 m_LocalToWorld;
         bool m_IsDirty;
     };

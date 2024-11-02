@@ -74,7 +74,7 @@ namespace Phezu {
     
     void Scene::BuildEntityFromPrefabEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity) {
         entity->GetTransformData()->SetLocalPosition(prefabEntity->PositionOverride);
-        entity->GetTransformData()->SetScale(prefabEntity->ScaleOverride);
+        entity->GetTransformData()->SetLocalScale(prefabEntity->ScaleOverride);
         
         if (prefabEntity->IsRenderable || prefabEntity->IsCollidable) {
             ShapeData* shapeData = entity->AddShapeData();
@@ -139,7 +139,11 @@ namespace Phezu {
         
         m_IsLoaded = true;
         
+        //TODO: can be optimised if traverse entities in hierarchy manner
         for (auto entity : m_RuntimeEntities) {
+            if (entity.second->IsDirty()) {
+                entity.second->RecalculateSubtreeTransformations();
+            }
             for (auto comp : entity.second->GetComponents<BehaviourComponent>()) {
                 comp.lock()->Start();
             }
@@ -156,13 +160,12 @@ namespace Phezu {
         //TODO: can be optimised if traverse entities in hierarchy manner
         for (auto entity : m_RuntimeEntities) {
             if (entity.second->IsDirty()) {
-                entity.second->RecalculateTransformations();
                 entity.second->RecalculateSubtreeTransformations();
             }
         }
     }
     
-    void Scene::GetRenderableEntities(std::vector<std::weak_ptr<const Entity>>& entities, size_t& count) const {
+    void Scene::GetRenderableEntities(std::vector<std::weak_ptr<Entity>>& entities, size_t& count) const {
         count = 0;
         for (auto it = m_RuntimeEntities.begin(); it != m_RuntimeEntities.end(); it++) {
             auto entity = (*it).second;

@@ -52,20 +52,17 @@ namespace Phezu {
     TransformData* Entity::GetTransformData() {
         return &m_TransformData;
     }
-    ShapeData* const Entity::AddShapeData() {
+    ShapeData* Entity::AddShapeData() {
         m_ShapeData = new ShapeData(this);
         return m_ShapeData;
     }
-    RenderData* const Entity::AddRenderData(Color tint) {
+    RenderData* Entity::AddRenderData(Color tint) {
         m_RenderData = new RenderData(this, tint);
         return m_RenderData;
     }
-    PhysicsData* const Entity::AddPhysicsData(bool isStatic) {
+    PhysicsData* Entity::AddPhysicsData(bool isStatic) {
         m_PhysicsData = new PhysicsData(this, isStatic);
         return m_PhysicsData;
-    }
-    TransformData* const Entity::GetParent() {
-        return m_Parent;
     }
     size_t Entity::GetChildCount() {
         return m_Children.size();
@@ -77,33 +74,37 @@ namespace Phezu {
         return m_Children[childIndex];
     }
     
+    bool Entity::IsDirty() {
+        return m_TransformData.GetIsDirty();
+    }
+    
     void Entity::AddChild(std::weak_ptr<Entity> child) {
         m_Children.push_back(child);
     }
     
-    void Entity::RecalculateTransformations() {
-        m_TransformData.RecalculateTransformations();
-    }
-    
     void Entity::RecalculateSubtreeTransformations() {
+        m_TransformData.RecalculateLocalToWorld();
+        
         for (auto child_ : m_Children) {
             auto child = child_.lock();
-            child->RecalculateTransformations();
             child->RecalculateSubtreeTransformations();
         }
     }
     
     void Entity::SetParent(std::weak_ptr<Entity> parent) {
+        if (auto parentL = parent.lock())
+            if (parentL.get() == this)
+                return;
+        
         SetParent_Internal(m_Scene.lock()->GetEntity(m_EntityID), parent);
     }
     
     void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> parent) {
-        auto _thisLocked = _this.lock();
-        if (auto p = parent.lock()) {
-            _thisLocked->m_Parent = p->GetTransformData();
-            p->AddChild(_this);
-            _thisLocked->RecalculateTransformations();
-            _thisLocked->RecalculateSubtreeTransformations();
+        auto _thisL = _this.lock();
+        if (auto parentL = parent.lock()) {
+            _thisL->m_Parent = parentL->GetTransformData();
+            parentL->AddChild(_this);
+            _thisL->RecalculateSubtreeTransformations();
         }
     }
     

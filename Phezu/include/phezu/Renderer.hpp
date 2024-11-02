@@ -56,11 +56,10 @@ namespace Phezu {
         ~Renderer();
     public:
         void ClearFrame(const Color& bg);
-        void RenderUpdate(std::vector<std::weak_ptr<const Entity>>& entities, size_t count, const Color& bg = Color::Black);
-        void DrawEntity(std::weak_ptr<const Entity> entity);
+        void RenderUpdate(std::vector<std::weak_ptr<Entity>>& entities, size_t count, const Color& bg = Color::Black);
+        void DrawEntity(std::weak_ptr<Entity> entity);
         void RenderFrame();
     private:
-        void Blit();
         Vector2 WorldToSdlPosition(const Vector2& worldPos) const;
     private:
         SDL_Renderer* m_RendererPtr;

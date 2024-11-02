@@ -30,7 +30,22 @@ namespace Phezu {
         return Color(sdlColor.r, sdlColor.g, sdlColor.b, sdlColor.a);
     }
     
-    Renderer::Renderer(const Window& window) 
+    void GetSdlRect(SDL_Rect& rect, Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
+        int minX, maxX, minY, maxY;
+        
+        minX = glm::min(a.X(), glm::min(b.X(), glm::min(c.X(), d.X())));
+        maxX = glm::max(a.X(), glm::max(b.X(), glm::max(c.X(), d.X())));
+        
+        minY = glm::min(a.Y(), glm::min(b.Y(), glm::min(c.Y(), d.Y())));
+        maxY = glm::max(a.Y(), glm::max(b.Y(), glm::max(c.Y(), d.Y())));
+        
+        rect.x = minX;
+        rect.y = minY;
+        rect.w = maxX - minX;
+        rect.h = maxY - minY;
+    }
+    
+    Renderer::Renderer(const Window& window)
     : m_WorldToSdl(glm::mat3(1, 0, 0, 0, -1, 0, window.GetWidth() / 2.0,  window.GetHeight() / 2.0, 1))
     {
         int renderersFlag = SDL_RENDERER_ACCELERATED;
@@ -57,7 +72,7 @@ namespace Phezu {
     Vector2 Renderer::WorldToSdlPosition(const Vector2& worldPos) const {
         glm::vec3 worldPos3(worldPos.X(), worldPos.Y(), 1.0);
         glm::vec3 sdlPos3 = m_WorldToSdl * worldPos3;
-        return Vector2(sdlPos3.x, sdlPos3.y);
+        return Vector2(glm::round(sdlPos3.x), glm::round(sdlPos3.y));
     }
     
     void Renderer::ClearFrame(const Color& bg) {
@@ -67,7 +82,7 @@ namespace Phezu {
         SDL_RenderClear(m_RendererPtr);
     }
     
-    void Renderer::RenderUpdate(std::vector<std::weak_ptr<const Entity>>& entities, size_t count, const Color& bg) {
+    void Renderer::RenderUpdate(std::vector<std::weak_ptr<Entity>>& entities, size_t count, const Color& bg) {
         ClearFrame(bg);
         
         int index = 0;
@@ -81,32 +96,35 @@ namespace Phezu {
         RenderFrame();
     }
     
-    void Renderer::DrawEntity(std::weak_ptr<const Entity> entity) {
+    void Renderer::DrawEntity(std::weak_ptr<Entity> entity) {
         auto entityL = entity.lock();
         
         SDL_Rect dest;
         
+        TransformData* transformData = entityL->GetTransformData();
         ShapeData* shapeData = entityL->GetShapeData();
         RenderData* renderData = entityL->GetRenderData();
         
         if (shapeData == nullptr || renderData == nullptr)
             return;
         
-        Vector2 upLeftObj = shapeData->GetVertexObjectPosition(ShapeData::VertexType::UpLeft);
-        Vector2 downRightObj = shapeData->GetVertexObjectPosition(ShapeData::VertexType::DownRight);
-        Vector2 objWorldPos = entityL->GetTransformData().GetWorldPosition();
+        Vector2 upLeftLocal = shapeData->GetVertexPosition(ShapeData::VertexType::UpLeft);
+        Vector2 upRightLocal = shapeData->GetVertexPosition(ShapeData::VertexType::UpRight);
+        Vector2 downRightLocal = shapeData->GetVertexPosition(ShapeData::VertexType::DownRight);
+        Vector2 downLeftLocal = shapeData->GetVertexPosition(ShapeData::VertexType::DownLeft);
         
-        Vector2 upLeftWorldPos = objWorldPos + upLeftObj;
-        Vector2 downRightWorldPos = objWorldPos + downRightObj;
+        Vector2 upLeftWorld = transformData->LocalToWorldPoint(upLeftLocal);
+        Vector2 upRightWorld = transformData->LocalToWorldPoint(upRightLocal);
+        Vector2 downRightWorld = transformData->LocalToWorldPoint(downRightLocal);
+        Vector2 downLeftWorld = transformData->LocalToWorldPoint(downLeftLocal);
         
-        Vector2 upLeftSdlPos = WorldToSdlPosition(upLeftWorldPos);
-        Vector2 downRightSdlPos = WorldToSdlPosition(downRightWorldPos);
+        Vector2 upLeftSdl = WorldToSdlPosition(upLeftWorld);
+        Vector2 upRightSdl = WorldToSdlPosition(upRightWorld);
+        Vector2 downRightSdl = WorldToSdlPosition(downRightWorld);
+        Vector2 downLeftSdl = WorldToSdlPosition(downLeftWorld);
         
-        dest.x = upLeftSdlPos.X();
-        dest.y = upLeftSdlPos.Y();
-        dest.w = downRightSdlPos.X() - upLeftSdlPos.X();
-        dest.h = downRightSdlPos.Y() - upLeftSdlPos.Y();
-
+        GetSdlRect(dest, upLeftSdl, upRightSdl, downRightSdl, downLeftSdl);
+        
         SDL_Texture* texture = m_DefaultTex;
         SDL_Color tint;
         entityL->GetRenderData()->Tint.ConvertToSDLColor(tint);

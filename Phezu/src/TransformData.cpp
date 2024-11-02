@@ -14,41 +14,37 @@ namespace Phezu {
     Vector2 TransformData::GetWorldPosition() const {
         glm::vec3 localPos(m_LocalPosition.X(), m_LocalPosition.Y(), 1);
         glm::vec3 worldPos = m_LocalToWorld * localPos;
-        return Vector2(localPos.x, localPos.y);
+        return Vector2(worldPos.x, worldPos.y);
     }
     
-    void TransformData::SetScale(const Vector2 &scale) {
-        m_Scale = scale;
+    void TransformData::SetLocalScale(const Vector2 &scale) {
+        m_LocalScale = scale;
         m_IsDirty = true;
     }
     
-    void TransformData::RecalculateTransformations() {
-        RecalculateLocalToParent();
-        RecalculateLocalToWorld();
-        m_IsDirty = false;
-    }
-    
-    void TransformData::RecalculateLocalToParent() {
-        m_LocalToParent = glm::mat3(1.0);
-        
-        if (m_Entity->GetParent() == nullptr)
-            return;
-        
-        TransformData* parent = m_Entity->GetParent();
-        float Sx = parent->GetScale().X();
-        float Sy = parent->GetScale().Y();
-        float Px = parent->GetLocalPosition().X();
-        float Py = parent->GetLocalPosition().Y();
-        m_LocalToParent[0][0] = Sx;
-        m_LocalToParent[1][1] = Sy;
-        m_LocalToParent[2][0] = -Px * Sx;
-        m_LocalToParent[2][1] = -Py * Sy;
+    Vector2 TransformData::LocalToWorldPoint(const Vector2& point) const {
+        glm::vec3 point3(point.X(), point.Y(), 1);
+        glm::vec3 worldPoint3 = m_LocalToWorld * point3;
+        return Vector2(worldPoint3.x, worldPoint3.y);
     }
     
     void TransformData::RecalculateLocalToWorld() {
+        glm::mat3 localTransform = glm::mat3(1.0);
+        
+        float Sx = m_LocalScale.X();
+        float Sy = m_LocalScale.Y();
+        float Px = m_LocalPosition.X();
+        float Py = m_LocalPosition.Y();
+        localTransform[0][0] = Sx;
+        localTransform[1][1] = Sy;
+        localTransform[2][0] = Px;
+        localTransform[2][1] = Py;
+        
         if (m_Entity->GetParent() == nullptr)
-            m_LocalToWorld = m_LocalToParent;
+            m_LocalToWorld = localTransform;
         else
-            m_LocalToWorld = m_Entity->GetParent()->m_LocalToWorld * m_LocalToParent;
+            m_LocalToWorld = m_Entity->GetParent()->m_LocalToWorld * localTransform;
+        
+        m_IsDirty = false;
     }
 }

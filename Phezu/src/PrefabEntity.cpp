@@ -7,14 +7,12 @@ namespace Phezu {
     PrefabEntity DEFAULT_PREFAB;
     
     PrefabEntity::PrefabEntity()
-    : m_PrefabEntityID(s_PrefabEntityCount), m_IsRoot(true), m_Root(0), m_PathSize(0) {
+    : m_PrefabEntityID(s_PrefabEntityCount), m_IsRoot(true), m_Root(0), m_PathSize(0), ScaleOverride(Vector2(1, 1)), ShapeSizeOverride(Vector2(10, 10)), TintOverride(Color::White) {
         s_PrefabEntityCount++;
     }
     
     PrefabEntity::PrefabEntity(uint64_t root, std::unique_ptr<size_t[]> path, size_t pathSize)
-    : m_PrefabEntityID(0), m_IsRoot(false), m_Root(root), m_Path(std::move(path)), m_PathSize(pathSize) {
-        
-    }
+    : m_PrefabEntityID(0), m_IsRoot(false), m_Root(root), m_Path(std::move(path)), m_PathSize(pathSize), ScaleOverride(Vector2(1, 1)), ShapeSizeOverride(Vector2(10, 10)), TintOverride(Color::White) {}
     
     PrefabEntity::~PrefabEntity() {
         for (PrefabEntity* child : m_Children)

@@ -27,15 +27,15 @@ namespace Phezu {
         ShapeData* GetShapeData() const { return m_ShapeData; }
         RenderData* GetRenderData() const { return m_RenderData; }
         PhysicsData* GetPhysicsData() const { return m_PhysicsData; }
-        ShapeData* const AddShapeData();
-        RenderData* const AddRenderData(Color tint = Color::White);
-        PhysicsData* const AddPhysicsData(bool isStatic);
-        TransformData* const GetParent();
+        ShapeData* AddShapeData();
+        RenderData* AddRenderData(Color tint = Color::White);
+        PhysicsData* AddPhysicsData(bool isStatic);
+        TransformData* GetParent() const { return m_Parent; }
         void SetParent(std::weak_ptr<Entity> parent);
         void RemoveParent();
         size_t GetChildCount();
         std::weak_ptr<Entity> GetChild(size_t childIndex);
-        bool IsDirty() { return m_TransformData.GetIsDirty(); }
+        bool IsDirty();
     public:
         template<typename T>
         std::weak_ptr<T> GetComponent() {
@@ -99,7 +99,6 @@ namespace Phezu {
     private:
         void OnChildDestroyed();
         void AddChild(std::weak_ptr<Entity> child);
-        void RecalculateTransformations();
         void RecalculateSubtreeTransformations();
     private:
         const std::weak_ptr<Scene> m_Scene;

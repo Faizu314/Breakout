@@ -59,7 +59,7 @@ namespace Phezu {
         Uint64 freqMs = SDL_GetPerformanceFrequency();
         float deltaTime;
 
-        std::vector<std::weak_ptr<const Entity>> renderableEntities(128);
+        std::vector<std::weak_ptr<Entity>> renderableEntities(128);
         size_t count = 0;
         
         SDL_Event event;
