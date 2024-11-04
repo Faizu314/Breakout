@@ -73,8 +73,10 @@ namespace Phezu {
         int bMaxY = glm::max(ulB.Y(), drB.Y());
         int bMinY = glm::min(ulB.Y(), drB.Y());
         
-        return (((bMinX >= aMinX && bMinX <= aMaxX) || (bMaxX >= aMinX && bMaxX <= aMaxX)) &&
-                ((bMinY >= aMinY && bMinY <= aMaxY) || (bMaxY >= aMinY && bMaxY <= aMaxY)));
+        bool overlapX = aMinX <= bMaxX && aMaxX >= bMinX;
+        bool overlapY = aMinY <= bMaxY && aMaxY >= bMinY;
+
+        return overlapX && overlapY;
     }
     
     void Physics::ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity) {
