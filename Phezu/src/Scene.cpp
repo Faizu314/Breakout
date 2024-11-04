@@ -87,7 +87,7 @@ namespace Phezu {
             renderData->RectUVs = prefabEntity->UVsOverride;
         }
         if (prefabEntity->IsCollidable) {
-            PhysicsData* physicsData = entity->AddPhysicsData(prefabEntity->IsStatic);
+            std::weak_ptr<PhysicsData> physicsData = entity->AddPhysicsData(prefabEntity->IsStatic);
         }
         
         for (size_t i = 0; i < prefabEntity->GetComponentPrefabsCount(); i++) {
@@ -161,6 +161,34 @@ namespace Phezu {
         for (auto entity : m_RuntimeEntities) {
             if (entity.second->IsDirty()) {
                 entity.second->RecalculateSubtreeTransformations();
+            }
+        }
+    }
+    
+    void Scene::GetPhysicsEntities(std::vector<std::weak_ptr<Entity>>& entities, size_t& staticCount, size_t& dynamicCount) const {
+        staticCount = dynamicCount = 0;
+        
+        for (auto it = m_RuntimeEntities.begin(); it != m_RuntimeEntities.end(); it++) {
+            auto entity = (*it).second;
+            auto physicsData = entity->GetPhysicsData().lock();
+            if (physicsData && physicsData->IsStatic() && entity->GetShapeData() != nullptr) {
+                if (staticCount < entities.size())
+                    entities[staticCount] = entity;
+                else
+                    entities.push_back(entity);
+                staticCount++;
+            }
+        }
+        
+        for (auto it = m_RuntimeEntities.begin(); it != m_RuntimeEntities.end(); it++) {
+            auto entity = (*it).second;
+            auto physicsData = entity->GetPhysicsData().lock();
+            if (physicsData && !physicsData->IsStatic() && entity->GetShapeData() != nullptr) {
+                if (staticCount + dynamicCount < entities.size())
+                    entities[staticCount + dynamicCount] = entity;
+                else
+                    entities.push_back(entity);
+                dynamicCount++;
             }
         }
     }

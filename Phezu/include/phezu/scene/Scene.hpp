@@ -25,6 +25,7 @@ namespace Phezu {
         void DestroyEntity(uint64_t entityID);
         void Load();
         void LogicUpdate(float deltaTime);
+        void GetPhysicsEntities(std::vector<std::weak_ptr<Entity>>& entities, size_t& staticCount, size_t& dynamicCount) const;
         void GetRenderableEntities(std::vector<std::weak_ptr<Entity>>& entities, size_t& count) const;
         void Unload();
     private:

@@ -21,8 +21,6 @@ namespace Phezu {
     }
     
     Entity::~Entity() {
-        if (m_PhysicsData != nullptr)
-            delete m_PhysicsData;
         if (m_ShapeData != nullptr)
             delete m_ShapeData;
         if (m_RenderData != nullptr)
@@ -60,8 +58,8 @@ namespace Phezu {
         m_RenderData = new RenderData(this, tint);
         return m_RenderData;
     }
-    PhysicsData* Entity::AddPhysicsData(bool isStatic) {
-        m_PhysicsData = new PhysicsData(this, isStatic);
+    std::weak_ptr<PhysicsData> Entity::AddPhysicsData(bool isStatic) {
+        m_PhysicsData = std::make_shared<PhysicsData>(this, isStatic);
         return m_PhysicsData;
     }
     size_t Entity::GetChildCount() {

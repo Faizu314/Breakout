@@ -48,7 +48,7 @@ namespace Phezu {
     Renderer::Renderer(const Window& window)
     : m_WorldToSdl(glm::mat3(1, 0, 0, 0, -1, 0, window.GetWidth() / 2.0,  window.GetHeight() / 2.0, 1))
     {
-        int renderersFlag = SDL_RENDERER_ACCELERATED;
+        int renderersFlag = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 
         m_RendererPtr = SDL_CreateRenderer(window, -1, renderersFlag);
 
@@ -82,11 +82,11 @@ namespace Phezu {
         SDL_RenderClear(m_RendererPtr);
     }
     
-    void Renderer::RenderUpdate(std::vector<std::weak_ptr<Entity>>& entities, size_t count, const Color& bg) {
+    void Renderer::RenderUpdate(const std::vector<std::weak_ptr<Entity>>& renderableEntities, size_t count, const Color& bg) {
         ClearFrame(bg);
         
         int index = 0;
-        for (auto entity : entities) {
+        for (auto entity : renderableEntities) {
             if (index == count)
                 break;
             DrawEntity(entity);

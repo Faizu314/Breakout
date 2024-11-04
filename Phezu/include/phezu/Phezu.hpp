@@ -5,6 +5,7 @@
 #include "Window.hpp"
 #include "Input.hpp"
 #include "Renderer.hpp"
+#include "Physics.hpp"
 #include "maths/Math.hpp"
 #include "scene/Prefab.hpp"
 #include "scene/Scene.hpp"
@@ -40,6 +41,7 @@ namespace Phezu {
         Renderer* m_Renderer;
         Input m_Input;
         SceneManager m_SceneManager;
+        Physics m_Physics;
         std::unordered_map<uint64_t, std::shared_ptr<Prefab>> m_Prefabs;
         bool m_HasInited;
     };

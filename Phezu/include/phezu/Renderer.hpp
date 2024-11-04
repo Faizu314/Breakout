@@ -56,7 +56,7 @@ namespace Phezu {
         ~Renderer();
     public:
         void ClearFrame(const Color& bg);
-        void RenderUpdate(std::vector<std::weak_ptr<Entity>>& entities, size_t count, const Color& bg = Color::Black);
+        void RenderUpdate(const std::vector<std::weak_ptr<Entity>>& renderableEntities, size_t count, const Color& bg = Color::Black);
         void DrawEntity(std::weak_ptr<Entity> entity);
         void RenderFrame();
     private:

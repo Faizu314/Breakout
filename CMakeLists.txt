@@ -8,10 +8,12 @@ set(PHEZU_SOURCES
     Phezu/src/Math.cpp
     Phezu/src/Input.cpp
     Phezu/src/Renderer.cpp
+    Phezu/src/Physics.cpp
     Phezu/src/Window.cpp
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
     Phezu/src/ShapeData.cpp
+    Phezu/src/PhysicsData.cpp
     Phezu/src/TransformData.cpp
     Phezu/src/SceneManager.cpp
     Phezu/src/PrefabEntity.cpp
@@ -24,6 +26,7 @@ set(PHEZU_VENDOR_SOURCES
 set(PHEZU_HEADERS
     Phezu/include/phezu/Phezu.hpp
     Phezu/include/phezu/Renderer.hpp
+    Phezu/include/phezu/Physics.hpp
     Phezu/include/phezu/Input.hpp
     Phezu/include/phezu/Window.hpp
     Phezu/include/phezu/scene/Entity.hpp

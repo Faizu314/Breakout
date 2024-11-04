@@ -8,7 +8,7 @@ namespace Phezu {
     
     static const size_t ENTITIES_BUFFER_SIZE = 128;
     
-    Engine::Engine() : m_HasInited(false), m_SceneManager(this), m_Input(this) { }
+    Engine::Engine() : m_HasInited(false), m_SceneManager(this), m_Input(this), m_Physics(this) { }
     
     int Engine::Init() {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -65,7 +65,9 @@ namespace Phezu {
         float deltaTime;
 
         std::vector<std::weak_ptr<Entity>> entitiesBuffer(ENTITIES_BUFFER_SIZE);
-        size_t count = 0;
+        size_t renderablesCount;
+        size_t staticsCount;
+        size_t dynamicsCount;
         
         SDL_Event event;
         
@@ -78,9 +80,15 @@ namespace Phezu {
             deltaTime = (currTime - prevTime) / (float)freqMs;
             prevTime = SDL_GetPerformanceCounter();
 
+            printf("FPS: %f\n", 1 / deltaTime);
+            
+            scene->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
+            m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount);
+            
             scene->LogicUpdate(deltaTime);
-            scene->GetRenderableEntities(entitiesBuffer, count);
-            m_Renderer->RenderUpdate(entitiesBuffer, count);
+            
+            scene->GetRenderableEntities(entitiesBuffer, renderablesCount);
+            m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);
         }
         
         Destroy();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include <typeindex>
 
 #include "Renderer.hpp"
@@ -26,10 +27,10 @@ namespace Phezu {
         const TransformData& GetTransformData() const { return m_TransformData; }
         ShapeData* GetShapeData() const { return m_ShapeData; }
         RenderData* GetRenderData() const { return m_RenderData; }
-        PhysicsData* GetPhysicsData() const { return m_PhysicsData; }
+        std::weak_ptr<PhysicsData> GetPhysicsData() const { return m_PhysicsData; }
         ShapeData* AddShapeData();
         RenderData* AddRenderData(Color tint = Color::White);
-        PhysicsData* AddPhysicsData(bool isStatic);
+        std::weak_ptr<PhysicsData> AddPhysicsData(bool isStatic);
         TransformData* GetParent() const { return m_Parent; }
         void SetParent(std::weak_ptr<Entity> parent);
         void RemoveParent();
@@ -108,7 +109,7 @@ namespace Phezu {
         TransformData m_TransformData;
         ShapeData* m_ShapeData;
         RenderData* m_RenderData;
-        PhysicsData* m_PhysicsData;
+        std::shared_ptr<PhysicsData> m_PhysicsData;
     private:
         std::vector<std::shared_ptr<BehaviourComponent>> m_BehaviourComponents;
     private:
