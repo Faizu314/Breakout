@@ -36,20 +36,22 @@ namespace Phezu {
     }
     
     void Physics::ResolveDynamicToStaticCollisions(std::shared_ptr<Entity> dynamicEntity, const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount) {
+        
+        CollisionData collisionData;
         for (size_t i = 0; i < staticCount; i++) {
             auto staticEntity = physicsEntities[i].lock();
 
-            if (!IsColliding(dynamicEntity, staticEntity)) {
+            if (!IsColliding(dynamicEntity, staticEntity, collisionData)) {
                 OnNotColliding(dynamicEntity, staticEntity);
                 continue;
             }
             
             OnColliding(dynamicEntity, staticEntity);
-            ResolveDynamicToStaticCollision(dynamicEntity, staticEntity);
+            ResolveDynamicToStaticCollision(dynamicEntity, staticEntity, collisionData);
         }
     }
     
-    bool Physics::IsColliding(std::shared_ptr<Entity> entityA, std::shared_ptr<Entity> entityB) {
+    bool Physics::IsColliding(std::shared_ptr<Entity> entityA, std::shared_ptr<Entity> entityB, CollisionData& cd) {
         auto physicsDataA = entityA->GetPhysicsData().lock();
         auto physicsDataB = entityB->GetPhysicsData().lock();
         
@@ -63,25 +65,56 @@ namespace Phezu {
         Vector2 ulB = transB->LocalToWorldPoint(shapeB->GetVertexPosition(ShapeData::VertexType::UpLeft));
         Vector2 drB = transB->LocalToWorldPoint(shapeB->GetVertexPosition(ShapeData::VertexType::DownRight));
         
-        int aMaxX = glm::max(ulA.X(), drA.X());
-        int aMinX = glm::min(ulA.X(), drA.X());
-        int aMaxY = glm::max(ulA.Y(), drA.Y());
-        int aMinY = glm::min(ulA.Y(), drA.Y());
+        cd.A.MaxX = glm::round(glm::max(ulA.X(), drA.X()));
+        cd.A.MinX = glm::round(glm::min(ulA.X(), drA.X()));
+        cd.A.MaxY = glm::round(glm::max(ulA.Y(), drA.Y()));
+        cd.A.MinY = glm::round(glm::min(ulA.Y(), drA.Y()));
         
-        int bMaxX = glm::max(ulB.X(), drB.X());
-        int bMinX = glm::min(ulB.X(), drB.X());
-        int bMaxY = glm::max(ulB.Y(), drB.Y());
-        int bMinY = glm::min(ulB.Y(), drB.Y());
+        cd.PixelCorrectionA = Vector2(cd.A.MaxX - glm::max(ulA.X(), drA.X()), cd.A.MaxY - glm::max(ulA.Y(), drA.Y()));
         
-        bool overlapX = aMinX <= bMaxX && aMaxX >= bMinX;
-        bool overlapY = aMinY <= bMaxY && aMaxY >= bMinY;
+        cd.B.MaxX = glm::round(glm::max(ulB.X(), drB.X()));
+        cd.B.MinX = glm::round(glm::min(ulB.X(), drB.X()));
+        cd.B.MaxY = glm::round(glm::max(ulB.Y(), drB.Y()));
+        cd.B.MinY = glm::round(glm::min(ulB.Y(), drB.Y()));
+        
+        cd.PixelCorrectionB = Vector2(cd.B.MaxX - glm::max(ulB.X(), drB.X()), cd.B.MaxY - glm::max(ulB.Y(), drB.Y()));
+        
+        bool overlapX = cd.A.MinX <= cd.B.MaxX && cd.A.MaxX >= cd.B.MinX;
+        bool overlapY = cd.A.MinY <= cd.B.MaxY && cd.A.MaxY >= cd.B.MinY;
 
         return overlapX && overlapY;
     }
     
-    void Physics::ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity) {
-        auto physicsData = dynamicEntity->GetPhysicsData();
-                
+    void Physics::ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity, CollisionData& collisionData) {
+        float aMidX = (collisionData.A.MinX + collisionData.A.MaxX) / 2.0;
+        float bMidX = (collisionData.B.MinX + collisionData.B.MaxX) / 2.0;
+        int deltaX = aMidX - bMidX;
+        
+        float aMidY = (collisionData.A.MinY + collisionData.A.MaxY) / 2.0;
+        float bMidY = (collisionData.B.MinY + collisionData.B.MaxY) / 2.0;
+        int deltaY = aMidY - bMidY;
+        
+        int xTranslate = 0, yTranslate = 0;
+        
+        if (glm::abs(deltaX) >= glm::abs(deltaY)) {
+            if (deltaX > 0) {
+                xTranslate = collisionData.B.MaxX - collisionData.A.MinX;
+            }
+            else {
+                xTranslate = collisionData.B.MinX - collisionData.A.MaxX;
+            }
+        }
+        if (glm::abs(deltaX) <= glm::abs(deltaY)) {
+            if (deltaY > 0) {
+                yTranslate = collisionData.B.MaxY - collisionData.A.MinY;
+            }
+            else {
+                yTranslate = collisionData.B.MinY - collisionData.A.MaxY;
+            }
+        }
+        
+        auto trans = dynamicEntity->GetTransformData();
+        trans->SetLocalPosition(trans->GetLocalPosition() + Vector2(xTranslate, yTranslate) + collisionData.PixelCorrectionA);
     }
     
     void Physics::OnColliding(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b) {

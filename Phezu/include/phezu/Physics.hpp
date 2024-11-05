@@ -13,14 +13,23 @@ namespace Phezu {
     class PhysicsData;
     
     class Physics {
+    private:
+        struct EntityRect {
+            int MinX, MaxX, MinY, MaxY;
+        };
+        struct CollisionData {
+            EntityRect A, B;
+            Vector2 PixelCorrectionA;
+            Vector2 PixelCorrectionB;
+        };
     public:
         Physics(Engine* engine);
     public:
         void PhysicsUpdate(const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount, size_t dynamicCount);
     private:
         void ResolveDynamicToStaticCollisions(std::shared_ptr<Entity> dynamicEntity, const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount);
-        void ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity);
-        bool IsColliding(std::shared_ptr<Entity> entityA, std::shared_ptr<Entity> entityB);
+        void ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity, CollisionData& collisionData);
+        bool IsColliding(std::shared_ptr<Entity> entityA, std::shared_ptr<Entity> entityB, CollisionData& collisionData);
     private:
         void CleanCollidingEntities();
         bool WereColliding(std::shared_ptr<PhysicsData> a, std::shared_ptr<PhysicsData> b);
