@@ -109,22 +109,22 @@ namespace Phezu {
         
         Vector2 relativeVel = aVel - bVel;
         
-        int xTranslate = 0, yTranslate = 0;
+        float xTranslate = 0, yTranslate = 0;
         
         if (glm::abs(relativeVel.X()) >= glm::abs(relativeVel.Y())) {
             if (relativeVel.X() < 0) {
-                xTranslate = collisionData.B.MaxX - collisionData.A.MinX;
+                xTranslate = collisionData.B.MaxX - collisionData.A.MinX - 0.4999;
             }
             else {
-                xTranslate = collisionData.B.MinX - collisionData.A.MaxX;
+                xTranslate = collisionData.B.MinX - collisionData.A.MaxX + 0.4999;
             }
         }
         if (glm::abs(relativeVel.X()) <= glm::abs(relativeVel.Y())) {
             if (relativeVel.Y() < 0) {
-                yTranslate = collisionData.B.MaxY - collisionData.A.MinY;
+                yTranslate = collisionData.B.MaxY - collisionData.A.MinY - 0.4999;
             }
             else {
-                yTranslate = collisionData.B.MinY - collisionData.A.MaxY;
+                yTranslate = collisionData.B.MinY - collisionData.A.MaxY + 0.4999;
             }
         }
         
