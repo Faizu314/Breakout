@@ -26,6 +26,19 @@ namespace Phezu {
             case SDL_SCANCODE_D:
                 inputData.D = isDown;
                 break;
+                
+            case SDL_SCANCODE_F:
+                inputData.F = isDown;
+                break;
+            case SDL_SCANCODE_G:
+                inputData.G = isDown;
+                break;
+            case SDL_SCANCODE_H:
+                inputData.H = isDown;
+                break;
+            case SDL_SCANCODE_SPACE:
+                inputData.Space = isDown;
+                break;
             default:
                 break;
         }

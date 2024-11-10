@@ -213,4 +213,8 @@ namespace Phezu {
         m_IsLoaded = false;
         m_IsSceneToRuntimeMappingValid = false;
     }
+    
+    long long unsigned int Scene::GetFrameCount() const {
+        return m_Engine->GetFrameCount();
+    }
 }

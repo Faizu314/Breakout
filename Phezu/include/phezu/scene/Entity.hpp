@@ -37,6 +37,7 @@ namespace Phezu {
         size_t GetChildCount();
         std::weak_ptr<Entity> GetChild(size_t childIndex);
         bool IsDirty();
+        long long unsigned int GetFrameCount() const;
     public:
         template<typename T>
         std::weak_ptr<T> GetComponent() {

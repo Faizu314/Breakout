@@ -65,6 +65,7 @@ namespace Phezu {
         SDL_Renderer* m_RendererPtr;
         glm::mat3 m_WorldToSdl;
         SDL_Texture* m_DefaultTex;
+        SDL_Texture* m_IntermediateTex;
     };
     
     std::shared_ptr<Texture> LoadTexture(const Renderer& renderer);

@@ -62,7 +62,9 @@ namespace Phezu {
         SDL_SetRenderTarget(m_RendererPtr, m_DefaultTex);
         SDL_SetRenderDrawColor(m_RendererPtr, 255, 255, 255, 255);
         SDL_RenderClear(m_RendererPtr);
-        SDL_SetRenderTarget(m_RendererPtr, nullptr);
+        
+        m_IntermediateTex = SDL_CreateTexture(m_RendererPtr, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, window.GetWidth(), window.GetHeight());
+        SDL_SetRenderTarget(m_RendererPtr, m_IntermediateTex);
     }
     
     Renderer::~Renderer() {
@@ -144,6 +146,9 @@ namespace Phezu {
     }
     
     void Renderer::RenderFrame() {
+        SDL_SetRenderTarget(m_RendererPtr, nullptr);
+        SDL_RenderCopy(m_RendererPtr, m_IntermediateTex, nullptr, nullptr);
         SDL_RenderPresent(m_RendererPtr);
+        SDL_SetRenderTarget(m_RendererPtr, m_IntermediateTex);
     }
 }

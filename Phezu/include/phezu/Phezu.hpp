@@ -30,12 +30,13 @@ namespace Phezu {
     public:
         Engine();
         int Init();
-        void CreateWindow(const std::string name, int width, int height);
+        void CreateWindow(const std::string name, int width, int height, int renderScale);
         std::weak_ptr<Scene> CreateScene(const std::string& name);
         void Run();
         void Destroy();
         std::weak_ptr<Prefab> CreatePrefab();
         std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);
+        long long unsigned int GetFrameCount() const { return m_FrameCount; }
     private:
         Window* m_Window;
         Renderer* m_Renderer;
@@ -44,5 +45,6 @@ namespace Phezu {
         Physics m_Physics;
         std::unordered_map<uint64_t, std::shared_ptr<Prefab>> m_Prefabs;
         bool m_HasInited;
+        long long unsigned int m_FrameCount;
     };
 }

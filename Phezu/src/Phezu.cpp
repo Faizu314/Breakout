@@ -8,7 +8,7 @@ namespace Phezu {
     
     static const size_t ENTITIES_BUFFER_SIZE = 128;
     
-    Engine::Engine() : m_HasInited(false), m_SceneManager(this), m_Input(this), m_Physics(this) { }
+    Engine::Engine() : m_HasInited(false), m_FrameCount(0), m_SceneManager(this), m_Input(this), m_Physics(this) { }
     
     int Engine::Init() {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -32,13 +32,13 @@ namespace Phezu {
         return 0;
     }
     
-    void Engine::CreateWindow(const std::string name, int width, int height) {
+    void Engine::CreateWindow(const std::string name, int width, int height, int renderScale) {
         if (m_Window != nullptr || !m_HasInited) {
             //TODO: Logging
             return;
         }
             
-        m_Window = new Window(name, width, height);
+        m_Window = new Window(name, width, height, renderScale);
         m_Renderer = new Renderer(*m_Window);
     }
     
@@ -79,16 +79,16 @@ namespace Phezu {
             Uint64 currTime = SDL_GetPerformanceCounter();
             deltaTime = (currTime - prevTime) / (float)freqMs;
             prevTime = SDL_GetPerformanceCounter();
-
-            printf("FPS: %f\n", 1 / deltaTime);
-            
-            scene->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
-            m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount);
             
             scene->LogicUpdate(deltaTime);
             
+            scene->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
+            m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount, deltaTime);
+            
             scene->GetRenderableEntities(entitiesBuffer, renderablesCount);
             m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);
+            
+            m_FrameCount++;
         }
         
         Destroy();

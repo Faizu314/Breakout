@@ -119,4 +119,8 @@ namespace Phezu {
         }
     }
     
+    long long unsigned int Entity::GetFrameCount() const {
+        return m_Scene.lock()->GetFrameCount();
+    }
+    
 }

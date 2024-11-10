@@ -28,6 +28,7 @@ namespace Phezu {
         void GetPhysicsEntities(std::vector<std::weak_ptr<Entity>>& entities, size_t& staticCount, size_t& dynamicCount) const;
         void GetRenderableEntities(std::vector<std::weak_ptr<Entity>>& entities, size_t& count) const;
         void Unload();
+        long long unsigned int GetFrameCount() const;
     private:
         void BuildEntityFromTemplate(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);
         void BuildEntityFromPrefabEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity);

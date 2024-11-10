@@ -8,6 +8,7 @@ namespace Phezu {
     
     struct InputData {
         bool W, A, S, D;
+        bool Space, F, G, H;
         Vector2 MousePos;
         bool LeftMouse, RightMouse, MiddleMouse;
     };
