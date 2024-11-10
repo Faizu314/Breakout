@@ -31,14 +31,14 @@ namespace Phezu {
         return Color(sdlColor.r, sdlColor.g, sdlColor.b, sdlColor.a);
     }
     
-    void GetSdlRect(SDL_Rect& rect, Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
+    void GetSdlRect(SDL_Rect& rect, Vector2 a, Vector2 b) {
         int minX, maxX, minY, maxY;
         
-        minX = glm::min(a.X(), glm::min(b.X(), glm::min(c.X(), d.X())));
-        maxX = glm::max(a.X(), glm::max(b.X(), glm::max(c.X(), d.X())));
+        minX = glm::min(a.X(), b.X());
+        maxX = glm::max(a.X(), b.X());
         
-        minY = glm::min(a.Y(), glm::min(b.Y(), glm::min(c.Y(), d.Y())));
-        maxY = glm::max(a.Y(), glm::max(b.Y(), glm::max(c.Y(), d.Y())));
+        minY = glm::min(a.Y(), b.Y());
+        maxY = glm::max(a.Y(), b.Y());
         
         rect.x = minX;
         rect.y = minY;
@@ -115,22 +115,16 @@ namespace Phezu {
         if (shapeData == nullptr || renderData == nullptr)
             return;
         
-        Vector2 upLeftLocal = shapeData->GetVertexPosition(ShapeData::VertexType::UpLeft);
         Vector2 upRightLocal = shapeData->GetVertexPosition(ShapeData::VertexType::UpRight);
-        Vector2 downRightLocal = shapeData->GetVertexPosition(ShapeData::VertexType::DownRight);
         Vector2 downLeftLocal = shapeData->GetVertexPosition(ShapeData::VertexType::DownLeft);
         
-        Vector2 upLeftWorld = transformData->LocalToWorldPoint(upLeftLocal);
         Vector2 upRightWorld = transformData->LocalToWorldPoint(upRightLocal);
-        Vector2 downRightWorld = transformData->LocalToWorldPoint(downRightLocal);
         Vector2 downLeftWorld = transformData->LocalToWorldPoint(downLeftLocal);
         
-        Vector2 upLeftSdl = WorldToSdlPosition(upLeftWorld);
         Vector2 upRightSdl = WorldToSdlPosition(upRightWorld);
-        Vector2 downRightSdl = WorldToSdlPosition(downRightWorld);
         Vector2 downLeftSdl = WorldToSdlPosition(downLeftWorld);
         
-        GetSdlRect(dest, upLeftSdl, upRightSdl, downRightSdl, downLeftSdl);
+        GetSdlRect(dest, downLeftSdl, upRightSdl);
         
         SDL_Texture* texture = m_DefaultTex;
         SDL_Color tint;
