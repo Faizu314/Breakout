@@ -49,4 +49,7 @@ namespace Phezu {
         Vector2(const glm::vec2& other) : m_Vector(other.x, other.y) {}
         glm::vec2 m_Vector;
     };
+    
+    
+    int RoundToPixel(float value);
 }

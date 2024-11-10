@@ -1,3 +1,4 @@
+#include "Phezu.hpp"
 #include "Renderer.hpp"
 #include "Window.hpp"
 #include "scene/Entity.hpp"
@@ -45,8 +46,8 @@ namespace Phezu {
         rect.h = maxY - minY;
     }
     
-    Renderer::Renderer(const Window& window)
-    : m_WorldToSdl(glm::mat3(1, 0, 0, 0, -1, 0, window.GetWidth() / 2.0,  window.GetHeight() / 2.0, 1))
+    Renderer::Renderer(Engine* engine, const Window& window)
+    : m_Engine(engine), m_WorldToSdl(glm::mat3(1, 0, 0, 0, -1,  0,  window.GetWidth() / 2.0,  window.GetHeight() / 2.0, 1))
     {
         int renderersFlag = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 
@@ -70,11 +71,15 @@ namespace Phezu {
     Renderer::~Renderer() {
         SDL_DestroyRenderer(m_RendererPtr);
     }
-
+    
     Vector2 Renderer::WorldToSdlPosition(const Vector2& worldPos) const {
-        glm::vec3 worldPos3(worldPos.X(), worldPos.Y(), 1.0);
+        int roundedX = RoundToPixel(worldPos.X());
+        int roundedY = RoundToPixel(worldPos.Y());
+        
+        glm::vec3 worldPos3(roundedX, roundedY, 1.0);
         glm::vec3 sdlPos3 = m_WorldToSdl * worldPos3;
-        return Vector2(glm::round(sdlPos3.x), glm::round(sdlPos3.y));
+        
+        return Vector2(sdlPos3.x, sdlPos3.y);
     }
     
     void Renderer::ClearFrame(const Color& bg) {

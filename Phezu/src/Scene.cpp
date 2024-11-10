@@ -157,6 +157,10 @@ namespace Phezu {
             }
         }
         
+        UpdateHierarchy();
+    }
+    
+    void Scene::UpdateHierarchy() {
         //TODO: can be optimised if traverse entities in hierarchy manner
         for (auto entity : m_RuntimeEntities) {
             if (entity.second->IsDirty()) {

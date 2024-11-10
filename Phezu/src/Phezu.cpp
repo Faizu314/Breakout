@@ -39,7 +39,7 @@ namespace Phezu {
         }
             
         m_Window = new Window(name, width, height, renderScale);
-        m_Renderer = new Renderer(*m_Window);
+        m_Renderer = new Renderer(this, *m_Window);
     }
     
     std::weak_ptr<Scene> Engine::CreateScene(const std::string& name) {
@@ -84,6 +84,8 @@ namespace Phezu {
             
             scene->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
             m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount, deltaTime);
+            
+            scene->UpdateHierarchy();
             
             scene->GetRenderableEntities(entitiesBuffer, renderablesCount);
             m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);

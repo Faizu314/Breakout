@@ -25,7 +25,7 @@ namespace Phezu {
     public:
         Physics(Engine* engine);
     public:
-        void PhysicsUpdate(const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount, size_t dynamicCount);
+        void PhysicsUpdate(const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount, size_t dynamicCount, float deltaTime);
     private:
         void ResolveDynamicToStaticCollisions(std::shared_ptr<Entity> dynamicEntity, const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount);
         void ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity, CollisionData& collisionData);
@@ -39,5 +39,7 @@ namespace Phezu {
     private:
         Engine* m_Engine;
         std::vector<std::pair<std::weak_ptr<PhysicsData>, std::weak_ptr<PhysicsData>>> m_CollidingEntities;
+    private:
+        float m_DeltaTime;
     };
 }

@@ -20,6 +20,10 @@ namespace Phezu {
     };
     
     class PhysicsData : public DataComponent {
+    private:
+        struct SimulationData {
+            Vector2 PrevPosition;
+        };
     public:
         PhysicsData(Entity* entity, bool isStatic) : DataComponent(entity), m_IsStatic(isStatic) {}
     public:
@@ -73,6 +77,8 @@ namespace Phezu {
         std::unordered_map<void*, std::function<void(const Collision&)>> m_OnCollisionEnterEvent;
         std::unordered_map<void*, std::function<void(const Collision&)>> m_OnCollisionStayEvent;
         std::unordered_map<void*, std::function<void(const Collision&)>> m_OnCollisionExitEvent;
+    private:
+        SimulationData m_SimulationData;
         
         friend Physics;
     };

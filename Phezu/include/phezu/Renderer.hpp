@@ -12,6 +12,7 @@ class SDL_Renderer;
 
 namespace Phezu {
     
+    class Engine;
     class Window;
     class Entity;
     class Vector2;
@@ -52,7 +53,7 @@ namespace Phezu {
     class Renderer {
     public:
         Renderer() = delete;
-        Renderer(const Window& window);
+        Renderer(Engine* engine, const Window& window);
         ~Renderer();
     public:
         void ClearFrame(const Color& bg);
@@ -62,6 +63,7 @@ namespace Phezu {
     private:
         Vector2 WorldToSdlPosition(const Vector2& worldPos) const;
     private:
+        Engine* m_Engine;
         SDL_Renderer* m_RendererPtr;
         glm::mat3 m_WorldToSdl;
         SDL_Texture* m_DefaultTex;

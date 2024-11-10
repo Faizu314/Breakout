@@ -21,4 +21,9 @@ namespace Phezu {
         
         return (dx * dx) + (dy * dy);
     }
+    
+    int RoundToPixel(float value) {
+        int x = glm::round(glm::abs(value));
+        return glm::round(value + x) - x;
+    }
 }
