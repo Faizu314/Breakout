@@ -92,18 +92,52 @@ namespace Phezu {
         bool overlapX = cd.A.MinX < cd.B.MaxX && cd.A.MaxX > cd.B.MinX;
         bool overlapY = cd.A.MinY < cd.B.MaxY && cd.A.MaxY > cd.B.MinY;
 
+        if (overlapX && overlapY) {
+            EntityRect aPrev = cd.A;
+            EntityRect bPrev = cd.B;
+            
+            Vector2 originalPosA = transA->GetLocalPosition();
+            Vector2 originalPosB = transB->GetLocalPosition();
+            
+            transA->SetLocalPosition(physicsDataA->m_SimulationData.PrevPosition);
+            transB->SetLocalPosition(physicsDataB->m_SimulationData.PrevPosition);
+            
+            transA->RecalculateLocalToWorld();
+            transB->RecalculateLocalToWorld();
+            
+            Vector2 ulA = transA->LocalToWorldPoint(shapeA->GetVertexPosition(ShapeData::VertexType::UpLeft));
+            Vector2 drA = transA->LocalToWorldPoint(shapeA->GetVertexPosition(ShapeData::VertexType::DownRight));
+            
+            Vector2 ulB = transB->LocalToWorldPoint(shapeB->GetVertexPosition(ShapeData::VertexType::UpLeft));
+            Vector2 drB = transB->LocalToWorldPoint(shapeB->GetVertexPosition(ShapeData::VertexType::DownRight));
+            
+            aPrev.MaxX = RoundToPixel(glm::max(ulA.X(), drA.X()));
+            aPrev.MinX = RoundToPixel(glm::min(ulA.X(), drA.X()));
+            aPrev.MaxY = RoundToPixel(glm::max(ulA.Y(), drA.Y()));
+            aPrev.MinY = RoundToPixel(glm::min(ulA.Y(), drA.Y()));
+            
+            bPrev.MaxX = RoundToPixel(glm::max(ulB.X(), drB.X()));
+            bPrev.MinX = RoundToPixel(glm::min(ulB.X(), drB.X()));
+            bPrev.MaxY = RoundToPixel(glm::max(ulB.Y(), drB.Y()));
+            bPrev.MinY = RoundToPixel(glm::min(ulB.Y(), drB.Y()));
+            
+            transA->SetLocalPosition(originalPosA);
+            transB->SetLocalPosition(originalPosB);
+            
+            transA->RecalculateLocalToWorld();
+            transB->RecalculateLocalToWorld();
+            
+            bool prevOverlapX = aPrev.MinX < bPrev.MaxX && aPrev.MaxX > bPrev.MinX;
+            bool prevOverlapY = aPrev.MinY < bPrev.MaxY && aPrev.MaxY > bPrev.MinY;
+            
+            cd.PenetrationX = !prevOverlapX;
+            cd.PenetrationY = !prevOverlapY;
+        }
+        
         return overlapX && overlapY;
     }
     
-    void Physics::ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity, CollisionData& collisionData) {
-        float aMidX = (collisionData.A.MinX + collisionData.A.MaxX) / 2.0;
-        float bMidX = (collisionData.B.MinX + collisionData.B.MaxX) / 2.0;
-        int deltaX = aMidX - bMidX;
-        
-        float aMidY = (collisionData.A.MinY + collisionData.A.MaxY) / 2.0;
-        float bMidY = (collisionData.B.MinY + collisionData.B.MaxY) / 2.0;
-        int deltaY = aMidY - bMidY;
-        
+    void Physics::ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity, CollisionData& cd) {
         Vector2 aVel = (dynamicEntity->GetTransformData()->GetLocalPosition() - dynamicEntity->GetPhysicsData().lock()->m_SimulationData.PrevPosition) / m_DeltaTime;
         Vector2 bVel = (staticEntity->GetTransformData()->GetLocalPosition() - staticEntity->GetPhysicsData().lock()->m_SimulationData.PrevPosition) / m_DeltaTime;
         
@@ -111,29 +145,30 @@ namespace Phezu {
         
         float xTranslate = 0, yTranslate = 0;
         
-        if (glm::abs(relativeVel.X()) >= glm::abs(relativeVel.Y())) {
+        if (cd.PenetrationX) {
             if (relativeVel.X() < 0) {
-                xTranslate = collisionData.B.MaxX - collisionData.A.MinX - 0.4999;
+                xTranslate = cd.B.MaxX - cd.A.MinX - 0.4999;
             }
             else {
-                xTranslate = collisionData.B.MinX - collisionData.A.MaxX + 0.4999;
+                xTranslate = cd.B.MinX - cd.A.MaxX + 0.4999;
             }
         }
-        if (glm::abs(relativeVel.X()) <= glm::abs(relativeVel.Y())) {
+        if (cd.PenetrationY) {
             if (relativeVel.Y() < 0) {
-                yTranslate = collisionData.B.MaxY - collisionData.A.MinY - 0.4999;
+                yTranslate = cd.B.MaxY - cd.A.MinY - 0.4999;
             }
             else {
-                yTranslate = collisionData.B.MinY - collisionData.A.MaxY + 0.4999;
+                yTranslate = cd.B.MinY - cd.A.MaxY + 0.4999;
             }
         }
+        
+        if (xTranslate == 0)
+            cd.PixelCorrectionA.SetX(0);
+        if (yTranslate == 0)
+            cd.PixelCorrectionA.SetY(0);
         
         auto trans = dynamicEntity->GetTransformData();
-        trans->SetLocalPosition(trans->GetLocalPosition() + Vector2(xTranslate, yTranslate) + collisionData.PixelCorrectionA);
-        auto resolvedPos = trans->GetLocalPosition();
-        
-        printf("%llu | SMaxX: %i, DMinX: %i, Tx: %i, Rx: %f\n", m_Engine->GetFrameCount(), collisionData.B.MaxX, collisionData.A.MinX, xTranslate, resolvedPos.X());
-        
+        trans->SetLocalPosition(trans->GetLocalPosition() + Vector2(xTranslate, yTranslate) + cd.PixelCorrectionA);
     }
     
     void Physics::OnColliding(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b) {

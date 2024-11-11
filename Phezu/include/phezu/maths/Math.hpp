@@ -52,4 +52,5 @@ namespace Phezu {
     
     
     int RoundToPixel(float value);
+    void RoundToPixel(Vector2& vec);
 }

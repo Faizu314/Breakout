@@ -26,4 +26,9 @@ namespace Phezu {
         int x = glm::round(glm::abs(value));
         return glm::round(value + x) - x;
     }
+    
+    void RoundToPixel(Vector2& vec) {
+        vec.Set(RoundToPixel(vec.X()), RoundToPixel(vec.Y()));
+        return vec;
+    }
 }

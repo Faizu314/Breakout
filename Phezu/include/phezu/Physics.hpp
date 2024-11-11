@@ -21,6 +21,7 @@ namespace Phezu {
             EntityRect A, B;
             Vector2 PixelCorrectionA;
             Vector2 PixelCorrectionB;
+            bool PenetrationX, PenetrationY;
         };
     public:
         Physics(Engine* engine);
