@@ -24,7 +24,6 @@ namespace Phezu {
     public:
         uint64_t GetPrefabID() const;
         uint64_t GetInstanceID() const;
-        std::weak_ptr<Entity> GetRuntimeEntity(PrefabEntity& entityPrefab);
     private:
         const std::weak_ptr<Scene> m_Scene;
         const uint64_t m_PrefabID;

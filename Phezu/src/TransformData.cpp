@@ -29,7 +29,7 @@ namespace Phezu {
     }
     
     void TransformData::RecalculateLocalToWorld() {
-        glm::mat3 localTransform = glm::mat3(1.0);
+        glm::mat3 localTransform(1.0);
         
         float Sx = m_LocalScale.X();
         float Sy = m_LocalScale.Y();

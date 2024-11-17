@@ -19,10 +19,4 @@ namespace Phezu {
         ConstructionToken token;
         return std::make_unique<EntityTemplate>(token, scene, prefabID, instanceID);
     }
-    
-    std::weak_ptr<Entity> GetRuntimeEntity(PrefabEntity& entityPrefab) {
-        //check if root prefab of componentPrefab is the same as the parent prefab of hierarchy entity.
-        //get path from the root to it.
-        //get runtime entity of hierarchy entity, traverse to the child entity using the path.
-    }
 }
