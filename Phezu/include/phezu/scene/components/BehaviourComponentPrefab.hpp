@@ -32,7 +32,7 @@ namespace Phezu {
     public:
         using BehaviourComponentPrefabBase::BehaviourComponentPrefabBase;
     public:
-        std::weak_ptr<BehaviourComponent> CreateComponent(std::weak_ptr<Entity> entity) const override {
+        std::weak_ptr<BehaviourComponent> CreateComponent(std::weak_ptr<Entity> entity) const override final {
             auto entityL = entity.lock();
             return entityL->AddComponent<T>();
         }

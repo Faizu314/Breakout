@@ -12,9 +12,9 @@ namespace Phezu {
     public:
         float X() const { return m_Vector.x; }
         float Y() const { return m_Vector.y; }
-        void SetX(float x) { m_Vector.x = x; }
-        void SetY(float y) { m_Vector.y = y; }
-        void Set(float x, float y) { SetX(x); SetY(y); }
+        Vector2 SetX(float x) { m_Vector.x = x; return *this; }
+        Vector2 SetY(float y) { m_Vector.y = y; return *this; }
+        Vector2 Set(float x, float y) { SetX(x); return SetY(y); }
     public:
         void Normalize();
         Vector2 Normalized() const { Vector2 a(*this); a.Normalize(); return a; }
