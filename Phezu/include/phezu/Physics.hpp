@@ -21,7 +21,6 @@ namespace Phezu {
         };
         struct CollisionData {
             EntityRect A, B;
-            bool PenetrationX, PenetrationY;
         };
     public:
         Physics(Engine* engine);

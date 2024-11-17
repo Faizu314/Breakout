@@ -48,7 +48,6 @@ namespace Phezu {
     }
     
     void Physics::ResolveDynamicToStaticCollisions(std::shared_ptr<Entity> dynamicEntity, const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount) {
-        
         CollisionData collisionData;
         for (size_t i = 0; i < staticCount; i++) {
             auto staticEntity = physicsEntities[i].lock();
@@ -90,83 +89,41 @@ namespace Phezu {
         bool overlapX = cd.A.MinX < cd.B.MaxX && cd.A.MaxX > cd.B.MinX;
         bool overlapY = cd.A.MinY < cd.B.MaxY && cd.A.MaxY > cd.B.MinY;
         
-        if (overlapX && overlapY) {
-            auto physicsDataA = entityA->GetPhysicsData().lock();
-            auto physicsDataB = entityB->GetPhysicsData().lock();
-            
-            Vector2 originalPosA = transA->GetLocalPosition();
-            Vector2 originalPosB = transB->GetLocalPosition();
-            
-            transA->SetLocalPosition(physicsDataA->m_SimulationData.PrevPosition);
-            transB->SetLocalPosition(physicsDataB->m_SimulationData.PrevPosition);
-            transA->RecalculateLocalToWorld();
-            transB->RecalculateLocalToWorld();
-            
-            EntityRect aPrev = GetWorldRectFromTransformAndShapeData(transA, shapeA);
-            EntityRect bPrev = GetWorldRectFromTransformAndShapeData(transB, shapeB);
-            
-            transA->SetLocalPosition(originalPosA);
-            transB->SetLocalPosition(originalPosB);
-            transA->RecalculateLocalToWorld();
-            transB->RecalculateLocalToWorld();
-            
-            bool prevOverlapX = aPrev.MinX < bPrev.MaxX && aPrev.MaxX > bPrev.MinX;
-            bool prevOverlapY = aPrev.MinY < bPrev.MaxY && aPrev.MaxY > bPrev.MinY;
-            
-            cd.PenetrationX = !prevOverlapX;
-            cd.PenetrationY = !prevOverlapY;
-        }
-        
         return overlapX && overlapY;
     }
     
     void Physics::ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity, CollisionData& cd) {
-        Vector2 velA = (dynamicEntity->GetTransformData()->GetLocalPosition() - dynamicEntity->GetPhysicsData().lock()->m_SimulationData.PrevPosition) / m_DeltaTime;
-        Vector2 velB = (staticEntity->GetTransformData()->GetLocalPosition() - staticEntity->GetPhysicsData().lock()->m_SimulationData.PrevPosition) / m_DeltaTime;
-        
-        Vector2 relativeVel = velA - velB;
+        glm::mat2 reflectionMat(1);
         
         float xTranslate = 0, yTranslate = 0;
-        
         float downPenY = glm::max(0.0f, cd.A.MaxY - cd.B.MinY);
         float upPenY = glm::max(0.0f, cd.B.MaxY - cd.A.MinY);
         float leftPenX = glm::max(0.0f, cd.A.MaxX - cd.B.MinX);
         float rightPenX = glm::max(0.0f, cd.B.MaxX - cd.A.MinX);
         
-        if (cd.PenetrationX) {
-            if (relativeVel.X() < 0 && rightPenX < leftPenX) {
-                xTranslate = cd.B.MaxX - cd.A.MinX + EPSILON;
-            }
-            else if (leftPenX < rightPenX) {
-                xTranslate = cd.B.MinX - cd.A.MaxX - EPSILON;
-            }
+        if (rightPenX <= glm::min(downPenY, upPenY) && rightPenX <= leftPenX) {
+            xTranslate = cd.B.MaxX - cd.A.MinX + EPSILON;
+            reflectionMat[0].x = -1;
         }
-        if (cd.PenetrationY) {
-            if (relativeVel.Y() < 0 && upPenY < downPenY) {
-                yTranslate = cd.B.MaxY - cd.A.MinY + EPSILON;
-            }
-            else if (downPenY < upPenY) {
-                yTranslate = cd.B.MinY - cd.A.MaxY - EPSILON;
-            }
+        else if (leftPenX <= glm::min(downPenY, upPenY) && rightPenX >= leftPenX) {
+            xTranslate = cd.B.MinX - cd.A.MaxX - EPSILON;
+            reflectionMat[0].x = -1;
         }
-        if (!cd.PenetrationX && !cd.PenetrationY) {
-            //prev collision not resolved properly due to floating point precision
-            
-            if (rightPenX <= leftPenX && rightPenX <= glm::min(downPenY, upPenY)) {
-                xTranslate = cd.B.MaxX - cd.A.MinX + EPSILON;
-            }
-            else if (rightPenX >= leftPenX && leftPenX <= glm::min(downPenY, upPenY)) {
-                xTranslate = cd.B.MinX - cd.A.MaxX - EPSILON;
-            }
-            if (upPenY <= downPenY && upPenY <= glm::min(leftPenX, rightPenX)) {
-                yTranslate = cd.B.MaxY - cd.A.MinY + EPSILON;
-            }
-            else if (upPenY >= downPenY && downPenY <= glm::min(leftPenX, rightPenX)) {
-                yTranslate = cd.B.MinY - cd.A.MaxY - EPSILON;
-            }
+        if (upPenY <= glm::min(leftPenX, rightPenX) && upPenY <= downPenY) {
+            yTranslate = cd.B.MaxY - cd.A.MinY + EPSILON;
+            reflectionMat[1].y = -1;
+        }
+        else if (downPenY <= glm::min(leftPenX, rightPenX) && upPenY >= downPenY) {
+            yTranslate = cd.B.MinY - cd.A.MaxY - EPSILON;
+            reflectionMat[1].y = -1;
         }
         
         auto trans = dynamicEntity->GetTransformData();
+        auto phys = dynamicEntity->GetPhysicsData().lock();
+        
+        glm::vec reflectedVel = reflectionMat * phys->Velocity;
+        phys->Velocity = Vector2(reflectedVel.x, reflectedVel.y);
+        
         trans->SetLocalPosition(trans->GetLocalPosition() + Vector2(xTranslate, yTranslate));
         trans->RecalculateLocalToWorld();
     }
