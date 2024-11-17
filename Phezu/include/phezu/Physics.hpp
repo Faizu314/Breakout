@@ -42,6 +42,7 @@ namespace Phezu {
         Engine* m_Engine;
         std::vector<std::pair<std::weak_ptr<PhysicsData>, std::weak_ptr<PhysicsData>>> m_CollidingEntities;
     private:
+        static const float EPSILON;
         float m_DeltaTime;
     };
 }

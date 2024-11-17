@@ -4,6 +4,8 @@
 
 namespace Phezu {
     
+    const float Physics::EPSILON = 0.000000;
+    
     Physics::Physics(Engine* engine) : m_Engine(engine) {}
     
     void Physics::CleanCollidingEntities() {
@@ -128,18 +130,40 @@ namespace Phezu {
         
         if (cd.PenetrationX) {
             if (relativeVel.X() < 0) {
-                xTranslate = cd.B.MaxX - cd.A.MinX;
+                xTranslate = cd.B.MaxX - cd.A.MinX + EPSILON;
             }
             else {
-                xTranslate = cd.B.MinX - cd.A.MaxX;
+                xTranslate = cd.B.MinX - cd.A.MaxX - EPSILON;
             }
         }
         if (cd.PenetrationY) {
             if (relativeVel.Y() < 0) {
-                yTranslate = cd.B.MaxY - cd.A.MinY;
+                yTranslate = cd.B.MaxY - cd.A.MinY + EPSILON;
             }
             else {
-                yTranslate = cd.B.MinY - cd.A.MaxY;
+                yTranslate = cd.B.MinY - cd.A.MaxY - EPSILON;
+            }
+        }
+        if (!cd.PenetrationX && !cd.PenetrationY) {
+            //prev collision not resolved properly due to floating point precision
+            float penetrationY = glm::min(glm::max(0.0f, cd.A.MaxY - cd.B.MinY), glm::max(0.0f, cd.B.MaxY - cd.A.MinY));
+            float penetrationX = glm::min(glm::max(0.0f, cd.A.MaxX - cd.B.MinX), glm::max(0.0f, cd.B.MaxX - cd.A.MinX));
+            
+            if (glm::abs(relativeVel.X()) >= glm::abs(relativeVel.Y())) {
+                if (relativeVel.X() < 0) {
+                    xTranslate = cd.B.MaxX - cd.A.MinX + EPSILON;
+                }
+                else if (relativeVel.X() > 0){
+                    xTranslate = cd.B.MinX - cd.A.MaxX - EPSILON;
+                }
+            }
+            if (glm::abs(relativeVel.X()) <= glm::abs(relativeVel.Y())) {
+                if (relativeVel.Y() < 0) {
+                    yTranslate = cd.B.MaxY - cd.A.MinY + EPSILON;
+                }
+                else if (relativeVel.Y() > 0){
+                    yTranslate = cd.B.MinY - cd.A.MaxY - EPSILON;
+                }
             }
         }
         
