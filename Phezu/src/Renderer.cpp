@@ -94,7 +94,7 @@ namespace Phezu {
         
         int index = 0;
         for (auto entity : renderableEntities) {
-            if (index == count)
+            if (index >= count)
                 break;
             DrawEntity(entity);
             index++;
