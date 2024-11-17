@@ -85,8 +85,6 @@ namespace Phezu {
             scene->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
             m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount, deltaTime);
             
-            scene->UpdateHierarchy();
-            
             scene->GetRenderableEntities(entitiesBuffer, renderablesCount);
             m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);
             

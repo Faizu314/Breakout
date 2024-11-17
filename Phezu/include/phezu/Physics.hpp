@@ -11,16 +11,16 @@ namespace Phezu {
     class Engine;
     class Entity;
     class PhysicsData;
+    class TransformData;
+    class ShapeData;
     
     class Physics {
     private:
         struct EntityRect {
-            int MinX, MaxX, MinY, MaxY;
+            float MinX, MaxX, MinY, MaxY;
         };
         struct CollisionData {
             EntityRect A, B;
-            Vector2 PixelCorrectionA;
-            Vector2 PixelCorrectionB;
             bool PenetrationX, PenetrationY;
         };
     public:
@@ -31,6 +31,7 @@ namespace Phezu {
         void ResolveDynamicToStaticCollisions(std::shared_ptr<Entity> dynamicEntity, const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount);
         void ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity, CollisionData& collisionData);
         bool IsColliding(std::shared_ptr<Entity> entityA, std::shared_ptr<Entity> entityB, CollisionData& collisionData);
+        EntityRect GetWorldRectFromTransformAndShapeData(TransformData* transData, ShapeData* shapeData);
     private:
         void CleanCollidingEntities();
         bool WereColliding(std::shared_ptr<PhysicsData> a, std::shared_ptr<PhysicsData> b);
