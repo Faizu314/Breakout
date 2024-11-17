@@ -128,42 +128,41 @@ namespace Phezu {
         
         float xTranslate = 0, yTranslate = 0;
         
+        float downPenY = glm::max(0.0f, cd.A.MaxY - cd.B.MinY);
+        float upPenY = glm::max(0.0f, cd.B.MaxY - cd.A.MinY);
+        float leftPenX = glm::max(0.0f, cd.A.MaxX - cd.B.MinX);
+        float rightPenX = glm::max(0.0f, cd.B.MaxX - cd.A.MinX);
+        
         if (cd.PenetrationX) {
-            if (relativeVel.X() < 0) {
+            if (relativeVel.X() < 0 && rightPenX < leftPenX) {
                 xTranslate = cd.B.MaxX - cd.A.MinX + EPSILON;
             }
-            else {
+            else if (leftPenX < rightPenX) {
                 xTranslate = cd.B.MinX - cd.A.MaxX - EPSILON;
             }
         }
         if (cd.PenetrationY) {
-            if (relativeVel.Y() < 0) {
+            if (relativeVel.Y() < 0 && upPenY < downPenY) {
                 yTranslate = cd.B.MaxY - cd.A.MinY + EPSILON;
             }
-            else {
+            else if (downPenY < upPenY) {
                 yTranslate = cd.B.MinY - cd.A.MaxY - EPSILON;
             }
         }
         if (!cd.PenetrationX && !cd.PenetrationY) {
             //prev collision not resolved properly due to floating point precision
-            float penetrationY = glm::min(glm::max(0.0f, cd.A.MaxY - cd.B.MinY), glm::max(0.0f, cd.B.MaxY - cd.A.MinY));
-            float penetrationX = glm::min(glm::max(0.0f, cd.A.MaxX - cd.B.MinX), glm::max(0.0f, cd.B.MaxX - cd.A.MinX));
             
-            if (glm::abs(relativeVel.X()) >= glm::abs(relativeVel.Y())) {
-                if (relativeVel.X() < 0) {
-                    xTranslate = cd.B.MaxX - cd.A.MinX + EPSILON;
-                }
-                else if (relativeVel.X() > 0){
-                    xTranslate = cd.B.MinX - cd.A.MaxX - EPSILON;
-                }
+            if (rightPenX <= leftPenX && rightPenX <= glm::min(downPenY, upPenY)) {
+                xTranslate = cd.B.MaxX - cd.A.MinX + EPSILON;
             }
-            if (glm::abs(relativeVel.X()) <= glm::abs(relativeVel.Y())) {
-                if (relativeVel.Y() < 0) {
-                    yTranslate = cd.B.MaxY - cd.A.MinY + EPSILON;
-                }
-                else if (relativeVel.Y() > 0){
-                    yTranslate = cd.B.MinY - cd.A.MaxY - EPSILON;
-                }
+            else if (rightPenX >= leftPenX && leftPenX <= glm::min(downPenY, upPenY)) {
+                xTranslate = cd.B.MinX - cd.A.MaxX - EPSILON;
+            }
+            if (upPenY <= downPenY && upPenY <= glm::min(leftPenX, rightPenX)) {
+                yTranslate = cd.B.MaxY - cd.A.MinY + EPSILON;
+            }
+            else if (upPenY >= downPenY && downPenY <= glm::min(leftPenX, rightPenX)) {
+                yTranslate = cd.B.MinY - cd.A.MaxY - EPSILON;
             }
         }
         
