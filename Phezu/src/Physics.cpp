@@ -32,7 +32,13 @@ namespace Phezu {
         
         CleanCollidingEntities();
         
-        //Apply velocities of everything
+        for (size_t i = staticCount; i < staticCount + dynamicCount; i++) {
+            auto dynamicEntity = physicsEntities[i].lock();
+            auto trans = dynamicEntity->GetTransformData();
+            auto phys = dynamicEntity->GetPhysicsData().lock();
+            trans->SetLocalPosition(trans->GetLocalPosition() + (phys->Velocity * deltaTime));
+            trans->RecalculateLocalToWorld();
+        }
         
         for (size_t i = staticCount; i < staticCount + dynamicCount; i++) {
             auto dynamicEntity = physicsEntities[i].lock();
@@ -57,8 +63,8 @@ namespace Phezu {
                 continue;
             }
             
-            OnColliding(dynamicEntity, staticEntity);
             ResolveDynamicToStaticCollision(dynamicEntity, staticEntity, collisionData);
+            OnColliding(dynamicEntity, staticEntity);
         }
     }
     
@@ -66,7 +72,7 @@ namespace Phezu {
         Vector2 ul = transData->LocalToWorldPoint(shapeData->GetVertexPosition(ShapeData::VertexType::UpLeft));
         Vector2 dr = transData->LocalToWorldPoint(shapeData->GetVertexPosition(ShapeData::VertexType::DownRight));
         
-        Physics::EntityRect rect;
+        EntityRect rect;
         
         rect.MaxX = glm::max(ul.X(), dr.X());
         rect.MinX = glm::min(ul.X(), dr.X());
@@ -79,7 +85,6 @@ namespace Phezu {
     bool Physics::IsColliding(std::shared_ptr<Entity> entityA, std::shared_ptr<Entity> entityB, CollisionData& cd) {        
         auto transA = entityA->GetTransformData();
         auto shapeA = entityA->GetShapeData();
-        
         auto transB = entityB->GetTransformData();
         auto shapeB = entityB->GetShapeData();
 
@@ -167,7 +172,8 @@ namespace Phezu {
             auto sharedC = a;
             auto sharedD = b;
             
-            return (sharedA == sharedC && sharedB == sharedD) || (sharedA == sharedD && sharedB == sharedC);
+            if ((sharedA == sharedC && sharedB == sharedD) || (sharedA == sharedD && sharedB == sharedC))
+                return true;
         }
         
         return false;
