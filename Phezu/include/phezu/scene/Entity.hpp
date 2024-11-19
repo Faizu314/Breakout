@@ -18,7 +18,7 @@ namespace Phezu {
     class Entity {
     public:
         Entity() = delete;
-        Entity(const std::weak_ptr<Scene> scene);
+        Entity(std::weak_ptr<Scene> scene);
         ~Entity();
         uint64_t GetEntityID() const;
         void SetActive(bool isActive);

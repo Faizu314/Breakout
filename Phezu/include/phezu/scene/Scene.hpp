@@ -28,6 +28,7 @@ namespace Phezu {
         void UpdateHierarchy();
         void GetPhysicsEntities(std::vector<std::weak_ptr<Entity>>& entities, size_t& staticCount, size_t& dynamicCount) const;
         void GetRenderableEntities(std::vector<std::weak_ptr<Entity>>& entities, size_t& count) const;
+        void BeginUnload();
         void Unload();
         long long unsigned int GetFrameCount() const;
     private:

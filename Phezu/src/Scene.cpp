@@ -154,6 +154,9 @@ namespace Phezu {
         for (auto entity : m_RuntimeEntities) {
             for (auto comp : entity.second->GetComponents<BehaviourComponent>()) {
                 comp.lock()->Update(deltaTime);
+                
+                if (!m_IsLoaded)
+                    return;
             }
         }
         
@@ -209,6 +212,11 @@ namespace Phezu {
                 count++;
             }
         }
+    }
+    
+    void Scene::BeginUnload() {
+        m_IsLoaded = false;
+        m_IsSceneToRuntimeMappingValid = false;
     }
     
     void Scene::Unload() {

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <vector>
+#include <string>
+#include <unordered_map>
 
 namespace Phezu {
     
@@ -12,15 +13,21 @@ namespace Phezu {
     public:
         SceneManager() = delete;
         SceneManager(Engine* engine);
+    public:
         std::weak_ptr<Scene> CreateScene(const std::string& name);
         std::weak_ptr<Scene> GetActiveScene() const;
     public:
-        void OnStartGame(); //load the scene at index 0
-        void LoadScene(std::weak_ptr<Scene> scene) const;
+        void OnStartGame();
+        void OnEndFrame();
+        void LoadScene(const std::string& sceneName);
         void UpdateScene(float deltaTime);
+        std::weak_ptr<Scene> GetMasterScene() const { return m_MasterScene; }
     private:
         Engine* m_Engine;
-        std::vector<std::shared_ptr<Scene>> m_AllScenes;
-        int m_ActiveSceneIndex;
+        std::shared_ptr<Scene> m_MasterScene;
+        std::unordered_map<std::string, std::shared_ptr<Scene>> m_AllScenes;
+        Scene* m_ActiveScene;
+        std::string m_SceneToLoad;
+        bool m_LoadSceneAfterFrame;
     };
 }

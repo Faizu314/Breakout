@@ -7,8 +7,16 @@
 namespace Phezu {
     
     static const size_t ENTITIES_BUFFER_SIZE = 128;
+    static Engine* s_Instance = nullptr;
     
-    Engine::Engine() : m_HasInited(false), m_FrameCount(0), m_SceneManager(this), m_Input(this), m_Physics(this) { }
+    Engine::Engine() : m_HasInited(false), m_IsRunning(false), m_FrameCount(0), m_SceneManager(this), m_Input(this), m_Physics(this) {}
+    
+    Engine& Engine::CreateEngine() {
+        if (s_Instance == nullptr)
+            s_Instance = new Engine();
+        
+        return *s_Instance;
+    }
     
     int Engine::Init() {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -43,12 +51,33 @@ namespace Phezu {
     }
     
     std::weak_ptr<Scene> Engine::CreateScene(const std::string& name) {
+        if (m_IsRunning) {
+            //TODO: Logging;
+            return std::weak_ptr<Scene>();
+        }
         if (!m_HasInited) {
-            //TODO: Logging
+            
+            return std::weak_ptr<Scene>();
+        }
+        if (name.empty()) {
+            
             return std::weak_ptr<Scene>();
         }
         
         return m_SceneManager.CreateScene(name);
+    }
+    
+    std::weak_ptr<Scene> Engine::GetMasterScene() {
+        return m_SceneManager.GetMasterScene();
+    }
+    
+    void Engine::LoadScene(const std::string& sceneName) {
+        if (!m_IsRunning) {
+            //TODO: Logging
+            return;
+        }
+        
+        m_SceneManager.LoadScene(sceneName);
     }
     
     void Engine::Run() {
@@ -58,7 +87,6 @@ namespace Phezu {
         }
 
         m_SceneManager.OnStartGame();
-        auto scene = m_SceneManager.GetActiveScene().lock();
         
         Uint64 prevTime = SDL_GetPerformanceCounter();
         Uint64 freqMs = SDL_GetPerformanceFrequency();
@@ -69,9 +97,13 @@ namespace Phezu {
         size_t staticsCount;
         size_t dynamicsCount;
         
+        std::weak_ptr<Scene> scene;
+        
         SDL_Event event;
         
-        while (true)
+        m_IsRunning = true;
+        
+        while (m_IsRunning)
         {
             if (!m_Input.PollInput())
                 break;
@@ -80,16 +112,36 @@ namespace Phezu {
             deltaTime = (currTime - prevTime) / (float)freqMs;
             prevTime = SDL_GetPerformanceCounter();
             
-            scene->LogicUpdate(deltaTime);
+            scene = m_SceneManager.GetMasterScene();
             
-            scene->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
-            m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount, deltaTime);
+            if (auto sceneL = scene.lock()) {
+                sceneL->LogicUpdate(deltaTime);
+                
+                sceneL->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
+                m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount, deltaTime);
+                
+                sceneL->GetRenderableEntities(entitiesBuffer, renderablesCount);
+                m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);
+            }
             
-            scene->GetRenderableEntities(entitiesBuffer, renderablesCount);
-            m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);
+            scene = m_SceneManager.GetActiveScene();
+            
+            if (auto sceneL = scene.lock()) {
+                sceneL->LogicUpdate(deltaTime);
+                
+                sceneL->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
+                m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount, deltaTime);
+                
+                sceneL->GetRenderableEntities(entitiesBuffer, renderablesCount);
+                m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);
+            }
+            
+            m_SceneManager.OnEndFrame();
             
             m_FrameCount++;
         }
+        
+        m_IsRunning = false;
         
         Destroy();
     }
