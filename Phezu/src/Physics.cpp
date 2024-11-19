@@ -1,4 +1,7 @@
-#include "Phezu.hpp"
+#include "Physics.hpp"
+#include "scene/Entity.hpp"
+#include "scene/components/PhysicsData.hpp"
+#include "scene/components/ShapeData.hpp"
 
 #include <algorithm>
 

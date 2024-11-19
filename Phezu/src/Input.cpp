@@ -1,4 +1,4 @@
-#include "Phezu.hpp"
+#include "Input.hpp"
 #include "SDL2/SDL.h"
 
 namespace Phezu {

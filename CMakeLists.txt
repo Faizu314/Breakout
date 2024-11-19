@@ -5,6 +5,7 @@ project(Breakout)
 
 set(PHEZU_SOURCES
     Phezu/src/Phezu.cpp
+    Phezu/src/Engine.cpp
     Phezu/src/Math.cpp
     Phezu/src/Input.cpp
     Phezu/src/Renderer.cpp
@@ -25,6 +26,7 @@ set(PHEZU_VENDOR_SOURCES
 )
 set(PHEZU_HEADERS
     Phezu/include/phezu/Phezu.hpp
+    Phezu/include/phezu/Engine.hpp
     Phezu/include/phezu/Renderer.hpp
     Phezu/include/phezu/Physics.hpp
     Phezu/include/phezu/Input.hpp

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <unordered_map>
-
+#include "Engine.hpp"
 #include "Window.hpp"
 #include "Input.hpp"
 #include "Renderer.hpp"
@@ -23,35 +22,7 @@
 
 namespace Phezu {
     
-    class Scene;
-    class Prefab;
-    
-    class Engine {
-    private:
-        Engine();
-    public:
-        static Engine& CreateEngine();
-    public:
-        int Init();
-        void Run();
-        std::weak_ptr<Scene> GetMasterScene();
-        void LoadScene(const std::string& sceneName);
-        void Destroy();
-        void CreateWindow(const std::string name, int width, int height, int renderScale);
-        std::weak_ptr<Scene> CreateScene(const std::string& name);
-        std::weak_ptr<Prefab> CreatePrefab();
-        std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);
-        long long unsigned int GetFrameCount() const { return m_FrameCount; }
-    private:
-        Window* m_Window;
-        Renderer* m_Renderer;
-        Input m_Input;
-        SceneManager m_SceneManager;
-        Physics m_Physics;
-    private:
-        std::unordered_map<uint64_t, std::shared_ptr<Prefab>> m_Prefabs;
-        bool m_HasInited;
-        bool m_IsRunning;
-        long long unsigned int m_FrameCount;
-    };
+    Engine& CreateEngine();
+    void LoadScene(const std::string& sceneName);
+    long long unsigned int GetFrameCount();
 }

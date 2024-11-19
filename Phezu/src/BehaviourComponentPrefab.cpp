@@ -1,7 +1,4 @@
 #include "scene/components/BehaviourComponentPrefab.hpp"
-#include "Phezu.hpp"
-#include "scene/Entity.hpp"
-#include "scene/Scene.hpp"
 
 namespace Phezu {
     

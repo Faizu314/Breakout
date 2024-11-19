@@ -1,4 +1,3 @@
-#include "Phezu.hpp"
 #include "Renderer.hpp"
 #include "Window.hpp"
 #include "scene/Entity.hpp"
