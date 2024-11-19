@@ -88,9 +88,7 @@ namespace Phezu {
         SDL_RenderClear(m_RendererPtr);
     }
     
-    void Renderer::RenderUpdate(const std::vector<std::weak_ptr<Entity>>& renderableEntities, size_t count, const Color& bg) {
-        ClearFrame(bg);
-        
+    void Renderer::DrawEntities(const std::vector<std::weak_ptr<Entity>>& renderableEntities, size_t count, const Color& bg) {
         int index = 0;
         for (auto entity : renderableEntities) {
             if (index >= count)
@@ -98,8 +96,6 @@ namespace Phezu {
             DrawEntity(entity);
             index++;
         }
-        
-        RenderFrame();
     }
     
     void Renderer::DrawEntity(std::weak_ptr<Entity> entity) {

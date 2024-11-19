@@ -81,7 +81,9 @@ namespace Phezu {
             //TODO: logging file
             return;
         }
-
+        
+        m_IsRunning = true;
+        
         m_SceneManager.OnStartGame();
         
         Uint64 prevTime = SDL_GetPerformanceCounter();
@@ -93,11 +95,10 @@ namespace Phezu {
         size_t staticsCount;
         size_t dynamicsCount;
         
-        std::weak_ptr<Scene> scene;
+        std::shared_ptr<Scene> masterScene = m_SceneManager.GetMasterScene().lock();
+        std::weak_ptr<Scene> activeScene;
         
         SDL_Event event;
-        
-        m_IsRunning = true;
         
         while (m_IsRunning)
         {
@@ -108,31 +109,28 @@ namespace Phezu {
             deltaTime = (currTime - prevTime) / (float)freqMs;
             prevTime = SDL_GetPerformanceCounter();
             
-            scene = m_SceneManager.GetMasterScene();
+            m_Renderer->ClearFrame();
             
-            if (auto sceneL = scene.lock()) {
+            masterScene->LogicUpdate(deltaTime);
+            
+            masterScene->GetRenderableEntities(entitiesBuffer, renderablesCount);
+            m_Renderer->DrawEntities(entitiesBuffer, renderablesCount);
+            
+            activeScene = m_SceneManager.GetActiveScene();
+            
+            if (auto sceneL = activeScene.lock()) {
                 sceneL->LogicUpdate(deltaTime);
                 
                 sceneL->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
                 m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount, deltaTime);
                 
                 sceneL->GetRenderableEntities(entitiesBuffer, renderablesCount);
-                m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);
+                m_Renderer->DrawEntities(entitiesBuffer, renderablesCount);
             }
             
-            scene = m_SceneManager.GetActiveScene();
+            m_Renderer->RenderFrame();
             
-            if (auto sceneL = scene.lock()) {
-                sceneL->LogicUpdate(deltaTime);
-                
-                sceneL->GetPhysicsEntities(entitiesBuffer, staticsCount, dynamicsCount);
-                m_Physics.PhysicsUpdate(entitiesBuffer, staticsCount, dynamicsCount, deltaTime);
-                
-                sceneL->GetRenderableEntities(entitiesBuffer, renderablesCount);
-                m_Renderer->RenderUpdate(entitiesBuffer, renderablesCount);
-            }
-            
-            m_SceneManager.OnEndFrame();
+            m_SceneManager.OnEndOfFrame();
             
             m_FrameCount++;
         }

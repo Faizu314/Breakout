@@ -18,9 +18,8 @@ namespace Phezu {
         std::weak_ptr<Scene> GetActiveScene() const;
     public:
         void OnStartGame();
-        void OnEndFrame();
+        void OnEndOfFrame();
         void LoadScene(const std::string& sceneName);
-        void UpdateScene(float deltaTime);
         std::weak_ptr<Scene> GetMasterScene() const { return m_MasterScene; }
     private:
         Engine* m_Engine;

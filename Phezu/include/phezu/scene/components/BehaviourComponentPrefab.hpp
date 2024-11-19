@@ -39,6 +39,7 @@ namespace Phezu {
         bool IsOfType(std::type_index type) const override {
             return std::type_index(typeid(T)) == type;
         }
+        void InitRuntimeComponent(std::weak_ptr<Scene> scene, uint64_t instanceID) const override {}
     protected:
         std::weak_ptr<Entity> GetRuntimeEntity(std::weak_ptr<Scene> scene, uint64_t instanceID) const {
             auto sceneL = scene.lock();

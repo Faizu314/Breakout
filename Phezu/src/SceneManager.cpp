@@ -27,11 +27,6 @@ namespace Phezu {
             m_ActiveScene->BeginUnload();
     }
     
-    void SceneManager::UpdateScene(float deltaTime) {
-        if (m_ActiveScene != nullptr)
-            m_ActiveScene->LogicUpdate(deltaTime);
-    }
-    
     std::weak_ptr<Scene> SceneManager::GetActiveScene() const {
         if (m_ActiveScene == nullptr)
             return std::weak_ptr<Scene>();
@@ -39,15 +34,15 @@ namespace Phezu {
         return m_AllScenes.at(m_SceneToLoad);
     }
     
-    void SceneManager::OnEndFrame() {
+    void SceneManager::OnEndOfFrame() {
         if (!m_LoadSceneAfterFrame)
             return;
         
         if (m_ActiveScene != nullptr)
             m_ActiveScene->Unload();
-        m_AllScenes[m_SceneToLoad]->Load();
         
         m_ActiveScene = m_AllScenes[m_SceneToLoad].get();
+        m_ActiveScene->Load();
         m_LoadSceneAfterFrame = false;
     }
 }
