@@ -37,6 +37,8 @@ namespace Phezu {
         void ApplyTemplateOverridesToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);
         void ApplyPrefabOverridesToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID);
     private:
+        void DestroyEntityInternal(uint64_t entityID);
+    private:
         Engine* const m_Engine;
         const std::string m_Name;
         bool m_IsLoaded;
@@ -44,5 +46,6 @@ namespace Phezu {
         std::vector<std::unique_ptr<EntityTemplate>> m_SceneEntities;
         std::unordered_map<uint64_t, uint64_t> m_SceneToRuntimeEntity;
         std::unordered_map<uint64_t, std::shared_ptr<Entity>> m_RuntimeEntities;
+        std::vector<uint64_t> m_EntitiesToDestroy;
     };
 }

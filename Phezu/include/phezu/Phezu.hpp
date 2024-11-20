@@ -24,5 +24,6 @@ namespace Phezu {
     
     Engine& CreateEngine();
     void LoadScene(const std::string& sceneName);
+    void Destroy(Entity* entity);
     long long unsigned int GetFrameCount();
 }

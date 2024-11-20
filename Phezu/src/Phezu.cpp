@@ -24,6 +24,13 @@ namespace Phezu {
         s_Instance->LoadScene(sceneName);
     }
     
+    void Destroy(Entity* entity) {
+        if (entity == nullptr)
+            return;
+        if (auto scene = entity->m_Scene.lock())
+            scene->DestroyEntity(entity->GetEntityID());
+    }
+    
     long long unsigned int GetFrameCount() {
         if (s_Instance == nullptr) {
             //TODO: Logging

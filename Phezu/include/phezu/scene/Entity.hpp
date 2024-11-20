@@ -119,5 +119,6 @@ namespace Phezu {
         
         friend void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> child);
         friend class Scene;
+        friend void Destroy(Entity* entity);
     };
 }

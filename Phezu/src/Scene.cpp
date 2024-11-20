@@ -34,6 +34,13 @@ namespace Phezu {
     }
     
     void Scene::DestroyEntity(uint64_t entityID) {
+        if (std::find(m_EntitiesToDestroy.begin(), m_EntitiesToDestroy.end(), entityID) != m_EntitiesToDestroy.end())
+            return;
+        
+        m_EntitiesToDestroy.push_back(entityID);
+    }
+    
+    void Scene::DestroyEntityInternal(uint64_t entityID) {
         auto it = m_RuntimeEntities.find(entityID);
         
         if (it == m_RuntimeEntities.end())
@@ -151,6 +158,11 @@ namespace Phezu {
     }
     
     void Scene::LogicUpdate(float deltaTime) {
+        for (auto entityID : m_EntitiesToDestroy)
+            DestroyEntityInternal(entityID);
+        
+        m_EntitiesToDestroy.clear();
+        
         for (auto entity : m_RuntimeEntities) {
             for (auto comp : entity.second->GetComponents<BehaviourComponent>()) {
                 comp.lock()->Update(deltaTime);
