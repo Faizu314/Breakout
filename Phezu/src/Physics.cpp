@@ -48,16 +48,11 @@ namespace Phezu {
                 
             ResolveDynamicToStaticCollisions(dynamicEntity, physicsEntities, staticCount);
         }
-        
-        for (size_t i = 0; i < staticCount + dynamicCount; i++) {
-            auto entityL = physicsEntities[i].lock();
-            
-            entityL->GetPhysicsData().lock()->m_SimulationData.PrevPosition = entityL->GetTransformData()->GetLocalPosition();
-        }
     }
     
     void Physics::ResolveDynamicToStaticCollisions(std::shared_ptr<Entity> dynamicEntity, const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount) {
         CollisionData collisionData;
+        
         for (size_t i = 0; i < staticCount; i++) {
             auto staticEntity = physicsEntities[i].lock();
 
