@@ -31,7 +31,7 @@ namespace Phezu {
         ShapeData* AddShapeData();
         RenderData* AddRenderData(Color tint = Color::White);
         std::weak_ptr<PhysicsData> AddPhysicsData(bool isStatic);
-        TransformData* GetParent() const { return m_Parent->GetTransformData(); }
+        TransformData* GetParent() const;
         void SetParent(std::weak_ptr<Entity> parent);
         void RemoveParent();
         size_t GetChildCount();

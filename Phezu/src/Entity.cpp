@@ -56,6 +56,12 @@ namespace Phezu {
         m_PhysicsData = std::make_shared<PhysicsData>(this, isStatic);
         return m_PhysicsData;
     }
+    TransformData* Entity::GetParent() const {
+        if (m_Parent == nullptr)
+            return nullptr;
+        
+        return m_Parent->GetTransformData();
+    }
     size_t Entity::GetChildCount() {
         return m_Children.size();
     }
