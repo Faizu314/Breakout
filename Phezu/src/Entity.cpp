@@ -9,15 +9,9 @@ namespace Phezu {
     
     uint64_t Entity::s_EntitiesCount = 0;
     
-    Entity::Entity(std::weak_ptr<Scene> scene) : m_Scene(scene), m_TransformData(this) {
+    Entity::Entity(std::weak_ptr<Scene> scene) : m_Scene(scene), m_TransformData(this), m_ShapeData(nullptr), m_RenderData(nullptr), m_PhysicsData(nullptr), m_Parent(nullptr), m_IsActive(true) {
         m_EntityID = s_EntitiesCount;
         s_EntitiesCount++;
-        
-        m_ShapeData = nullptr;
-        m_RenderData = nullptr;
-        m_PhysicsData = nullptr;
-        m_Parent = nullptr;
-        m_IsActive = true;
     }
     
     Entity::~Entity() {
@@ -94,13 +88,13 @@ namespace Phezu {
             if (parentL.get() == this)
                 return;
         
-        SetParent_Internal(m_Scene.lock()->GetEntity(m_EntityID), parent);
+        SetParentInternal(m_Scene.lock()->GetEntity(m_EntityID), parent);
     }
     
-    void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> parent) {
+    void SetParentInternal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> parent) {
         auto _thisL = _this.lock();
         if (auto parentL = parent.lock()) {
-            _thisL->m_Parent = parentL->GetTransformData();
+            _thisL->m_Parent = parentL.get();
             parentL->AddChild(_this);
             _thisL->RecalculateSubtreeTransformations();
         }
@@ -108,6 +102,11 @@ namespace Phezu {
     
     void Entity::RemoveParent() {
         
+    }
+    
+    void Entity::OnDestroyed() {
+        if (m_Parent != nullptr)
+            m_Parent->OnChildDestroyed();
     }
     
     void Entity::OnChildDestroyed() {

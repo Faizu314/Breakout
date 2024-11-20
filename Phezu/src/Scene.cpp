@@ -55,6 +55,7 @@ namespace Phezu {
         
         for (auto comp : it->second->m_BehaviourComponents)
             comp->OnDestroy();
+        it->second->OnDestroyed();
         
         m_RuntimeEntities.erase(it);
     }

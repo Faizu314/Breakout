@@ -31,7 +31,7 @@ namespace Phezu {
         ShapeData* AddShapeData();
         RenderData* AddRenderData(Color tint = Color::White);
         std::weak_ptr<PhysicsData> AddPhysicsData(bool isStatic);
-        TransformData* GetParent() const { return m_Parent; }
+        TransformData* GetParent() const { return m_Parent->GetTransformData(); }
         void SetParent(std::weak_ptr<Entity> parent);
         void RemoveParent();
         size_t GetChildCount();
@@ -98,12 +98,13 @@ namespace Phezu {
             }
         }
     private:
+        void OnDestroyed();
         void OnChildDestroyed();
         void AddChild(std::weak_ptr<Entity> child);
         void RecalculateSubtreeTransformations();
     private:
         const std::weak_ptr<Scene> m_Scene;
-        TransformData* m_Parent;
+        Entity* m_Parent;
         std::vector<std::weak_ptr<Entity>> m_Children;
     private:
         TransformData m_TransformData;
@@ -117,7 +118,7 @@ namespace Phezu {
         uint64_t m_EntityID;
         bool m_IsActive;
         
-        friend void SetParent_Internal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> child);
+        friend void SetParentInternal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> child);
         friend class Scene;
         friend void Destroy(Entity* entity);
     };
