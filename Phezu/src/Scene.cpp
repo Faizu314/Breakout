@@ -50,9 +50,12 @@ namespace Phezu {
         
         for (size_t i = 0; i < childCount; i++) {
             if (auto child = it->second->GetChild(i).lock())
-                DestroyEntity(child->GetEntityID());
+                DestroyEntityInternal(child->GetEntityID());
         }
-            
+        
+        for (auto comp : it->second->m_BehaviourComponents)
+            comp->OnDestroy();
+        
         m_RuntimeEntities.erase(it);
     }
     
