@@ -76,6 +76,14 @@ namespace Phezu {
         m_SceneManager.LoadScene(sceneName);
     }
     
+    float GetDeltaTime(Uint64& prevTime, Uint64& freqMs) {
+        Uint64 currTime = SDL_GetPerformanceCounter();
+        float deltaTime = (currTime - prevTime) / (float)freqMs;
+        prevTime = SDL_GetPerformanceCounter();
+        
+        return deltaTime;
+    }
+    
     void Engine::Run() {
         if (!m_HasInited || m_Window == nullptr || m_Renderer == nullptr) {
             //TODO: logging file
@@ -105,11 +113,9 @@ namespace Phezu {
             if (!m_Input.PollInput())
                 break;
             
-            Uint64 currTime = SDL_GetPerformanceCounter();
-            deltaTime = (currTime - prevTime) / (float)freqMs;
-            prevTime = SDL_GetPerformanceCounter();
-            
             m_Renderer->ClearFrame();
+            
+            deltaTime = GetDeltaTime(prevTime, freqMs);
             
             masterScene->LogicUpdate(deltaTime);
             
