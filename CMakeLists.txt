@@ -51,13 +51,8 @@ source_group("Header Files" FILES ${PHEZU_HEADERS})
 source_group("Source Files" FILES ${PHEZU_SOURCES})
 source_group("Vendor\\Source Files" FILES ${PHEZU_VENDOR_SOURCES})
 
-set(GAME_SOURCES
-    Game/src/main.cpp
-)
-
-set(GAME_HEADERS
-    Game/include/Game.hpp
-)
+file(GLOB_RECURSE GAME_SOURCES "${CMAKE_SOURCE_DIR}/Game/src/*.cpp")
+file(GLOB_RECURSE GAME_HEADERS "${CMAKE_SOURCE_DIR}/Game/include/*.hpp")
 
 source_group("Header Files" FILES ${GAME_HEADERS})
 source_group("Source Files" FILES ${GAME_SOURCES})
