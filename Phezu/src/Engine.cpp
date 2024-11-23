@@ -14,7 +14,7 @@ namespace Phezu {
     
     Engine::Engine() : m_HasInited(false), m_IsRunning(false), m_FrameCount(0), m_SceneManager(this), m_Input(this), m_Physics(this) {}
     
-    int Engine::Init() {
+    int Engine::Init(const std::string name, int width, int height, int renderScale) {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             //TODO: Logging::Log("Couldn't initialize SDL: %s\n", SDL_GetError());
             exit(1);
@@ -32,11 +32,6 @@ namespace Phezu {
         
         m_HasInited = true;
         
-        //atexit(Destroy);
-        return 0;
-    }
-    
-    void Engine::CreateWindow(const std::string name, int width, int height, int renderScale) {
         if (m_Window != nullptr || !m_HasInited) {
             //TODO: Logging
             return;
@@ -44,6 +39,8 @@ namespace Phezu {
             
         m_Window = new Window(name, width, height, renderScale);
         m_Renderer = new Renderer(this, *m_Window);
+        
+        return 0;
     }
     
     std::weak_ptr<Scene> Engine::CreateScene(const std::string& name) {

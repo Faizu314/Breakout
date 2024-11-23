@@ -21,12 +21,11 @@ namespace Phezu {
         Engine(Engine&&) = delete;
         Engine& operator=(Engine&&) = delete;
     public:
-        int Init();
+        int Init(const std::string name, int width, int height, int renderScale = 1);
         void Run();
         std::weak_ptr<Scene> GetMasterScene();
         void LoadScene(const std::string& sceneName);
         void Destroy();
-        void CreateWindow(const std::string name, int width, int height, int renderScale = 1);
         std::weak_ptr<Scene> CreateScene(const std::string& name);
         std::weak_ptr<Prefab> CreatePrefab();
         std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);
