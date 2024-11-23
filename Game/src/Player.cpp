@@ -27,6 +27,13 @@ void Player::Update(float deltaTime) {
 }
 
 void Player::OnCollisionEnter(const Phezu::Collision& collision) {
+    auto otherPhysics = collision.Other.lock();
+    auto otherPos = otherPhysics->GetEntity()->GetTransformData()->GetLocalPosition();
+    auto myPos = m_Transform->GetLocalPosition();
+    
+    float speed = otherPhysics->Velocity.Length();
+    otherPhysics->Velocity = (otherPhysics->Velocity + (otherPos - myPos) * 10).Normalized() * speed;
+    
     m_RenderData->Tint = Phezu::Color(255, 0, 0, 255);
 }
 
