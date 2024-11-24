@@ -17,6 +17,7 @@ namespace Phezu {
     class Input {
     public:
         Input(Engine* engine);
+        ~Input();
     public:
         bool PollInput();
     public:

@@ -14,12 +14,6 @@ namespace Phezu {
     class Renderer;
     
     class Engine {
-    private:
-        Engine();
-        Engine(const Engine&) = delete;
-        Engine& operator=(const Engine&) = delete;
-        Engine(Engine&&) = delete;
-        Engine& operator=(Engine&&) = delete;
     public:
         int Init(const std::string name, int width, int height, int renderScale = 1);
         void Run();
@@ -30,6 +24,12 @@ namespace Phezu {
         std::weak_ptr<Prefab> CreatePrefab();
         std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);
         long long unsigned int GetFrameCount() const { return m_FrameCount; }
+    private:
+        Engine();
+        Engine(const Engine&) = delete;
+        Engine& operator=(const Engine&) = delete;
+        Engine(Engine&&) = delete;
+        Engine& operator=(Engine&&) = delete;
     private:
         Window* m_Window;
         Renderer* m_Renderer;
@@ -48,5 +48,6 @@ namespace Phezu {
         friend void UnsubscribeToOnSceneLoaded(void* subscriber);
         friend std::weak_ptr<Entity> CreateEntity();
         friend std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
+        friend const InputData& GetInput();
     };
 }

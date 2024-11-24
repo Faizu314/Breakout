@@ -9,6 +9,10 @@ namespace Phezu {
         memset(&s_InputData, 0, sizeof(s_InputData));
     }
     
+    Input::~Input() {
+        memset(&s_InputData, 0, sizeof(s_InputData));
+    }
+    
     void ProcessKeyInput(InputData& inputData, const SDL_KeyboardEvent& event, bool isDown) {
         if (event.repeat > 0)
             return;

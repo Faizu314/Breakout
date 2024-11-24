@@ -29,6 +29,7 @@ namespace Phezu {
     std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
     void LoadScene(const std::string& sceneName);
     void Destroy(Entity* entity);
+    const InputData& GetInput();
     long long unsigned int GetFrameCount();
     
     template<typename T>

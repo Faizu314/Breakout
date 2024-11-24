@@ -57,6 +57,10 @@ namespace Phezu {
             scene->DestroyEntity(entity->GetEntityID());
     }
     
+    const InputData& GetInput() {
+        return s_Instance->m_Input.GetInput();
+    }
+    
     long long unsigned int GetFrameCount() {
         if (s_Instance == nullptr) {
             //TODO: Logging
