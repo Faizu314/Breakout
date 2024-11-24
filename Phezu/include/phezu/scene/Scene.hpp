@@ -17,7 +17,7 @@ namespace Phezu {
     public:
         Scene() = delete;
         Scene(Engine* engine, const std::string& name);
-        void CreateSceneEntity(uint64_t prefabEntityID = 0, Vector2 positionOverride = Vector2());
+        void CreateSceneEntity(uint64_t prefabEntityID = 0, Vector2 positionOverride = Vector2(), std::string tag = "Default");
         std::weak_ptr<Entity> CreateEntity();
         std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
         std::weak_ptr<Entity> GetEntity(uint64_t entityID) const;

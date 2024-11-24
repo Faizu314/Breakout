@@ -82,8 +82,10 @@ namespace Phezu {
         m_RuntimeEntities.erase(it);
     }
     
-    void Scene::CreateSceneEntity(uint64_t prefabEntityID, Vector2 positionOverride) {
+    void Scene::CreateSceneEntity(uint64_t prefabEntityID, Vector2 positionOverride, std::string tag) {
         m_SceneEntities.push_back(EntityTemplate::MakeUnique(shared_from_this(), prefabEntityID));
+        m_SceneEntities[m_SceneEntities.size() - 1]->OverrideTag = tag.compare("Default") != 0;
+        m_SceneEntities[m_SceneEntities.size() - 1]->TagOverride = tag;
         m_SceneEntities[m_SceneEntities.size() - 1]->OverridePosition = true;
         m_SceneEntities[m_SceneEntities.size() - 1]->PositionOverride = positionOverride;
     }
@@ -96,9 +98,13 @@ namespace Phezu {
         //TODO: Apply all template overrides here
         if (entityTemplate->OverridePosition)
             entity->GetTransformData()->SetLocalPosition(entityTemplate->PositionOverride);
+        if (entityTemplate->OverrideTag)
+            entity->SetTag(entityTemplate->TagOverride);
     }
     
     void Scene::BuildEntityFromPrefabEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity) {
+        entity->SetTag(prefabEntity->TagOverride);
+        
         entity->GetTransformData()->SetLocalPosition(prefabEntity->PositionOverride);
         entity->GetTransformData()->SetLocalScale(prefabEntity->ScaleOverride);
         

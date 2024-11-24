@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "maths/Math.hpp"
 
 namespace Phezu {
@@ -18,6 +19,8 @@ namespace Phezu {
     public:
         //if hierarchy entity is not from a prefab than use a default prefab template
         //EntityPrefabOverride OverridePrefab();
+        bool OverrideTag;
+        std::string TagOverride;
         bool OverridePosition;
         Vector2 PositionOverride;
         EntityTemplate(ConstructionToken token, std::weak_ptr<Scene> scene, uint64_t prefabID = 0);

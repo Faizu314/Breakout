@@ -6,7 +6,7 @@ namespace Phezu {
     PrefabEntity DEFAULT_PREFAB;
     
     PrefabEntity::PrefabEntity()
-    : m_PrefabEntityID(s_PrefabEntityCount), m_IsRoot(true), m_Root(0), m_PathSize(0), ScaleOverride(Vector2(1, 1)), ShapeSizeOverride(Vector2(10, 10)), TintOverride(Color::White) {
+    : m_PrefabEntityID(s_PrefabEntityCount), m_IsRoot(true), m_Root(0), m_PathSize(0), ScaleOverride(Vector2(1, 1)), ShapeSizeOverride(Vector2(10, 10)), TintOverride(Color::White), TagOverride("Default") {
         s_PrefabEntityCount++;
     }
     

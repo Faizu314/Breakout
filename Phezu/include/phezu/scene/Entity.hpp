@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <typeindex>
+#include <string>
 
 #include "Renderer.hpp"
 #include "scene/components/TransformData.hpp"
@@ -20,23 +21,29 @@ namespace Phezu {
         Entity() = delete;
         Entity(std::weak_ptr<Scene> scene);
         ~Entity();
+    public:
         uint64_t GetEntityID() const;
         void SetActive(bool isActive);
         bool GetActive() const;
+        bool IsDirty();
+        const std::string& GetTag() { return m_Tag; }
+        void SetTag(const std::string& tag) { m_Tag = tag; }
+    public:
         TransformData* GetTransformData();
         const TransformData& GetTransformData() const { return m_TransformData; }
         ShapeData* GetShapeData() const { return m_ShapeData; }
         RenderData* GetRenderData() const { return m_RenderData; }
         std::weak_ptr<PhysicsData> GetPhysicsData() const { return m_PhysicsData; }
+    public:
         ShapeData* AddShapeData();
         RenderData* AddRenderData(Color tint = Color::White);
         std::weak_ptr<PhysicsData> AddPhysicsData(bool isStatic);
+    public:
         TransformData* GetParent() const;
         void SetParent(std::weak_ptr<Entity> parent);
         void RemoveParent();
         size_t GetChildCount();
         std::weak_ptr<Entity> GetChild(size_t childIndex);
-        bool IsDirty();
     public:
         template<typename T>
         std::weak_ptr<T> GetComponent() {
@@ -129,6 +136,7 @@ namespace Phezu {
         static uint64_t s_EntitiesCount;
         uint64_t m_EntityID;
         bool m_IsActive;
+        std::string m_Tag;
         
         friend void SetParentInternal(std::weak_ptr<Entity> _this, std::weak_ptr<Entity> child);
         friend class Scene;

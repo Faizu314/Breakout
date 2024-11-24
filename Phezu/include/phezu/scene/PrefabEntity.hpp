@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "Renderer.hpp"
 #include "maths/Math.hpp"
 
@@ -16,6 +17,7 @@ namespace Phezu {
         ~PrefabEntity();
         uint64_t GetPrefabEntityID() const;
     public:
+        std::string TagOverride;
         Vector2 PositionOverride;
         Vector2 ScaleOverride;
         bool IsRenderable;

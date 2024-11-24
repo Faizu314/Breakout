@@ -9,7 +9,7 @@ namespace Phezu {
     
     uint64_t Entity::s_EntitiesCount = 0;
     
-    Entity::Entity(std::weak_ptr<Scene> scene) : m_Scene(scene), m_TransformData(this), m_ShapeData(nullptr), m_RenderData(nullptr), m_PhysicsData(nullptr), m_Parent(nullptr), m_IsActive(true) {
+    Entity::Entity(std::weak_ptr<Scene> scene) : m_Scene(scene), m_TransformData(this), m_ShapeData(nullptr), m_RenderData(nullptr), m_PhysicsData(nullptr), m_Parent(nullptr), m_IsActive(true), m_Tag("Default") {
         m_EntityID = s_EntitiesCount;
         s_EntitiesCount++;
     }
