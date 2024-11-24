@@ -13,13 +13,18 @@ namespace Phezu {
     
     Scene::Scene(Engine* engine, const std::string& name) : m_Engine(engine), m_Name(name), m_IsLoaded(false), m_IsSceneToRuntimeMappingValid(false) { }
     
-    std::weak_ptr<const Prefab> Scene::GetPrefab(uint64_t prefabID) {
-        return m_Engine->GetPrefab(prefabID);
-    }
-    
     std::weak_ptr<Entity> Scene::CreateEntity() {
         std::shared_ptr<Entity> entity = std::make_shared<Entity>(shared_from_this());
         m_RuntimeEntities.insert(std::make_pair(entity->GetEntityID(), entity));
+        
+        return entity;
+    }
+    
+    std::weak_ptr<Entity> Scene::CreateEntity(uint64_t prefabID) {
+        auto prefab = m_Engine->GetPrefab(prefabID).lock();
+        
+        auto entity = CreateEntity().lock();
+        BuildEntityFromPrefabEntity(entity, &prefab->RootEntity);
         
         return entity;
     }

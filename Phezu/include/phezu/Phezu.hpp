@@ -25,6 +25,8 @@ namespace Phezu {
     inline Engine* s_Instance;
     
     Engine& CreateEngine();
+    std::weak_ptr<Entity> CreateEntity();
+    std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
     void LoadScene(const std::string& sceneName);
     void Destroy(Entity* entity);
     long long unsigned int GetFrameCount();

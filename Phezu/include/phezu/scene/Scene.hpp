@@ -17,10 +17,10 @@ namespace Phezu {
     public:
         Scene() = delete;
         Scene(Engine* engine, const std::string& name);
-        std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);
         void CreateSceneEntity(uint64_t prefabEntityID = 0, Vector2 positionOverride = Vector2());
         std::weak_ptr<Entity> GetRuntimeEntityFromSceneEntity(uint64_t instanceID);
         std::weak_ptr<Entity> CreateEntity();
+        std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
         std::weak_ptr<Entity> GetEntity(uint64_t entityID) const;
         void DestroyEntity(uint64_t entityID);
         void Load();

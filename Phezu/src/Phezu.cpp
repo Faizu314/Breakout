@@ -13,6 +13,34 @@ namespace Phezu {
         return *s_Instance;
     }
     
+    std::weak_ptr<Entity> CreateEntity() {
+        if (s_Instance == nullptr) {
+            //TODO: Logging
+            return std::weak_ptr<Entity>();
+        }
+        
+        auto scene = s_Instance->m_SceneManager.GetActiveScene();
+        
+        if (auto sceneL = scene.lock())
+            return sceneL->CreateEntity();
+        else
+            return std::weak_ptr<Entity>();
+    }
+    
+    std::weak_ptr<Entity> CreateEntity(uint64_t prefabID) {
+        if (s_Instance == nullptr) {
+            //TODO: Logging
+            return std::weak_ptr<Entity>();
+        }
+        
+        auto scene = s_Instance->m_SceneManager.GetActiveScene();
+        
+        if (auto sceneL = scene.lock())
+            return sceneL->CreateEntity(prefabID);
+        else
+            return std::weak_ptr<Entity>();
+    }
+    
     void LoadScene(const std::string& sceneName) {
         if (s_Instance == nullptr) {
             //TODO: Logging

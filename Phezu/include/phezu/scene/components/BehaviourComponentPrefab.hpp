@@ -43,7 +43,6 @@ namespace Phezu {
     protected:
         std::weak_ptr<Entity> GetRuntimeEntity(std::weak_ptr<Scene> scene, uint64_t instanceID) const {
             auto sceneL = scene.lock();
-            std::weak_ptr<const Prefab> prefab = sceneL->GetPrefab(m_PrefabID);
             std::shared_ptr<Entity> rootEntity = sceneL->GetRuntimeEntityFromSceneEntity(instanceID).lock();
             
             std::shared_ptr<Entity> targetEntity = rootEntity;

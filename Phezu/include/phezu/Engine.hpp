@@ -46,5 +46,7 @@ namespace Phezu {
         template<typename T>
         friend void SubscribeToOnSceneLoaded(T* subscriber, void (T::*handler)(void));
         friend void UnsubscribeToOnSceneLoaded(void* subscriber);
+        friend std::weak_ptr<Entity> CreateEntity();
+        friend std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
     };
 }
