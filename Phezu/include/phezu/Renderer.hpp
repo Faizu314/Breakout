@@ -42,6 +42,8 @@ namespace Phezu {
         uint8_t r, g, b, a;
     public:
         static const Color White;
+        static const Color Green;
+        static const Color Red;
         static const Color Black;
     private:
         void ConvertToSDLColor(SDL_Color& sdlColor) const;

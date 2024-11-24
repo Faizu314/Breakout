@@ -47,26 +47,50 @@ void PrepareScenes(Phezu::Engine& engine) {
     auto ballBehaviour = ball->RootEntity.AddComponentPrefab<BallBehaviourPrefab>().lock();
     ballBehaviour->StartVelocity = Phezu::Vector2(60, 300) * 3;
     
-    auto brick = engine.CreatePrefab().lock();
-    brick->RootEntity.IsRenderable = true;
-    brick->RootEntity.IsCollidable = true;
-    brick->RootEntity.IsStatic = true;
-    brick->RootEntity.ShapeSizeOverride = Phezu::Vector2(60, 20);
-    brick->RootEntity.AddComponentPrefab<BrickPrefab>();
+    auto weakBrick = engine.CreatePrefab().lock();
+    weakBrick->RootEntity.IsRenderable = true;
+    weakBrick->RootEntity.IsCollidable = true;
+    weakBrick->RootEntity.IsStatic = true;
+    weakBrick->RootEntity.ShapeSizeOverride = Phezu::Vector2(60, 20);
+    auto brickBehaviour = weakBrick->RootEntity.AddComponentPrefab<BrickPrefab>().lock();
+    brickBehaviour->TotalHealth = 1;
     
-    // Test scene
+    auto normalBrick = engine.CreatePrefab().lock();
+    normalBrick->RootEntity.IsRenderable = true;
+    normalBrick->RootEntity.IsCollidable = true;
+    normalBrick->RootEntity.IsStatic = true;
+    normalBrick->RootEntity.ShapeSizeOverride = Phezu::Vector2(60, 20);
+    brickBehaviour = normalBrick->RootEntity.AddComponentPrefab<BrickPrefab>().lock();
+    brickBehaviour->TotalHealth = 2;
     
-    auto scene = engine.CreateScene("Test Scene").lock();
+    auto strongBrick = engine.CreatePrefab().lock();
+    strongBrick->RootEntity.IsRenderable = true;
+    strongBrick->RootEntity.IsCollidable = true;
+    strongBrick->RootEntity.IsStatic = true;
+    strongBrick->RootEntity.ShapeSizeOverride = Phezu::Vector2(60, 20);
+    brickBehaviour = strongBrick->RootEntity.AddComponentPrefab<BrickPrefab>().lock();
+    brickBehaviour->TotalHealth = 3;
+    
+    // Level 1
+    
+    auto scene = engine.CreateScene("Level 1").lock();
     
     scene->CreateSceneEntity(verticalWall->GetPrefabID(), Phezu::Vector2(400 + 5, 0));
     scene->CreateSceneEntity(verticalWall->GetPrefabID(), Phezu::Vector2(-401 - 4, 0));
     scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, 300 + 5));
     scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, -301 - 4));
-    
-    scene->CreateSceneEntity(brick->GetPrefabID(), Phezu::Vector2(0, 280));
-    
     scene->CreateSceneEntity(player->GetPrefabID(), Phezu::Vector2(0, -280));
     scene->CreateSceneEntity(ball->GetPrefabID(), Phezu::Vector2(0, 0));
+    
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(-320, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(-240, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(-160, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(-80, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(0, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(80, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(160, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(240, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(320, 280));
     
     // Test scene 2
     
@@ -77,7 +101,7 @@ void PrepareScenes(Phezu::Engine& engine) {
     scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, 300 + 5));
     scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, -301 - 4));
     
-    scene->CreateSceneEntity(brick->GetPrefabID(), Phezu::Vector2(-350, 280));
+    scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(-350, 280));
     
     scene->CreateSceneEntity(player->GetPrefabID(), Phezu::Vector2(0, -280));
     scene->CreateSceneEntity(ball->GetPrefabID(), Phezu::Vector2(0, 0));

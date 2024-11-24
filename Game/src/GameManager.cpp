@@ -1,5 +1,5 @@
 #include "GameManager.hpp"
 
 void GameManager::Start() {
-    Phezu::LoadScene("Test Scene");
+    Phezu::LoadScene("Level 1");
 }
