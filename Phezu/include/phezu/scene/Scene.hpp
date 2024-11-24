@@ -18,7 +18,6 @@ namespace Phezu {
         Scene() = delete;
         Scene(Engine* engine, const std::string& name);
         void CreateSceneEntity(uint64_t prefabEntityID = 0, Vector2 positionOverride = Vector2());
-        std::weak_ptr<Entity> GetRuntimeEntityFromSceneEntity(uint64_t instanceID);
         std::weak_ptr<Entity> CreateEntity();
         std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
         std::weak_ptr<Entity> GetEntity(uint64_t entityID) const;
@@ -35,7 +34,7 @@ namespace Phezu {
         void BuildEntityFromTemplate(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);
         void BuildEntityFromPrefabEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity);
         void ApplyTemplateOverridesToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);
-        void ApplyPrefabOverridesToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID);
+        void ApplyPrefabOverridesToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity);
     private:
         void CallStartOnEntity(std::shared_ptr<Entity> entity);
         void DestroyEntityInternal(uint64_t entityID);
@@ -45,7 +44,6 @@ namespace Phezu {
         bool m_IsLoaded;
         bool m_IsSceneToRuntimeMappingValid;
         std::vector<std::unique_ptr<EntityTemplate>> m_SceneEntities;
-        std::unordered_map<uint64_t, uint64_t> m_SceneToRuntimeEntity;
         std::unordered_map<uint64_t, std::shared_ptr<Entity>> m_RuntimeEntities;
         std::vector<uint64_t> m_EntitiesToDestroy;
     };

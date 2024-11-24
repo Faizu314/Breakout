@@ -53,6 +53,20 @@ namespace Phezu {
             }
         }
         template<typename T>
+        std::weak_ptr<T> GetComponent(uint8_t componentPrefabID) {
+            if (!std::is_base_of<BehaviourComponent, T>::value) {
+                //TODO: copy and paste the logging class
+                return;
+            }
+            
+            for (int i = 0; i < m_BehaviourComponents.size(); i++) {
+                auto* componentPtr = m_BehaviourComponents[i].get();
+                if (dynamic_cast<T*>(m_BehaviourComponents[i].get()) && componentPtr->GetComponentPrefabID() == componentPrefabID) {
+                    return std::static_pointer_cast<T>(m_BehaviourComponents[i]);
+                }
+            }
+        }
+        template<typename T>
         std::vector<std::weak_ptr<T>> GetComponents() {
             if (!std::is_base_of<T, BehaviourComponent>::value) {
                 //TODO: copy and paste the logging class
@@ -72,12 +86,10 @@ namespace Phezu {
             return comps;
         }
         template<typename T>
-        std::weak_ptr<T> AddComponent() {
+        std::weak_ptr<T> AddComponent(uint8_t componentPrefabID = -1) {
             static_assert(std::is_base_of<BehaviourComponent, T>::value, "Component T is not of type BehaviourComponent");
             
-            uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponent that are of the same type as T
-            
-            std::shared_ptr<T> component = std::make_shared<T>(this, componentID);
+            std::shared_ptr<T> component = std::make_shared<T>(this, componentPrefabID);
             
             m_BehaviourComponents.push_back(std::static_pointer_cast<BehaviourComponent>(component));
             

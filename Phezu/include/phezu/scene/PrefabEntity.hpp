@@ -52,7 +52,6 @@ namespace Phezu {
         std::weak_ptr<BehaviourComponentPrefabBase> GetComponentPrefab(size_t index) const;
         size_t GetChildCount() const;
         const PrefabEntity* GetChild(size_t childIndex) const;
-        std::weak_ptr<Entity> GetRuntimeEntity(uint64_t instanceID);
     private:
         PrefabEntity(uint64_t root, std::unique_ptr<size_t[]> path, size_t pathSize);
     private:

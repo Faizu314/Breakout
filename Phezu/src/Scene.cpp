@@ -30,7 +30,7 @@ namespace Phezu {
         
         auto entity = CreateEntity().lock();
         BuildEntityFromPrefabEntity(entity, &prefab->RootEntity);
-        //ApplyPrefabOverridesToEntity(entity, &prefab->RootEntity, m_RuntimeEntities.size() - 1)
+        ApplyPrefabOverridesToEntity(entity, &prefab->RootEntity);
         
         CallStartOnEntity(entity);
         
@@ -83,16 +83,9 @@ namespace Phezu {
     }
     
     void Scene::CreateSceneEntity(uint64_t prefabEntityID, Vector2 positionOverride) {
-        m_SceneEntities.push_back(EntityTemplate::MakeUnique(shared_from_this(), prefabEntityID, m_SceneEntities.size()));
+        m_SceneEntities.push_back(EntityTemplate::MakeUnique(shared_from_this(), prefabEntityID));
         m_SceneEntities[m_SceneEntities.size() - 1]->OverridePosition = true;
         m_SceneEntities[m_SceneEntities.size() - 1]->PositionOverride = positionOverride;
-    }
-    
-    std::weak_ptr<Entity> Scene::GetRuntimeEntityFromSceneEntity(uint64_t instanceID) {
-        if (!m_IsSceneToRuntimeMappingValid)
-            return std::weak_ptr<Entity>();
-        
-        return GetEntity(m_SceneToRuntimeEntity[instanceID]);
     }
     
     void Scene::BuildEntityFromTemplate(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate) {
@@ -138,17 +131,25 @@ namespace Phezu {
     void Scene::ApplyTemplateOverridesToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate) {
         std::shared_ptr<const Prefab> prefab = m_Engine->GetPrefab(entityTemplate->GetPrefabID()).lock();
         
-        ApplyPrefabOverridesToEntity(entity, &prefab->RootEntity, entityTemplate->GetInstanceID());
+        ApplyPrefabOverridesToEntity(entity, &prefab->RootEntity);
         
     }
     
-    void Scene::ApplyPrefabOverridesToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID) {
+    void Scene::ApplyPrefabOverridesToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity) {
         for (size_t i = 0; i < prefabEntity->GetComponentPrefabsCount(); i++) {
-            prefabEntity->GetComponentPrefab(i).lock()->InitRuntimeComponent(shared_from_this(), instanceID);
+            auto componentPrefab = prefabEntity->GetComponentPrefab(i).lock();
+            auto runtimeComponent = componentPrefab->GetRuntimeComponent(shared_from_this(), entity).lock();
+            
+            if (!runtimeComponent) {
+                //TODO: logging
+                continue;
+            }
+            
+            componentPrefab->InitRuntimeComponentInternal(shared_from_this(), runtimeComponent);
         }
         
         for (size_t i = 0; i < prefabEntity->GetChildCount(); i++) {
-            ApplyPrefabOverridesToEntity(entity->GetChild(i).lock(), prefabEntity->GetChild(i), instanceID);
+            ApplyPrefabOverridesToEntity(entity->GetChild(i).lock(), prefabEntity->GetChild(i));
         }
     }
     
@@ -156,8 +157,7 @@ namespace Phezu {
         for (size_t i = 0; i < m_SceneEntities.size(); i++) {
             auto entity = CreateEntity().lock();
             
-            m_SceneEntities[i]->m_RuntimeEntity = entity;
-            m_SceneToRuntimeEntity.insert(std::make_pair(m_SceneEntities[i]->GetInstanceID(), entity->GetEntityID()));
+            m_SceneEntities[i]->m_RuntimeRootEntity = entity;
             
             BuildEntityFromTemplate(entity, m_SceneEntities[i]);
         }
@@ -165,22 +165,19 @@ namespace Phezu {
         m_IsSceneToRuntimeMappingValid = true;
         
         for (size_t i = 0; i < m_SceneEntities.size(); i++) {
-            uint64_t entityID = m_SceneToRuntimeEntity[m_SceneEntities[i]->GetInstanceID()];
-            
-            ApplyTemplateOverridesToEntity(m_RuntimeEntities[entityID], m_SceneEntities[i]);
+            ApplyTemplateOverridesToEntity(m_SceneEntities[i]->m_RuntimeRootEntity.lock(), m_SceneEntities[i]);
         }
         
         m_IsLoaded = true;
         
-        //TODO: can be optimised if traverse entities in hierarchy manner
-        for (auto entity : m_RuntimeEntities) {
-            if (entity.second->IsDirty()) {
-                entity.second->RecalculateSubtreeTransformations();
-            }
-            for (auto comp : entity.second->GetComponents<BehaviourComponent>()) {
-                comp.lock()->Start();
+        for (auto [id, entity] : m_RuntimeEntities) {
+            if (entity->IsDirty()) {
+                entity->RecalculateSubtreeTransformations();
             }
         }
+        
+        for (auto [id, entity] : m_RuntimeEntities)
+            CallStartOnEntity(entity);
     }
     
     void Scene::LogicUpdate(float deltaTime) {
@@ -202,7 +199,6 @@ namespace Phezu {
     }
     
     void Scene::UpdateHierarchy() {
-        //TODO: can be optimised if traverse entities in hierarchy manner
         for (auto entity : m_RuntimeEntities) {
             if (entity.second->IsDirty()) {
                 entity.second->RecalculateSubtreeTransformations();
@@ -259,7 +255,6 @@ namespace Phezu {
     
     void Scene::Unload() {
         m_RuntimeEntities.clear();
-        m_SceneToRuntimeEntity.clear();
         m_IsLoaded = false;
         m_IsSceneToRuntimeMappingValid = false;
     }
