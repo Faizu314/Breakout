@@ -23,10 +23,27 @@ namespace Phezu {
     std::weak_ptr<Entity> Scene::CreateEntity(uint64_t prefabID) {
         auto prefab = m_Engine->GetPrefab(prefabID).lock();
         
+        if (!prefab) {
+            //TODO: logging
+            return std::weak_ptr<Entity>();
+        }
+        
         auto entity = CreateEntity().lock();
         BuildEntityFromPrefabEntity(entity, &prefab->RootEntity);
+        //ApplyPrefabOverridesToEntity(entity, &prefab->RootEntity, m_RuntimeEntities.size() - 1)
+        
+        CallStartOnEntity(entity);
         
         return entity;
+    }
+    
+    void Scene::CallStartOnEntity(std::shared_ptr<Entity> entity) {
+        for (auto comp : entity->m_BehaviourComponents) {
+            comp->Start();
+        }
+        
+        for (auto child : entity->m_Children)
+            CallStartOnEntity(child.lock());
     }
     
     std::weak_ptr<Entity> Scene::GetEntity(uint64_t entityID) const {

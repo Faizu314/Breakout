@@ -37,6 +37,7 @@ namespace Phezu {
         void ApplyTemplateOverridesToEntity(std::shared_ptr<Entity> entity, std::unique_ptr<EntityTemplate>& entityTemplate);
         void ApplyPrefabOverridesToEntity(std::shared_ptr<Entity> entity, const PrefabEntity* prefabEntity, uint64_t instanceID);
     private:
+        void CallStartOnEntity(std::shared_ptr<Entity> entity);
         void DestroyEntityInternal(uint64_t entityID);
     private:
         Engine* const m_Engine;
