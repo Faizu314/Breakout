@@ -1,18 +1,12 @@
+#include <iostream>
 #include "Game.hpp"
-#include "Phezu.hpp"
 
-#if __APPLE__
+Phezu::Engine& engine = Phezu::CreateEngine();
 
 int main(int argc, const char* argv[]) {
-    Phezu::Engine engine;
+    engine.Init("Phezu", 800, 600);
     
-    auto prefab = engine.CreatePrefab().lock();
+    PrepareScenes(engine);
     
-    auto scene = engine.CreateScene("Test Scene").lock();
-    scene->CreateSceneEntity(prefab->RootEntity.GetPrefabEntityID());
-    
-    engine.Init();
     engine.Run();
 }
-
-#endif
