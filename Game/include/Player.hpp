@@ -2,20 +2,19 @@
 
 #include "Phezu.hpp"
 
+//[GeneratePrefab]
 class Player : public Phezu::BehaviourComponent {
 public:
     Player(Phezu::Entity* entity, uint8_t componentID);
 public:
     void Start() override;
-    
     void Update(float deltaTime) override;
-    
-    void OnCollisionEnter(const Phezu::Collision& collision);
-    
-    void OnCollisionExit(const Phezu::Collision& collision);
-    
     void OnDestroy() override {}
+public:
+    void OnCollisionEnter(const Phezu::Collision& collision);
+    void OnCollisionExit(const Phezu::Collision& collision);
 private:
+    //[PrefabOverride(MoveSpeed)]
     float m_MoveSpeed;
 private:
     Phezu::TransformData* m_Transform;
@@ -31,9 +30,7 @@ public:
 public:
     float MoveSpeed;
 public:
-    void InitRuntimeComponent(std::weak_ptr<Phezu::Scene> scene, uint64_t instanceID) const override {
-        auto e = GetRuntimeComponent(scene, instanceID);
-        auto eL = e.lock();
-        eL->m_MoveSpeed = MoveSpeed;
+    void InitRuntimeComponent(std::weak_ptr<Phezu::Scene> scene, std::shared_ptr<Player> component) const override {
+        component->m_MoveSpeed = MoveSpeed;
     }
 };

@@ -1,17 +1,6 @@
 #include "Game.hpp"
 
 void PrepareScenes(Phezu::Engine& engine) {
-    // Master Scene
-    
-    auto masterScene = engine.GetMasterScene().lock();
-    
-    auto gameManager = engine.CreatePrefab().lock();
-    gameManager->RootEntity.IsRenderable = false;
-    gameManager->RootEntity.IsCollidable = false;
-    gameManager->RootEntity.AddComponentPrefab<GameManagerPrefab>();
-    
-    masterScene->CreateSceneEntity(gameManager->GetPrefabID());
-    
     // Prefabs
     
     auto player = engine.CreatePrefab().lock();
@@ -22,7 +11,7 @@ void PrepareScenes(Phezu::Engine& engine) {
     player->RootEntity.ShapePivotOverride = Phezu::Vector2(0, 0);
     player->RootEntity.TintOverride = Phezu::Color(0, 255, 0, 255);
     auto comp = player->RootEntity.AddComponentPrefab<PlayerPrefab>().lock();
-    comp->MoveSpeed = 800;
+    comp->MoveSpeed = GameConstants::PLAYER_MOVEMENT_SPEED;
     
     auto verticalWall = engine.CreatePrefab().lock();
     verticalWall->RootEntity.IsRenderable = true;
@@ -45,7 +34,7 @@ void PrepareScenes(Phezu::Engine& engine) {
     ball->RootEntity.ShapeSizeOverride = Phezu::Vector2(10, 10);
     ball->RootEntity.TintOverride = Phezu::Color(0, 255, 0, 255);
     auto ballBehaviour = ball->RootEntity.AddComponentPrefab<BallBehaviourPrefab>().lock();
-    ballBehaviour->StartVelocity = Phezu::Vector2(60, 300) * 3;
+    ballBehaviour->StartVelocity = Phezu::Vector2(0, GameConstants::BALL_MOVEMENT_SPEED);
     
     auto weakBrick = engine.CreatePrefab().lock();
     weakBrick->RootEntity.IsRenderable = true;
@@ -71,6 +60,19 @@ void PrepareScenes(Phezu::Engine& engine) {
     brickBehaviour = strongBrick->RootEntity.AddComponentPrefab<BrickPrefab>().lock();
     brickBehaviour->TotalHealth = 3;
     
+    // Master Scene
+    
+    auto masterScene = engine.GetMasterScene().lock();
+    
+    auto gameManager = engine.CreatePrefab().lock();
+    gameManager->RootEntity.IsRenderable = false;
+    gameManager->RootEntity.IsCollidable = false;
+    auto gmBehaviourL = gameManager->RootEntity.AddComponentPrefab<GameManagerPrefab>().lock();
+    gmBehaviourL->PlayerPrefabID = player->GetPrefabID();
+    gmBehaviourL->BallPrefabID = ball->GetPrefabID();
+    
+    masterScene->CreateSceneEntity(gameManager->GetPrefabID());
+    
     // Level 1
     
     auto scene = engine.CreateScene("Level 1").lock();
@@ -78,9 +80,7 @@ void PrepareScenes(Phezu::Engine& engine) {
     scene->CreateSceneEntity(verticalWall->GetPrefabID(), Phezu::Vector2(400 + 5, 0));
     scene->CreateSceneEntity(verticalWall->GetPrefabID(), Phezu::Vector2(-401 - 4, 0));
     scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, 300 + 5));
-    scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, -301 - 4));
-    scene->CreateSceneEntity(player->GetPrefabID(), Phezu::Vector2(0, -280));
-    scene->CreateSceneEntity(ball->GetPrefabID(), Phezu::Vector2(0, 0));
+    scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, -301 - 4), GameConstants::OBSTACLE_TAG);
     
     scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(-320, 280));
     scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(-240, 280));
@@ -99,10 +99,7 @@ void PrepareScenes(Phezu::Engine& engine) {
     scene->CreateSceneEntity(verticalWall->GetPrefabID(), Phezu::Vector2(400 + 5, 0));
     scene->CreateSceneEntity(verticalWall->GetPrefabID(), Phezu::Vector2(-401 - 4, 0));
     scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, 300 + 5));
-    scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, -301 - 4));
+    scene->CreateSceneEntity(horizontalWall->GetPrefabID(), Phezu::Vector2(0, -301 - 4), "DeathWall");
     
     scene->CreateSceneEntity(weakBrick->GetPrefabID(), Phezu::Vector2(-350, 280));
-    
-    scene->CreateSceneEntity(player->GetPrefabID(), Phezu::Vector2(0, -280));
-    scene->CreateSceneEntity(ball->GetPrefabID(), Phezu::Vector2(0, 0));
 }

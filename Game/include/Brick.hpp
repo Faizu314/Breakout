@@ -24,8 +24,7 @@ class BrickPrefab : public Phezu::BehaviourComponentPrefab<Brick> {
 public:
     int TotalHealth;
 public:
-    void InitRuntimeComponent(std::weak_ptr<Phezu::Scene> scene, uint64_t instanceID) const override {
-        auto eL = GetRuntimeComponent(scene, instanceID).lock();
-        eL->m_TotalHealth = TotalHealth;
+    void InitRuntimeComponent(std::weak_ptr<Phezu::Scene> scene, std::shared_ptr<Brick> component) const override {
+        component->m_TotalHealth = TotalHealth;
     }
 };

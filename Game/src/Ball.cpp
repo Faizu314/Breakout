@@ -1,3 +1,4 @@
+#include "Game.hpp"
 #include "Ball.hpp"
 
 void Ball::Start() {
@@ -11,8 +12,11 @@ void Ball::Start() {
 }
 
 void Ball::OnCollisionEnter(const Phezu::Collision& collision) {
-    m_RenderData->Tint = Phezu::Color(255, 0, 0, 255);
+    if (collision.Other.lock()->GetEntity()->GetTag() == GameConstants::OBSTACLE_TAG) {
+        _GameManager->OnPlayerLostLife();
+        Phezu::Destroy(m_Entity);
+    }
 }
 void Ball::OnCollisionExit(const Phezu::Collision& collision) {
-    m_RenderData->Tint = Phezu::Color(0, 255, 0, 255);
+    
 }

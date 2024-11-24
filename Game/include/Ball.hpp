@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Phezu.hpp"
+#include "GameManager.hpp"
 
 class Ball : public Phezu::BehaviourComponent {
 public:
@@ -11,6 +12,8 @@ public:
     void OnDestroy() override {}
     void OnCollisionEnter(const Phezu::Collision& collision);
     void OnCollisionExit(const Phezu::Collision& collision);
+public:
+    GameManager* _GameManager;
 private:
     Phezu::Vector2 m_StartVelocity;
     Phezu::RenderData* m_RenderData;
@@ -24,8 +27,7 @@ public:
 public:
     Phezu::Vector2 StartVelocity;
 public:
-    void InitRuntimeComponent(std::weak_ptr<Phezu::Scene> scene, uint64_t instanceID) const override {
-        auto eL = GetRuntimeComponent(scene, instanceID).lock();
-        eL->m_StartVelocity = StartVelocity;
+    void InitRuntimeComponent(std::weak_ptr<Phezu::Scene> scene, std::shared_ptr<Ball> component) const override {
+        component->m_StartVelocity = StartVelocity;
     }
 };
