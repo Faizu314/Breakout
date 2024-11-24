@@ -43,5 +43,8 @@ namespace Phezu {
         long long unsigned int m_FrameCount;
         
         friend Engine& CreateEngine();
+        template<typename T>
+        friend void SubscribeToOnSceneLoaded(T* subscriber, void (T::*handler)(void));
+        friend void UnsubscribeToOnSceneLoaded(void* subscriber);
     };
 }

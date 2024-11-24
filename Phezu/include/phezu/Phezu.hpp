@@ -22,8 +22,17 @@
 
 namespace Phezu {
     
+    inline Engine* s_Instance;
+    
     Engine& CreateEngine();
     void LoadScene(const std::string& sceneName);
     void Destroy(Entity* entity);
     long long unsigned int GetFrameCount();
+    
+    template<typename T>
+    void SubscribeToOnSceneLoaded(T* subscriber, void (T::*handler)(void)) {
+        s_Instance->m_SceneManager.SubscribeToOnSceneLoaded(subscriber, handler);
+    }
+    
+    void UnsubscribeToOnSceneLoaded(void* subscriber);
 }

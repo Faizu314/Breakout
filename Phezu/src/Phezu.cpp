@@ -6,8 +6,6 @@
 
 namespace Phezu {
     
-    static Engine* s_Instance = nullptr;
-    
     Engine& CreateEngine() {
         if (s_Instance == nullptr)
             s_Instance = new Engine();
@@ -38,5 +36,9 @@ namespace Phezu {
         }
         
         return s_Instance->GetFrameCount();
+    }
+    
+    void UnsubscribeToOnSceneLoaded(void* subscriber) {
+        s_Instance->m_SceneManager.UnsubscribeToOnSceneLoaded(subscriber);
     }
 }

@@ -34,6 +34,13 @@ namespace Phezu {
         return m_AllScenes.at(m_SceneToLoad);
     }
     
+    void SceneManager::UnsubscribeToOnSceneLoaded(void* subscriber) {
+        if (m_OnSceneLoaded.find(subscriber) == m_OnSceneLoaded.end())
+            return;
+        
+        m_OnSceneLoaded.erase(subscriber);
+    }
+    
     void SceneManager::OnEndOfFrame() {
         if (!m_LoadSceneAfterFrame)
             return;
@@ -44,5 +51,8 @@ namespace Phezu {
         m_ActiveScene = m_AllScenes[m_SceneToLoad].get();
         m_ActiveScene->Load();
         m_LoadSceneAfterFrame = false;
+        
+        for (auto sub : m_OnSceneLoaded)
+            sub.second();
     }
 }
