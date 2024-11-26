@@ -50,6 +50,22 @@ namespace Phezu {
         glm::vec2 m_Vector;
     };
     
+    inline float Clamp01(float value) {
+        return glm::clamp<float>(value, 0, 1);
+    }
+    
+    inline float Clamp(float value, float min, float max) {
+        return glm::clamp(value, min, max);
+    }
+    
+    inline float Lerp(float start, float end, float t) {
+        t = Clamp01(t);
+        return start + (end - start) * t;
+    }
+    
+    inline int Sign(float value) {
+        return glm::sign(value);
+    }
     
     int RoundToPixel(float value);
     void RoundToPixel(Vector2& vec);
