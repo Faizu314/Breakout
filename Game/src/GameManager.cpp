@@ -15,6 +15,8 @@ void GameManager::Start() {
 }
 
 void GameManager::OnSceneLoaded() {
+    m_HasRoundStarted = false;
+    
     auto player = Phezu::CreateEntity(m_PlayerPrefabID).lock();
     m_Player = player->GetTransformData();
     m_Player->SetLocalPosition(Phezu::Vector2(14, -280));
@@ -23,8 +25,21 @@ void GameManager::OnSceneLoaded() {
     ball->GetTransformData()->SetLocalPosition(Phezu::Vector2(0, 0));
     auto ballBehaviour = ball->GetComponent<Ball>().lock();
     ballBehaviour->_GameManager = this;
+    m_Ball = ball->GetPhysicsData().lock();
     
     LoadBricks(GameConstants::BRICK_PADDING, GameConstants::BRICK_SPACING, GameConstants::BRICKS_OFFSET);
+}
+
+void GameManager::Update(float deltaTime) {
+    if (m_HasRoundStarted)
+        return;
+    
+    auto input = Phezu::GetInput();
+    
+    if (input.Space) {
+        m_Ball->Velocity = Phezu::Vector2(1, 1).Normalized() * GameConstants::BALL_MOVEMENT_SPEED;
+        m_HasRoundStarted = true;
+    }
 }
 
 void GameManager::LoadBricks(Phezu::Vector2 padding, Phezu::Vector2 spacing, Phezu::Vector2 offset) {
@@ -83,6 +98,8 @@ void GameManager::OnBrickBroken() {
 }
 
 void GameManager::OnPlayerLostLife() {
+    m_HasRoundStarted = false;
+    
     m_CurrentLives--;
     
     if (m_CurrentLives <= 0) {
@@ -94,12 +111,13 @@ void GameManager::OnPlayerLostLife() {
     ball->GetTransformData()->SetLocalPosition(Phezu::Vector2(0, 0));
     auto ballBehaviour = ball->GetComponent<Ball>().lock();
     ballBehaviour->_GameManager = this;
+    m_Ball = ball->GetPhysicsData().lock();
     
     m_Player->SetLocalPosition(Phezu::Vector2(14, -280));
 }
 
 void GameManager::OnPlayerDead() {
-    Phezu::LoadScene("Level 1");
+    Phezu::LoadScene(GetLevelName(0));
     
     m_CurrentLives = TOTAL_LIVES;
 }

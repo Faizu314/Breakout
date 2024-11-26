@@ -20,7 +20,7 @@ struct GameConstants {
     
     inline static constexpr int BRICK_GRID_SIZE_X = 10;
     inline static constexpr float BRICK_SIZE_Y = 15;
-    inline static const Phezu::Vector2 BRICK_SPACING = Phezu::Vector2(2, 5);
+    inline static const Phezu::Vector2 BRICK_SPACING = Phezu::Vector2(5, 5);
     inline static const Phezu::Vector2 BRICK_PADDING = Phezu::Vector2(5, 100);
     inline static const Phezu::Vector2 BRICKS_OFFSET = Phezu::Vector2(0, 0);
     

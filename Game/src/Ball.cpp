@@ -5,7 +5,6 @@ void Ball::Start() {
     m_RenderData = m_Entity->GetRenderData();
     
     auto physicsData = m_Entity->GetPhysicsData().lock();
-    physicsData->Velocity = m_StartVelocity;
     
     physicsData->RegisterOnCollisionEnter(this, &Ball::OnCollisionEnter);
     physicsData->RegisterOnCollisionExit(this, &Ball::OnCollisionExit);

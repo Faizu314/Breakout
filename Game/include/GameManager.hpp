@@ -6,7 +6,7 @@ class GameManager : public Phezu::BehaviourComponent {
     using Phezu::BehaviourComponent::BehaviourComponent;
 public:
     void Start() override;
-    void Update(float deltaTime) override {}
+    void Update(float deltaTime) override;
     void OnDestroy() override {}
 public:
     void OnPlayerLostLife();
@@ -23,9 +23,12 @@ private:
     uint64_t m_StrongBrickPrefabID;
 private:
     Phezu::TransformData* m_Player;
+    std::shared_ptr<Phezu::PhysicsData> m_Ball;
+private:
     int m_CurrentLives;
     int m_CurrentLevel;
     int m_CurrentBricksCount;
+    bool m_HasRoundStarted;
     
     friend class GameManagerPrefab;
 };
