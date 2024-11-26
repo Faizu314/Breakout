@@ -2,6 +2,7 @@
 
 #include "Phezu.hpp"
 #include "Player.hpp"
+#include "HealthBar.hpp"
 #include "Ball.hpp"
 #include "Brick.hpp"
 #include "GameManager.hpp"

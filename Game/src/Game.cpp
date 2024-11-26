@@ -14,6 +14,30 @@ void PrepareScenes(Phezu::Engine& engine) {
     comp->MaxSpeed = GameConstants::PLAYER_MOVEMENT_SPEED;
     comp->Acceleration = GameConstants::PLAYER_ACCELERATION;
     
+    auto healthBar = engine.CreatePrefab().lock();
+    healthBar->RootEntity.IsRenderable = false;
+    healthBar->RootEntity.IsCollidable = false;
+    healthBar->RootEntity.AddComponentPrefab<HealthBarPrefab>();
+    
+    auto& heart1 = healthBar->RootEntity.CreateChildEntity();
+    heart1.IsRenderable = true;
+    heart1.IsCollidable = false;
+    heart1.PositionOverride = Phezu::Vector2(0, 0);
+    heart1.ShapeSizeOverride = Phezu::Vector2(20, 20);
+    heart1.TintOverride = Phezu::Color::Red;
+    auto& heart2 = healthBar->RootEntity.CreateChildEntity();
+    heart2.IsRenderable = true;
+    heart2.IsCollidable = false;
+    heart1.PositionOverride = Phezu::Vector2(30, 0);
+    heart2.ShapeSizeOverride = Phezu::Vector2(20, 20);
+    heart2.TintOverride = Phezu::Color::Red;
+    auto& heart3 = healthBar->RootEntity.CreateChildEntity();
+    heart3.IsRenderable = true;
+    heart3.IsCollidable = false;
+    heart3.PositionOverride = Phezu::Vector2(60, 0);
+    heart3.ShapeSizeOverride = Phezu::Vector2(20, 20);
+    heart3.TintOverride = Phezu::Color::Red;
+    
     auto verticalWall = engine.CreatePrefab().lock();
     verticalWall->RootEntity.IsRenderable = true;
     verticalWall->RootEntity.IsCollidable = true;
@@ -76,6 +100,7 @@ void PrepareScenes(Phezu::Engine& engine) {
     gmBehaviourL->StrongBrickPrefabID = strongBrick->GetPrefabID();
     
     masterScene->CreateSceneEntity(gameManager->GetPrefabID());
+    masterScene->CreateSceneEntity(healthBar->GetPrefabID(), Phezu::Vector2(-370, -270));
     
     // Level 1
     
