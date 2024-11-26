@@ -10,9 +10,9 @@ namespace Phezu {
     public:
         BehaviourComponent(Entity* entity, uint8_t componentPrefabID) : DataComponent(entity), m_ComponentPrefabID(componentPrefabID) {}
     public:
-        virtual void Start() = 0;
-        virtual void Update(float deltaTime) = 0;
-        virtual void OnDestroy() = 0;
+        virtual void Start() {};
+        virtual void Update(float deltaTime) {};
+        virtual void OnDestroy() {};
     public:
         uint8_t GetComponentPrefabID() { return m_ComponentPrefabID; }
     private:
