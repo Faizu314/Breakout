@@ -29,6 +29,8 @@ namespace Phezu {
     private:
         void ResolveDynamicToStaticCollisions(std::shared_ptr<Entity> dynamicEntity, const std::vector<std::weak_ptr<Entity>>& physicsEntities, size_t staticCount);
         void ResolveDynamicToStaticCollision(std::shared_ptr<Entity> dynamicEntity, std::shared_ptr<Entity> staticEntity, CollisionData& collisionData);
+        void ResolveDynamicToDynamicCollisions(const std::vector<std::weak_ptr<Entity>>& dynamicEntities, size_t startIndex, size_t endIndex);
+        void ResolveDynamicToDynamicCollision(std::shared_ptr<Entity> d1, std::shared_ptr<Entity> d2, CollisionData& collisionData);
         bool IsColliding(std::shared_ptr<Entity> entityA, std::shared_ptr<Entity> entityB, CollisionData& collisionData);
         EntityRect GetWorldRectFromTransformAndShapeData(TransformData* transData, ShapeData* shapeData);
     private:
