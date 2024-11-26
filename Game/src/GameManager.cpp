@@ -19,7 +19,7 @@ void GameManager::OnSceneLoaded() {
     
     auto player = Phezu::CreateEntity(m_PlayerPrefabID).lock();
     m_Player = player->GetTransformData();
-    m_Player->SetLocalPosition(Phezu::Vector2(14, -280));
+    m_Player->SetLocalPosition(Phezu::Vector2(0, -280));
     
     auto ball = Phezu::CreateEntity(m_BallPrefabID).lock();
     ball->GetTransformData()->SetLocalPosition(Phezu::Vector2(0, 0));
@@ -113,7 +113,7 @@ void GameManager::OnPlayerLostLife() {
     ballBehaviour->_GameManager = this;
     m_Ball = ball->GetPhysicsData().lock();
     
-    m_Player->SetLocalPosition(Phezu::Vector2(14, -280));
+    m_Player->SetLocalPosition(Phezu::Vector2(0, -280));
 }
 
 void GameManager::OnPlayerDead() {

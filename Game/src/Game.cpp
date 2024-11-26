@@ -11,7 +11,8 @@ void PrepareScenes(Phezu::Engine& engine) {
     player->RootEntity.ShapePivotOverride = Phezu::Vector2(0, 0);
     player->RootEntity.TintOverride = Phezu::Color(0, 255, 0, 255);
     auto comp = player->RootEntity.AddComponentPrefab<PlayerPrefab>().lock();
-    comp->MoveSpeed = GameConstants::PLAYER_MOVEMENT_SPEED;
+    comp->MaxSpeed = GameConstants::PLAYER_MOVEMENT_SPEED;
+    comp->Acceleration = GameConstants::PLAYER_ACCELERATION;
     
     auto verticalWall = engine.CreatePrefab().lock();
     verticalWall->RootEntity.IsRenderable = true;
@@ -28,6 +29,7 @@ void PrepareScenes(Phezu::Engine& engine) {
     horizontalWall->RootEntity.TintOverride = Phezu::Color(200, 0, 200, 255);
     
     auto ball = engine.CreatePrefab().lock();
+    ball->RootEntity.TagOverride = GameConstants::BALL_TAG;
     ball->RootEntity.IsRenderable = true;
     ball->RootEntity.IsCollidable = true;
     ball->RootEntity.IsStatic = false;

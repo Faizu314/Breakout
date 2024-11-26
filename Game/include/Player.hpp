@@ -15,11 +15,12 @@ public:
     void OnCollisionExit(const Phezu::Collision& collision);
 private:
     //[PrefabOverride(MoveSpeed)]
-    float m_MoveSpeed;
+    float m_MaxSpeed;
+    float m_Acceleration;
 private:
     Phezu::TransformData* m_Transform;
     Phezu::RenderData* m_RenderData;
-    Phezu::Vector2 m_MoveDir;
+    Phezu::Vector2 m_Velocity;
     
     friend class PlayerPrefab;
 };
@@ -28,9 +29,11 @@ class PlayerPrefab : public Phezu::BehaviourComponentPrefab<Player> {
 public:
     using Phezu::BehaviourComponentPrefab<Player>::BehaviourComponentPrefab;
 public:
-    float MoveSpeed;
+    float MaxSpeed;
+    float Acceleration;
 public:
     void InitRuntimeComponent(std::weak_ptr<Phezu::Scene> scene, std::shared_ptr<Player> component) const override {
-        component->m_MoveSpeed = MoveSpeed;
+        component->m_MaxSpeed = MaxSpeed;
+        component->m_Acceleration = Acceleration;
     }
 };
