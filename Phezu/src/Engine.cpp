@@ -10,6 +10,8 @@
 
 namespace Phezu {
     
+    Engine* Engine::s_Instance = nullptr;
+    
     static const size_t ENTITIES_BUFFER_SIZE = 128;
     
     Engine::Engine() : m_HasInited(false), m_IsRunning(false), m_FrameCount(0), m_SceneManager(this), m_Input(this), m_Physics(this) {}
@@ -157,6 +159,32 @@ namespace Phezu {
         std::shared_ptr<Prefab> prefab = std::make_shared<Prefab>();
         m_Prefabs.insert(std::make_pair(prefab->RootEntity.GetPrefabEntityID(), prefab));
         return prefab;
+    }
+    
+    std::weak_ptr<Entity> Engine::CreateEntity() {
+        auto scene = m_SceneManager.GetActiveScene();
+        
+        if (auto sceneL = scene.lock())
+            return sceneL->CreateEntity();
+        else
+            return std::weak_ptr<Entity>();
+    }
+    
+    std::weak_ptr<Entity> Engine::CreateEntity(uint64_t prefabID) {
+        auto scene = m_SceneManager.GetActiveScene();
+        
+        if (auto sceneL = scene.lock())
+            return sceneL->CreateEntity(prefabID);
+        else
+            return std::weak_ptr<Entity>();
+    }
+    
+    const InputData& Engine::GetInput() {
+        return m_Input.GetInput();
+    }
+    
+    SceneManager& Engine::GetSceneManager() {
+        return m_SceneManager;
     }
     
     std::weak_ptr<const Prefab> Engine::GetPrefab(uint64_t prefabID) {

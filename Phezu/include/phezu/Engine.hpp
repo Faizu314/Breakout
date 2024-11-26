@@ -18,12 +18,17 @@ namespace Phezu {
         int Init(const std::string name, int width, int height, int renderScale = 1);
         void Run();
         std::weak_ptr<Scene> GetMasterScene();
-        void LoadScene(const std::string& sceneName);
         void Destroy();
         std::weak_ptr<Scene> CreateScene(const std::string& name);
         std::weak_ptr<Prefab> CreatePrefab();
         std::weak_ptr<const Prefab> GetPrefab(uint64_t prefabID);
+    public:
+        void LoadScene(const std::string& sceneName);
+        SceneManager& GetSceneManager();
+        std::weak_ptr<Entity> CreateEntity();
+        std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
         long long unsigned int GetFrameCount() const { return m_FrameCount; }
+        const InputData& GetInput();
     private:
         Engine();
         Engine(const Engine&) = delete;
@@ -41,13 +46,12 @@ namespace Phezu {
         bool m_HasInited;
         bool m_IsRunning;
         long long unsigned int m_FrameCount;
+    private:
+        static Engine* s_Instance;
         
+        friend Engine* GetEngine();
         friend Engine& CreateEngine();
         template<typename T>
         friend void SubscribeToOnSceneLoaded(T* subscriber, void (T::*handler)(void));
-        friend void UnsubscribeToOnSceneLoaded(void* subscriber);
-        friend std::weak_ptr<Entity> CreateEntity();
-        friend std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
-        friend const InputData& GetInput();
     };
 }

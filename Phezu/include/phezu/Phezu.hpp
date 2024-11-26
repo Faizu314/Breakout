@@ -22,8 +22,6 @@
 
 namespace Phezu {
     
-    inline Engine* s_Instance;
-    
     Engine& CreateEngine();
     std::weak_ptr<Entity> CreateEntity();
     std::weak_ptr<Entity> CreateEntity(uint64_t prefabID);
@@ -34,7 +32,12 @@ namespace Phezu {
     
     template<typename T>
     void SubscribeToOnSceneLoaded(T* subscriber, void (T::*handler)(void)) {
-        s_Instance->m_SceneManager.SubscribeToOnSceneLoaded(subscriber, handler);
+        if (Engine::s_Instance == nullptr) {
+            //TODO: Logging
+            return;
+        }
+        
+        Engine::s_Instance->m_SceneManager.SubscribeToOnSceneLoaded(subscriber, handler);
     }
     
     void UnsubscribeToOnSceneLoaded(void* subscriber);

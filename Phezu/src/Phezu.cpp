@@ -7,47 +7,47 @@
 namespace Phezu {
     
     Engine& CreateEngine() {
-        if (s_Instance == nullptr)
-            s_Instance = new Engine();
+        if (Engine::s_Instance == nullptr)
+            Engine::s_Instance = new Engine();
         
-        return *s_Instance;
+        return *Engine::s_Instance;
+    }
+    
+    Engine* GetEngine() {
+        return Engine::s_Instance;
     }
     
     std::weak_ptr<Entity> CreateEntity() {
-        if (s_Instance == nullptr) {
+        Engine* instance = GetEngine();
+        
+        if (instance == nullptr) {
             //TODO: Logging
             return std::weak_ptr<Entity>();
         }
         
-        auto scene = s_Instance->m_SceneManager.GetActiveScene();
-        
-        if (auto sceneL = scene.lock())
-            return sceneL->CreateEntity();
-        else
-            return std::weak_ptr<Entity>();
+        return instance->CreateEntity();
     }
     
     std::weak_ptr<Entity> CreateEntity(uint64_t prefabID) {
-        if (s_Instance == nullptr) {
+        Engine* instance = GetEngine();
+        
+        if (instance == nullptr) {
             //TODO: Logging
             return std::weak_ptr<Entity>();
         }
         
-        auto scene = s_Instance->m_SceneManager.GetActiveScene();
-        
-        if (auto sceneL = scene.lock())
-            return sceneL->CreateEntity(prefabID);
-        else
-            return std::weak_ptr<Entity>();
+        return instance->CreateEntity(prefabID);
     }
     
     void LoadScene(const std::string& sceneName) {
-        if (s_Instance == nullptr) {
+        Engine* instance = GetEngine();
+        
+        if (instance == nullptr) {
             //TODO: Logging
             return;
         }
         
-        s_Instance->LoadScene(sceneName);
+        instance->LoadScene(sceneName);
     }
     
     void Destroy(Entity* entity) {
@@ -58,19 +58,35 @@ namespace Phezu {
     }
     
     const InputData& GetInput() {
-        return s_Instance->m_Input.GetInput();
+        Engine* instance = GetEngine();
+        
+        if (instance == nullptr) {
+            //TODO: Logging
+            return;
+        }
+        
+        return instance->GetInput();
     }
     
     long long unsigned int GetFrameCount() {
-        if (s_Instance == nullptr) {
+        Engine* instance = GetEngine();
+        
+        if (instance == nullptr) {
             //TODO: Logging
             return 0;
         }
         
-        return s_Instance->GetFrameCount();
+        return instance->GetFrameCount();
     }
     
     void UnsubscribeToOnSceneLoaded(void* subscriber) {
-        s_Instance->m_SceneManager.UnsubscribeToOnSceneLoaded(subscriber);
+        Engine* engine = GetEngine();
+        
+        if (engine == nullptr) {
+            //TODO: Logging
+            return;
+        }
+        
+        engine->GetSceneManager().UnsubscribeToOnSceneLoaded(subscriber);
     }
 }
