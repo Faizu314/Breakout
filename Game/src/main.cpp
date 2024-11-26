@@ -4,7 +4,7 @@
 Phezu::Engine& engine = Phezu::CreateEngine();
 
 int main(int argc, const char* argv[]) {
-    engine.Init("Phezu", 800, 600);
+    engine.Init("Phezu", GameConstants::SCREEN_SIZE.X(), GameConstants::SCREEN_SIZE.Y());
     
     PrepareScenes(engine);
     
