@@ -43,6 +43,6 @@ namespace Phezu {
         std::weak_ptr<BehaviourComponent> GetRuntimeComponent(std::weak_ptr<Scene> scene, std::shared_ptr<Entity> entity) const override final {
             return entity->GetComponent<T>(m_ComponentPrefabID);
         }
-        virtual void InitRuntimeComponent(std::weak_ptr<Scene> scene, std::shared_ptr<T> component) const = 0;
+        virtual void InitRuntimeComponent(std::weak_ptr<Scene> scene, std::shared_ptr<T> component) const {};
     };
 }
