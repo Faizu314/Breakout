@@ -2,6 +2,7 @@
 #include "GameManager.hpp"
 #include "Player.hpp"
 #include "Ball.hpp"
+#include "HealthBar.hpp"
 
 const int TOTAL_LIVES = 3;
 
@@ -17,12 +18,17 @@ void GameManager::Start() {
 void GameManager::OnSceneLoaded() {
     m_HasRoundStarted = false;
     
-    auto player = Phezu::CreateEntity(m_PlayerPrefabID).lock();
-    m_Player = player->GetTransformData();
-    m_Player->SetLocalPosition(Phezu::Vector2(0, -240));
+    auto playerEntity = Phezu::CreateEntity(m_PlayerPrefabID).lock();
+    m_Player = playerEntity->GetTransformData();
+    m_Player->SetLocalPosition(GameConstants::PLAYER_START_POSITION);
+    
+    auto healthBarEntity = Phezu::CreateEntity(m_HealthBarPrefabID).lock();
+    healthBarEntity->GetTransformData()->SetLocalPosition(GameConstants::HEALTH_BAR_START_POSITION);
+    m_HealthBar = healthBarEntity->GetComponent<HealthBar>().lock();
+    m_HealthBar->OnLifeChanged(m_CurrentLives);
     
     auto ball = Phezu::CreateEntity(m_BallPrefabID).lock();
-    ball->GetTransformData()->SetLocalPosition(Phezu::Vector2(0, 0));
+    ball->GetTransformData()->SetLocalPosition(GameConstants::BALL_START_POSITION);
     auto ballBehaviour = ball->GetComponent<Ball>().lock();
     ballBehaviour->_GameManager = this;
     m_Ball = ball->GetPhysicsData().lock();
@@ -37,7 +43,7 @@ void GameManager::Update(float deltaTime) {
     auto input = Phezu::GetInput();
     
     if (input.Space) {
-        m_Ball->Velocity = Phezu::Vector2(1, 1).Normalized() * GameConstants::BALL_MOVEMENT_SPEED;
+        m_Ball->Velocity = Phezu::Vector2(0.1, -1) * GameConstants::BALL_MOVEMENT_SPEED;
         m_HasRoundStarted = true;
     }
 }
@@ -102,22 +108,22 @@ void GameManager::OnPlayerLostLife() {
     
     m_CurrentLives--;
     
+    m_HealthBar->OnLifeChanged(m_CurrentLives);
+    
     if (m_CurrentLives <= 0) {
         OnPlayerDead();
         return;
     }
     
     auto ball = Phezu::CreateEntity(m_BallPrefabID).lock();
-    ball->GetTransformData()->SetLocalPosition(Phezu::Vector2(0, 0));
+    ball->GetTransformData()->SetLocalPosition(GameConstants::BALL_START_POSITION);
     auto ballBehaviour = ball->GetComponent<Ball>().lock();
     ballBehaviour->_GameManager = this;
     m_Ball = ball->GetPhysicsData().lock();
-    
-    m_Player->SetLocalPosition(Phezu::Vector2(0, -240));
 }
 
 void GameManager::OnPlayerDead() {
-    Phezu::LoadScene(GetLevelName(0));
-    
     m_CurrentLives = TOTAL_LIVES;
+    
+    Phezu::LoadScene(GetLevelName(0));
 }

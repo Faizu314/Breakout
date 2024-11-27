@@ -2,6 +2,8 @@
 
 #include "Phezu.hpp"
 
+class HealthBar;
+
 class GameManager : public Phezu::BehaviourComponent {
     using Phezu::BehaviourComponent::BehaviourComponent;
 public:
@@ -21,8 +23,10 @@ private:
     uint64_t m_WeakBrickPrefabID;
     uint64_t m_NormalBrickPrefabID;
     uint64_t m_StrongBrickPrefabID;
+    uint64_t m_HealthBarPrefabID;
 private:
     Phezu::TransformData* m_Player;
+    std::shared_ptr<HealthBar> m_HealthBar;
     std::shared_ptr<Phezu::PhysicsData> m_Ball;
 private:
     int m_CurrentLives;
@@ -41,6 +45,7 @@ public:
     uint64_t WeakBrickPrefabID;
     uint64_t NormalBrickPrefabID;
     uint64_t StrongBrickPrefabID;
+    uint64_t HealthBarPrefabID;
 public:
     void InitRuntimeComponent(std::weak_ptr<Phezu::Scene> scene, std::shared_ptr<GameManager> component) const override {
         component->m_PlayerPrefabID = PlayerPrefabID;
@@ -48,5 +53,6 @@ public:
         component->m_WeakBrickPrefabID = WeakBrickPrefabID;
         component->m_NormalBrickPrefabID = NormalBrickPrefabID;
         component->m_StrongBrickPrefabID = StrongBrickPrefabID;
+        component->m_HealthBarPrefabID = HealthBarPrefabID;
     }
 };

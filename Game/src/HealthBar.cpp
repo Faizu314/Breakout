@@ -7,7 +7,7 @@ void HealthBar::Start() {
 }
 
 void HealthBar::OnLifeChanged(int currLife) {
-    m_Heart1->GetRenderData()->Tint = currLife < 1 ? Phezu::Color::Black : Phezu::Color::Red;
-    m_Heart2->GetRenderData()->Tint = currLife < 2 ? Phezu::Color::Black : Phezu::Color::Red;
-    m_Heart3->GetRenderData()->Tint = currLife < 3 ? Phezu::Color::Black : Phezu::Color::Red;
+    m_Heart1->GetRenderData()->Tint = currLife < 1 ? Phezu::Color::Red : Phezu::Color::Green;
+    m_Heart2->GetRenderData()->Tint = currLife < 2 ? Phezu::Color::Red : Phezu::Color::Green;
+    m_Heart3->GetRenderData()->Tint = currLife < 3 ? Phezu::Color::Red : Phezu::Color::Green;
 }
