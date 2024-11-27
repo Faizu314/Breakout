@@ -1,4 +1,5 @@
 #include "Brick.hpp"
+#include "GameManager.hpp"
 
 const Phezu::Color BRICK_COLORS[3] = { Phezu::Color(255, 0, 0, 255), Phezu::Color(0, 255, 0, 255), Phezu::Color(0, 0, 255, 255) };
 
@@ -13,6 +14,7 @@ void Brick::Start() {
 }
 
 void Brick::OnDestroy() {
+    _GameManager->OnBrickBroken();
     m_PhysicsData->UnregisterOnCollisionEnter(this);
 }
 

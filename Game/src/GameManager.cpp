@@ -3,6 +3,7 @@
 #include "Player.hpp"
 #include "Ball.hpp"
 #include "HealthBar.hpp"
+#include "Brick.hpp"
 
 const int TOTAL_LIVES = 3;
 
@@ -43,7 +44,7 @@ void GameManager::Update(float deltaTime) {
     auto input = Phezu::GetInput();
     
     if (input.Space) {
-        m_Ball->Velocity = Phezu::Vector2(0.1, -1) * GameConstants::BALL_MOVEMENT_SPEED;
+        m_Ball->Velocity = Phezu::Random::Direction(70, 110) * GameConstants::BALL_MOVEMENT_SPEED;
         m_HasRoundStarted = true;
     }
 }
@@ -84,6 +85,7 @@ void GameManager::LoadBricks(Phezu::Vector2 padding, Phezu::Vector2 spacing, Phe
                 auto entity = Phezu::CreateEntity(brickPrefabID).lock();
                 entity->GetTransformData()->SetLocalPosition(gridPos);
                 entity->GetShapeData()->SetSize(brickSize);
+                entity->GetComponent<Brick>().lock()->_GameManager = this;
                 m_CurrentBricksCount++;
             }
             
@@ -124,6 +126,6 @@ void GameManager::OnPlayerLostLife() {
 
 void GameManager::OnPlayerDead() {
     m_CurrentLives = TOTAL_LIVES;
-    
+    m_CurrentLevel = 0;
     Phezu::LoadScene(GetLevelName(0));
 }

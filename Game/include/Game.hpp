@@ -24,9 +24,9 @@ struct GameConstants {
     inline static const Phezu::Vector2 HEALTH_BAR_START_POSITION = Phezu::Vector2(-370, -270);
     
     inline static const Phezu::Vector2 BALL_START_POSITION = Phezu::Vector2(0, 0);
-    inline static constexpr float BALL_MOVEMENT_SPEED = 600;
+    inline static constexpr float BALL_MOVEMENT_SPEED = 500;
     inline static constexpr float REFLECTION_WEIGHT = 0;
-    inline static constexpr float MOVEMENT_WEIGHT = 1;
+    inline static constexpr float MOVEMENT_WEIGHT = 0;
     inline static constexpr float POSITION_WEIGHT = 1;
     
     inline static constexpr int BRICK_GRID_SIZE_X = 11;

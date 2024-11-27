@@ -2,6 +2,8 @@
 
 #include "Phezu.hpp"
 
+class GameManager;
+
 class Brick : public Phezu::BehaviourComponent {
     using Phezu::BehaviourComponent::BehaviourComponent;
 public:
@@ -12,6 +14,8 @@ public:
 private:
     std::shared_ptr<Phezu::PhysicsData> m_PhysicsData;
     Phezu::RenderData* m_RenderData;
+public:
+    GameManager* _GameManager;
 private:
     int m_TotalHealth;
     int m_CurrentHealth;
