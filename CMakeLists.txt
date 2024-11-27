@@ -11,6 +11,7 @@ set(PHEZU_SOURCES
     Phezu/src/Renderer.cpp
     Phezu/src/Physics.cpp
     Phezu/src/Window.cpp
+    Phezu/src/Random.cpp
     Phezu/src/Entity.cpp
     Phezu/src/Scene.cpp
     Phezu/src/ShapeData.cpp
@@ -31,6 +32,7 @@ set(PHEZU_HEADERS
     Phezu/include/phezu/Physics.hpp
     Phezu/include/phezu/Input.hpp
     Phezu/include/phezu/Window.hpp
+    Phezu/include/phezu/Random.hpp
     Phezu/include/phezu/scene/Entity.hpp
     Phezu/include/phezu/scene/PrefabEntity.hpp
     Phezu/include/phezu/scene/Prefab.hpp

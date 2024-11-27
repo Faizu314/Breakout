@@ -4,6 +4,10 @@
 
 namespace Phezu {
     
+    enum class AngleUnit {
+        Degrees, Radians
+    };
+    
     class Vector2 {
     public:
         Vector2() : m_Vector(0, 0) { }
@@ -65,6 +69,16 @@ namespace Phezu {
     
     inline int Sign(float value) {
         return glm::sign(value);
+    }
+    
+    inline float Sin(float angle, AngleUnit units = AngleUnit::Degrees) {
+        float appAngle = units == AngleUnit::Radians ? angle : glm::radians(angle);
+        return glm::sin(appAngle);
+    }
+    
+    inline float Cos(float angle, AngleUnit units = AngleUnit::Degrees) {
+        float appAngle = units == AngleUnit::Radians ? angle : glm::radians(angle);
+        return glm::cos(appAngle);
     }
     
     int RoundToPixel(float value);

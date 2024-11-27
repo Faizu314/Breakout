@@ -5,6 +5,7 @@
 #include "Input.hpp"
 #include "Renderer.hpp"
 #include "Physics.hpp"
+#include "Random.hpp"
 #include "maths/Math.hpp"
 #include "scene/Prefab.hpp"
 #include "scene/Scene.hpp"
