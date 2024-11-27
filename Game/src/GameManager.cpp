@@ -101,6 +101,7 @@ void GameManager::OnBrickBroken() {
     
     if (m_CurrentBricksCount <= 0) {
         m_CurrentLevel++;
+        m_CurrentLives = TOTAL_LIVES;
         Phezu::LoadScene(GetLevelName(m_CurrentLevel));
     }
 }
@@ -126,6 +127,5 @@ void GameManager::OnPlayerLostLife() {
 
 void GameManager::OnPlayerDead() {
     m_CurrentLives = TOTAL_LIVES;
-    m_CurrentLevel = 0;
-    Phezu::LoadScene(GetLevelName(0));
+    Phezu::LoadScene(GetLevelName(m_CurrentLevel));
 }
