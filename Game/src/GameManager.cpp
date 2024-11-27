@@ -11,7 +11,7 @@ void GameManager::Start() {
     m_CurrentLevel = 0;
     
     Phezu::SubscribeToOnSceneLoaded(this, &GameManager::OnSceneLoaded);
-    Phezu::LoadScene(GetLevelName(0));
+    Phezu::LoadScene(GetLevelName(m_CurrentLevel));
     
     m_CurrentLives = TOTAL_LIVES;
 }

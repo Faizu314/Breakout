@@ -1,7 +1,7 @@
 #include "Brick.hpp"
 #include "GameManager.hpp"
 
-const Phezu::Color BRICK_COLORS[3] = { Phezu::Color(255, 0, 0, 255), Phezu::Color(0, 255, 0, 255), Phezu::Color(0, 0, 255, 255) };
+const Phezu::Color BRICK_COLORS[3] = { Phezu::Color(255, 0, 0), Phezu::Color(150, 0, 0), Phezu::Color(100, 0, 0) };
 
 void Brick::Start() {
     m_PhysicsData = m_Entity->GetPhysicsData().lock();

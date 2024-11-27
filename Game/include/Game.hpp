@@ -37,15 +37,20 @@ struct GameConstants {
     
     // O => Empty, S => Strong Brick, N => Normal Brick, W => Weak Brick
     inline static const char* LEVEL_DATA[10] = {
-        "WWWWWWWWWWW"
         "-WWWWWWWWW-"
         "-WWWWWWWWW-",
         
-        "WWWWWWWWW"
-        "WWWWWWWWW",
+        "-WWWWWWWWW-"
+        "-----------"
+        "-W-------W-"
+        "-----------"
+        "-NNNNNNNNN-",
 
-        "WWWWWWWWW"
-        "WWWWWWWWW",
+        "-WWWWWWWWW-"
+        "-W-------W-"
+        "-W-------W-"
+        "-W-------W-"
+        "-SSSSSSSSS-",
 
         "WWWWWWWWW"
         "WWWWWWWWW",
