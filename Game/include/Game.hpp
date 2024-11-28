@@ -18,7 +18,7 @@ struct GameConstants {
     inline static const char* BALL_TAG = "Ball";
     
     inline static const Phezu::Vector2 PLAYER_START_POSITION = Phezu::Vector2(0, -240);
-    inline static constexpr float PLAYER_MOVEMENT_SPEED = 1000;
+    inline static constexpr float PLAYER_MOVEMENT_SPEED = 800;
     inline static constexpr float PLAYER_ACCELERATION = 12000;
     
     inline static const Phezu::Vector2 HEALTH_BAR_START_POSITION = Phezu::Vector2(-370, -270);
@@ -35,8 +35,10 @@ struct GameConstants {
     inline static const Phezu::Vector2 BRICK_PADDING = Phezu::Vector2(5, 0);
     inline static const Phezu::Vector2 BRICKS_OFFSET = Phezu::Vector2(0, 0);
     
+    inline static constexpr int TOTAL_LEVELS = 6;
+    
     // O => Empty, S => Strong Brick, N => Normal Brick, W => Weak Brick
-    inline static const char* LEVEL_DATA[10] = {
+    inline static const char* LEVEL_DATA[7] = {
         
         
         "-----------"
@@ -63,6 +65,24 @@ struct GameConstants {
         "-----------"
         "-----------"
         "-----------"
+        "WWWWWWWWWWW"
+        "-----------"
+        "-----------"
+        "-----------"
+        "WWWWWWWWWWW"
+        "-----------"
+        "-----------"
+        "-----------"
+        "WWWWWWWWWWW"
+        "-----------"
+        "-----------"
+        "-----------"
+        "WWWWWWWWWWW",
+        
+        
+        "-----------"
+        "-----------"
+        "-----------"
         "-W-W-W-W-W-"
         "-----------"
         "W-W-W-W-W-W"
@@ -74,20 +94,7 @@ struct GameConstants {
         "-W-W-W-W-W-"
         "-----------"
         "W-W-W-W-W-W",
-
-        "-----------"
-        "-W-W-W-W-W-"
-        "-----------"
-        "W-W-W-W-W-W"
-        "-----------"
-        "-W-W-W-W-W-"
-        "-----------"
-        "W-W-W-W-W-W"
-        "-----------"
-        "-W-W-W-W-W-"
-        "-----------"
-        "-----------"
-        "NNNNNNNNNNN",
+        
         
         "-----------"
         "-----------"
@@ -105,23 +112,7 @@ struct GameConstants {
         "-----------"
         "NNNNNNNNNNN",
 
-        "-----------"
-        "-----------"
-        "-----------"
-        "WWWWWWWWWWW"
-        "-----------"
-        "-----------"
-        "-----------"
-        "WWWWWWWWWWW"
-        "-----------"
-        "-----------"
-        "-----------"
-        "WWWWWWWWWWW"
-        "-----------"
-        "-----------"
-        "-----------"
-        "WWWWWWWWWWW",
-
+        
         "-----------"
         "W---------W"
         "-W-------W-"
@@ -138,14 +129,26 @@ struct GameConstants {
         "W-W-----W-W"
         "-W-------W-"
         "W---------W",
-
-        "WWWWWWWWW"
-        "WWWWWWWWW",
-
-        "WWWWWWWWW"
-        "WWWWWWWWW",
-
-        "WWWWWWWWW"
-        "WWWWWWWWW",
+        
+        "-----------"
+        "W-W-WWW-W-W"
+        "-W--W-W-W-W"
+        "W---WWW-WWW"
+        "-----------"
+        "-----------"
+        "-W---W---W-"
+        "--W-W-W-W--"
+        "---W---W---"
+        "-----------"
+        "-----------"
+        "----WWW----"
+        "-----W-----"
+        "-----W-----"
+        "----WWW----"
+        "-----------"
+        "-----------"
+        "---WW--W---"
+        "---W-W-W---"
+        "---W--WW---"
     };
 };

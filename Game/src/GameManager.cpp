@@ -38,7 +38,7 @@ void GameManager::OnSceneLoaded() {
 }
 
 void GameManager::Update(float deltaTime) {
-    if (m_HasRoundStarted)
+    if (m_HasRoundStarted || m_CurrentLevel >= GameConstants::TOTAL_LEVELS)
         return;
     
     auto input = Phezu::GetInput();
