@@ -1,6 +1,25 @@
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 17)
 
+if (NOT DEFINED PROCESSOR_COUNT)
+    set(PROCESSOR_COUNT 1)
+
+    if(APPLE)
+        find_program(cmd_sys_pro "system_profiler")
+        if(cmd_sys_pro)
+          execute_process(COMMAND ${cmd_sys_pro} OUTPUT_VARIABLE info)
+          string(REGEX REPLACE "^.*Total Number Of Cores: ([0-9]+).*$" "\\1"
+            PROCESSOR_COUNT "${info}")
+        endif()
+    endif()
+
+    if(WIN32)
+        set(PROCESSOR_COUNT "$ENV{NUMBER_OF_PROCESSORS}")
+    endif()
+endif()
+
+message(STATUS "Cores Found: ${PROCESSOR_COUNT}")
+
 project(Breakout)
 
 set(PHEZU_SOURCES
@@ -85,6 +104,9 @@ if (APPLE)
     target_include_directories(Phezu PRIVATE Phezu/include/mac)
 elseif (WIN32)
     add_executable(Game WIN32 ${GAME_SOURCES} ${GAME_HEADERS})
+
+    math(EXPR BUILD_CORES "${PROCESSOR_COUNT} * 3 / 4")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${BUILD_CORES}")
 
     set(LIB_SRC_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/windows")
     set(LIB_DEST_PATH "$<TARGET_FILE_DIR:Game>")
