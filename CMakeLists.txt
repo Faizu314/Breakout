@@ -77,6 +77,8 @@ if (APPLE)
     set(LIB_SRC_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/mac")
     set(LIB_DEST_PATH "${CMAKE_CFG_INTDIR}/Game.app/Contents/Frameworks")
 
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "12.2")
+
     set_target_properties(Game PROPERTIES
         INSTALL_RPATH "@loader_path/../Frameworks"
         BUILD_WITH_INSTALL_RPATH TRUE
