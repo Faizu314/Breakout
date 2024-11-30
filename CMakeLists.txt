@@ -4,21 +4,11 @@ set(CMAKE_CXX_STANDARD 17)
 if (NOT DEFINED PROCESSOR_COUNT)
     set(PROCESSOR_COUNT 1)
 
-    if(APPLE)
-        find_program(cmd_sys_pro "system_profiler")
-        if(cmd_sys_pro)
-          execute_process(COMMAND ${cmd_sys_pro} OUTPUT_VARIABLE info)
-          string(REGEX REPLACE "^.*Total Number Of Cores: ([0-9]+).*$" "\\1"
-            PROCESSOR_COUNT "${info}")
-        endif()
-    endif()
-
     if(WIN32)
         set(PROCESSOR_COUNT "$ENV{NUMBER_OF_PROCESSORS}")
+        message(STATUS "Cores Found: ${PROCESSOR_COUNT}")
     endif()
 endif()
-
-message(STATUS "Cores Found: ${PROCESSOR_COUNT}")
 
 project(Breakout)
 
