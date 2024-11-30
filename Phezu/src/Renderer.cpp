@@ -18,7 +18,7 @@ namespace Phezu {
     const Color Color::Black = Color(0, 0, 0, 255);
     
     Texture::Texture(SDL_Texture* texture) : m_Texture(texture) {}
-    QuadUVs::QuadUVs(float x, float y, float w, float h) : x(x), y(y), w(w), h(h) {}
+    QuadUVs::QuadUVs(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
     Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) : r(red), g(green), b(blue), a(alpha) {}
     
     void Color::ConvertToSDLColor(SDL_Color &sdlColor) const {
@@ -35,11 +35,11 @@ namespace Phezu {
     void GetSdlRect(SDL_Rect& rect, Vector2 a, Vector2 b) {
         int minX, maxX, minY, maxY;
         
-        minX = glm::min(a.X(), b.X());
-        maxX = glm::max(a.X(), b.X());
+        minX = static_cast<int>(glm::min(a.X(), b.X()));
+        maxX = static_cast<int>(glm::max(a.X(), b.X()));
         
-        minY = glm::min(a.Y(), b.Y());
-        maxY = glm::max(a.Y(), b.Y());
+        minY = static_cast<int>(glm::min(a.Y(), b.Y()));
+        maxY = static_cast<int>(glm::max(a.Y(), b.Y()));
         
         rect.x = minX;
         rect.y = minY;

@@ -17,6 +17,11 @@ namespace Phezu {
     Engine::Engine() : m_HasInited(false), m_IsRunning(false), m_FrameCount(0), m_SceneManager(this), m_Input(this), m_Physics(this) {}
     
     int Engine::Init(const std::string name, int width, int height, int renderScale) {
+        if (m_HasInited) {
+            //TODO: Logging
+            exit(1);
+        }
+
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             //TODO: Logging::Log("Couldn't initialize SDL: %s\n", SDL_GetError());
             exit(1);
@@ -24,21 +29,15 @@ namespace Phezu {
 
         if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) < 0){
             //TODO: Logging::Log("Couldn't initialize SDL: %s\n", SDL_GetError());
-            exit(1);
+            exit(1 );
         }
 
         if (TTF_Init() < 0) {
             //TODO: Logging::Log("Failed to init TTF: %s\n", SDL_GetError());
             exit(1);
         }
-        
+
         m_HasInited = true;
-        
-        if (m_Window != nullptr || !m_HasInited) {
-            //TODO: Logging
-            exit(1);
-        }
-            
         m_Window = new Window(name, width, height, renderScale);
         m_Renderer = new Renderer(this, *m_Window);
         
@@ -104,8 +103,6 @@ namespace Phezu {
         
         std::shared_ptr<Scene> masterScene = m_SceneManager.GetMasterScene().lock();
         std::weak_ptr<Scene> activeScene;
-        
-        SDL_Event event;
         
         while (m_IsRunning)
         {

@@ -12,8 +12,9 @@ void PrepareScenes(Phezu::Engine& engine);
 inline std::string GetLevelName(int levelNo) { return std::string("Level ") + std::to_string(levelNo + 1); }
 
 struct GameConstants {
-    inline static const Phezu::Vector2 SCREEN_SIZE = Phezu::Vector2(800, 600);
-    
+    inline static constexpr int SCREEN_SIZE_X = 800;
+    inline static constexpr int SCREEN_SIZE_Y = 600;
+
     inline static const char* OBSTACLE_TAG = "Obstacle";
     inline static const char* BALL_TAG = "Ball";
     

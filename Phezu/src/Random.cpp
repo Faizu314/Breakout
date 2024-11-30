@@ -21,7 +21,7 @@ namespace Phezu {
     }
     
     Vector2 Random::Direction() {
-        float angle = RandomValue() * 360.0;
+        float angle = RandomValue() * 360.0f;
         return Vector2(Cos(angle), Sin(angle));
     }
     

@@ -6,10 +6,10 @@
 
 #include "glm/glm.hpp"
 
-class SDL_Color;
-class SDL_Texture;
-class SDL_Window;
-class SDL_Renderer;
+struct SDL_Color;
+struct SDL_Texture;
+struct SDL_Window;
+struct SDL_Renderer;
 
 namespace Phezu {
     
@@ -32,9 +32,9 @@ namespace Phezu {
     
     class QuadUVs {
     public:
-        QuadUVs(float x = 0, float y = 0, float w = 1, float h = 1);
+        QuadUVs(int x = 0, int y = 0, int w = 1, int h = 1);
     public:
-        float x, y, w, h;
+        int x, y, w, h;
     };
     
     class Color {

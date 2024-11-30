@@ -52,13 +52,13 @@ void GameManager::Update(float deltaTime) {
 void GameManager::LoadBricks(Phezu::Vector2 padding, Phezu::Vector2 spacing, Phezu::Vector2 offset) {
     Phezu::Vector2 brickSize
     (
-       (GameConstants::SCREEN_SIZE.X() - (padding.X() * 2) - ((GameConstants::BRICK_GRID_SIZE_X - 1) * spacing.X())) / GameConstants::BRICK_GRID_SIZE_X,
+       (GameConstants::SCREEN_SIZE_X - (padding.X() * 2) - ((GameConstants::BRICK_GRID_SIZE_X - 1) * spacing.X())) / GameConstants::BRICK_GRID_SIZE_X,
         GameConstants::BRICK_SIZE_Y
     );
     
     const char* levelData = GameConstants::LEVEL_DATA[m_CurrentLevel];
-    float startX = (-GameConstants::SCREEN_SIZE.X() / 2) + padding.X() + (brickSize.X() / 2);
-    Phezu::Vector2 gridPos(startX, (GameConstants::SCREEN_SIZE.Y() / 2) - padding.Y() - (brickSize.Y() / 2));
+    float startX = (-GameConstants::SCREEN_SIZE_X / 2) + padding.X() + (brickSize.X() / 2);
+    Phezu::Vector2 gridPos(startX, (GameConstants::SCREEN_SIZE_Y / 2) - padding.Y() - (brickSize.Y() / 2));
     
     m_CurrentBricksCount = 0;
     int index = 0;

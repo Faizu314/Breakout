@@ -23,11 +23,11 @@ namespace Phezu {
     }
     
     int RoundToPixel(float value) {
-        int x = glm::round(glm::abs(value));
-        return glm::round(value + x) - x;
+        float x = glm::round(glm::abs(value));
+        return static_cast<int>(glm::round(value + x) - x);
     }
     
     void RoundToPixel(Vector2& vec) {
-        vec.Set(RoundToPixel(vec.X()), RoundToPixel(vec.Y()));
+        vec.Set(static_cast<float>(RoundToPixel(vec.X())), static_cast<float>(RoundToPixel(vec.Y())));
     }
 }

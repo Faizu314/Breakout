@@ -24,13 +24,13 @@ namespace Phezu {
         
         switch (vertexType) {
             case VertexType::UpLeft:
-                return Vector2(-Sx / 2.0, Sy / 2.0) - m_Pivot;
+                return Vector2(-Sx / 2.0f, Sy / 2.0f) - m_Pivot;
             case VertexType::UpRight:
-                return Vector2(Sx / 2.0, Sy / 2.0) - m_Pivot;
+                return Vector2(Sx / 2.0f, Sy / 2.0f) - m_Pivot;
             case VertexType::DownLeft:
-                return Vector2(-Sx / 2.0, -Sy / 2.0) - m_Pivot;
+                return Vector2(-Sx / 2.0f, -Sy / 2.0f) - m_Pivot;
             case VertexType::DownRight:
-                return Vector2(Sx / 2.0, -Sy / 2.0) - m_Pivot;
+                return Vector2(Sx / 2.0f, -Sy / 2.0f) - m_Pivot;
             default:
                 return Vector2();
         }

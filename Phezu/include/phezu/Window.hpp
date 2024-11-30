@@ -2,7 +2,7 @@
 
 #include <string>
 
-class SDL_Window;
+struct SDL_Window;
 
 namespace Phezu {
     

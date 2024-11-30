@@ -68,7 +68,7 @@ namespace Phezu {
     }
     
     inline int Sign(float value) {
-        return glm::sign(value);
+        return static_cast<int>(glm::sign(value));
     }
     
     inline float Sin(float angle, AngleUnit units = AngleUnit::Degrees) {

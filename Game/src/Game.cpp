@@ -51,7 +51,7 @@ void PrepareScenes(Phezu::Engine& engine) {
     ball->RootEntity.IsStatic = false;
     ball->RootEntity.ShapeSizeOverride = Phezu::Vector2(10, 10);
     ball->RootEntity.TintOverride = Phezu::Color(0, 255, 0, 255);
-    ball->RootEntity.AddComponentPrefab<BallBehaviourPrefab>().lock();
+    ball->RootEntity.AddComponentPrefab<BallBehaviourPrefab>();
     
     auto weakBrick = engine.CreatePrefab().lock();
     weakBrick->RootEntity.IsRenderable = true;
