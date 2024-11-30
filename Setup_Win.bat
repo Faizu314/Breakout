@@ -72,7 +72,7 @@ if /i "%USER_INPUT%"=="Y" (
     echo Running Game.exe...
     start Release\Game.exe
 ) else (
-    echo Game not launched.
+    echo Exiting. Game not launched.
 )
 
 pause
