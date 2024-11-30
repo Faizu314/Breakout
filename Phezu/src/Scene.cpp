@@ -9,6 +9,8 @@
 #include "scene/EntityTemplate.hpp"
 #include "Engine.hpp"
 
+#include <stdexcept>
+
 namespace Phezu {
     
     Scene::Scene(Engine* engine, const std::string& name) : m_Engine(engine), m_Name(name), m_IsLoaded(false), m_IsSceneToRuntimeMappingValid(false) { }

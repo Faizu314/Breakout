@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <string>
 #include "maths/Math.hpp"
 
 namespace Phezu {

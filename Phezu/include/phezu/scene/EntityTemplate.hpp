@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 #include "maths/Math.hpp"
 
 namespace Phezu {
