@@ -66,7 +66,7 @@ if (APPLE)
     add_executable(Game ${GAME_SOURCES} ${GAME_HEADERS})
 
     set(LIB_SRC_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/mac")
-    set(LIB_DEST_PATH "${CMAKE_BINARY_DIR}/Game.app/Contents/Frameworks")
+    set(LIB_DEST_PATH "${CMAKE_CFG_INTDIR}/Game.app/Contents/Frameworks")
 
     set_target_properties(Game PROPERTIES
         INSTALL_RPATH "@loader_path/../Frameworks"
