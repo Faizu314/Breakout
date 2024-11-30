@@ -1,6 +1,8 @@
 #include "scene/Entity.hpp"
 #include "scene/components/ShapeData.hpp"
 
+#include <cstring>
+
 namespace Phezu {
 
     ShapeData::ShapeData(Entity* entity, const Vector2& pivot, const Vector2& size) : DataComponent(entity), m_Pivot(pivot), m_Size(size) {}

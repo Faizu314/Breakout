@@ -1,6 +1,8 @@
 #include "Input.hpp"
 #include "SDL2/SDL.h"
 
+#include <cstring>
+
 namespace Phezu {
     
     InputData Input::s_InputData;
