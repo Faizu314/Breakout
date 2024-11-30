@@ -62,7 +62,8 @@ namespace Phezu {
         
         if (instance == nullptr) {
             //TODO: Logging
-            return;
+            static const InputData defaultInput{};
+            return defaultInput;
         }
         
         return instance->GetInput();

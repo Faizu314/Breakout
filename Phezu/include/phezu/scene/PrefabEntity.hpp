@@ -33,7 +33,7 @@ namespace Phezu {
         std::weak_ptr<T> AddComponentPrefab() {
             if (!std::is_base_of<BehaviourComponentPrefabBase, T>::value) {
                 //TODO: copy and paste the logging class
-                return;
+                return std::weak_ptr<T>();
             }
             
             uint8_t componentID = m_BehaviourComponents.size(); //TODO: This should be the count of other BehaviourComponentPrefab that are of the same type as T

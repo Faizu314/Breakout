@@ -36,7 +36,7 @@ namespace Phezu {
         
         if (m_Window != nullptr || !m_HasInited) {
             //TODO: Logging
-            return;
+            exit(1);
         }
             
         m_Window = new Window(name, width, height, renderScale);

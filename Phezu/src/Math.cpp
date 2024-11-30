@@ -29,6 +29,5 @@ namespace Phezu {
     
     void RoundToPixel(Vector2& vec) {
         vec.Set(RoundToPixel(vec.X()), RoundToPixel(vec.Y()));
-        return vec;
     }
 }
