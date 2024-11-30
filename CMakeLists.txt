@@ -65,15 +65,18 @@ set_target_properties(Phezu PROPERTIES OUTPUT_NAME Phezu PREFIX "")
 if (APPLE)
     add_executable(Game ${GAME_SOURCES} ${GAME_HEADERS})
 
-    set(LIB_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/mac")
+    set(LIB_SRC_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/mac")
+    set(LIB_DEST_PATH "${CMAKE_BINARY_DIR}/Game.app/Contents/Frameworks")
 
     set_target_properties(Game PROPERTIES
-        INSTALL_RPATH "@loader_path"
+        INSTALL_RPATH "@loader_path/../Frameworks"
         BUILD_WITH_INSTALL_RPATH TRUE
+        MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/Info.plist"
     )
 
     target_link_libraries(Phezu PRIVATE
-        "-F${LIB_PATH}"
+        "-F${LIB_SRC_PATH}"
         "-framework SDL2"
         "-framework SDL2_image"
         "-framework SDL2_ttf"
@@ -83,12 +86,13 @@ if (APPLE)
 elseif (WIN32)
     add_executable(Game WIN32 ${GAME_SOURCES} ${GAME_HEADERS})
 
-    set(LIB_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/windows")
+    set(LIB_SRC_PATH "${CMAKE_SOURCE_DIR}/Phezu/lib/windows")
+    set(LIB_DEST_PATH "$<TARGET_FILE_DIR:Game>")
 
     target_link_libraries(Phezu PRIVATE
-        "${LIB_PATH}/SDL2.lib"
-        "${LIB_PATH}/SDL2_image.lib"
-        "${LIB_PATH}/SDL2_ttf.lib"
+        "${LIB_SRC_PATH}/SDL2.lib"
+        "${LIB_SRC_PATH}/SDL2_image.lib"
+        "${LIB_SRC_PATH}/SDL2_ttf.lib"
     )
 
     target_include_directories(Phezu PRIVATE Phezu/include/windows)
@@ -101,14 +105,13 @@ target_link_libraries(Game PRIVATE Phezu)
 
 # copy and paste the libraries to the executable directory
 add_custom_command(TARGET Game POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${LIB_PATH}"
-    "$<TARGET_FILE_DIR:Game>"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${LIB_DEST_PATH}"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${LIB_SRC_PATH}" "${LIB_DEST_PATH}"
 )
 
 # copy and paste the assets to the executable directory
-add_custom_command(TARGET Game POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_SOURCE_DIR}/Game/assets"
-    "$<TARGET_FILE_DIR:Game>"
-)
+#add_custom_command(TARGET Game POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy_directory
+#    "${CMAKE_SOURCE_DIR}/Game/assets"
+#    "$<TARGET_FILE_DIR:Game>"
+#)
