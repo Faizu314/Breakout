@@ -26,7 +26,10 @@ else
     git clone https://github.com/Kitware/CMake.git
     cd CMake
     ./bootstrap
-    make
+    NUM_CORES=$(sysctl -n hw.ncpu)
+    echo "Detected $NUM_CORES cores. Using them for parallel build."
+
+    make -j"$NUM_CORES"
     cd ..
     CmakePath="$(pwd)/CMake/bin/cmake"
     echo "CMake has been built locally. Using CMake at: $CmakePath"
