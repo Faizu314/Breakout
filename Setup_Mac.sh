@@ -27,8 +27,17 @@ elif [ -f "$(pwd)/CMake/bin/cmake" ]; then
 else
     echo "CMake not found. Proceeding to download... (script will clone inside directory and not install on the machine)"
     git clone https://github.com/Kitware/CMake.git
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to clone the CMake repository. Please check your internet connection and try again."
+        exit 1
+    fi
+    
     cd CMake
     ./bootstrap
+    if [ $? -ne 0 ]; then
+        echo "Error: Cmake Bootstrap failed. Exiting."
+        exit 1
+    fi
 
     NUM_CORES=$(sysctl -n hw.ncpu)
     echo "Detected $NUM_CORES cores. Using them for parallel build."
@@ -47,9 +56,16 @@ cd Build || exit
 if [ -d "/Applications/Xcode.app" ]; then
     echo "Xcode IDE detected. Using Xcode generator..."
 
-    "$CmakePath" .. -G "Xcode"
-    xcodebuild -configuration Release
-    executable_path="Release/Game.app"
+    if "$CmakePath" .. -G "Xcode"; then
+        echo "Xcode generator succeeded. Proceeding with build."
+        xcodebuild -configuration Release
+        executable_path="Release/Game.app"
+    else
+        echo "Xcode generator failed. Falling back to Unix Makefiles generator..."
+        "$CmakePath" .. -G "Unix Makefiles"
+        make
+        executable_path="Game.app"
+    fi
 else
     echo "Xcode IDE not detected. Using Unix Makefiles generator..."
 
@@ -58,7 +74,7 @@ else
     executable_path="Game.app"
 fi
 
-read -p "Do you want to run the Breakout? You will find the app bundle at $executable_path (Y/N): " user_input
+read -p "Do you want to run the Breakout? You will find the app bundle at Build/$executable_path (Y/N): " user_input
 
 user_input=$(echo "$user_input" | tr '[:upper:]' '[:lower:]')
 
