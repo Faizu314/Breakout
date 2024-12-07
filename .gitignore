@@ -29,6 +29,9 @@
 *.out
 *.app
 
+# Exclude .exe files in the Vendor/Windows/CMake/bin
+!Vendor/Windows/Cmake/bin/*.exe
+
 #mac finder
 *.DS_Store
 
