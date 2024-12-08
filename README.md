@@ -16,6 +16,7 @@ Instructions:
 
 # Description
 This repository contains a Game Engine library and a sample Breakout clone that uses it.
+The health bar is at the bottom left of your screen and there are a total of 6 levels to beat the game.
 
 
 ![BreakoutPreview](./BreakoutPreview.png)
