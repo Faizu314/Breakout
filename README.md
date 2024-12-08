@@ -16,3 +16,6 @@ Instructions:
 
 # Description
 This repository contains a Game Engine library and a sample Breakout clone that uses it.
+
+
+![BreakoutPreview](./BreakoutPreview.png)
