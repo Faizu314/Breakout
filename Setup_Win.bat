@@ -56,21 +56,32 @@ if not exist "Build" (
 )
 cd "Build"
 
-echo Using generator: %GENERATOR%
-%CMAKE_COMMAND% .. -G "%GENERATOR%"
-
-if %ERRORLEVEL% neq 0 if /i "%GENERATOR%" neq "Ninja" (
-    echo Failed to generate visual studio files, falling back to ninja.
-    set GENERATOR=Ninja
-    call :get_ninja_command
-
-    echo Using generator: !GENERATOR!
-    %CMAKE_COMMAND% .. -G "%GENERATOR%"
+if "!GENERATOR!" == "Ninja" (
+    echo Using Ninja Generator...
+    !CMAKE_COMMAND! .. -G "!GENERATOR!" -DCMAKE_MAKE_PROGRAM="!NINJA_EXECUTABLE!"
 
     if %ERRORLEVEL% neq 0 (
         echo Build failed. Please check the errors above.
         pause
         exit /b 1
+    )
+) else (
+    echo Using generator: !GENERATOR!
+    !CMAKE_COMMAND! .. -G "!GENERATOR!"
+
+    if %ERRORLEVEL% neq 0 (
+        echo Failed to generate visual studio files, falling back to ninja.
+        set GENERATOR=Ninja
+        call :get_ninja_command
+
+        echo Using Ninja Generator...
+        !CMAKE_COMMAND! .. -G "!GENERATOR!" -DCMAKE_MAKE_PROGRAM="!NINJA_EXECUTABLE!"
+
+        if %ERRORLEVEL% neq 0 (
+            echo Build failed. Please check the errors above.
+            pause
+            exit /b 1
+        )
     )
 )
 
@@ -101,16 +112,17 @@ exit /b 0
 echo Checking for Ninja...
 where ninja >nul 2>&1
 if %ERRORLEVEL% neq 0 (
-    if exist "%CD%\Vendor\Windows\ninja\ninja.exe" (
+    set "NINJA_DIR=%CD%\Vendor\Windows\ninja"
+
+    if exist "!NINJA_DIR!\ninja.exe" (
         echo Downloaded Ninja exe already exists...
-        set "NINJA_EXECUTABLE=%NINJA_DIR%\ninja.exe"
+        set "NINJA_EXECUTABLE=!NINJA_DIR!\ninja.exe"
         exit /b 0
     )
 
     echo Ninja not found, attempting to download ninja...
 
     set "NINJA_URL=https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
-    set "NINJA_DIR=%CD%\Vendor\Windows\ninja"
     set "ZIP_PATH=%CD%\ninja-win.zip"
 
     if not exist "!ZIP_PATH!" (
@@ -138,7 +150,7 @@ if %ERRORLEVEL% neq 0 (
 
     if exist "!NINJA_EXECUTABLE!" (
         echo Ninja zip file expanded successfully, deleting zip file
-        del "%ZIP_PATH%"
+        del "!ZIP_PATH!"
     )
 
     echo Ninja executable is located at: !NINJA_EXECUTABLE!
